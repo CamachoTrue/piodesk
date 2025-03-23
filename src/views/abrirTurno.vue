@@ -143,14 +143,14 @@ const confirmar = async () => {
 button {
   padding: 5px 15px;
   border: none;
-  background-color: rgb(75, 147, 247);
+  background-color: rgb(247, 219, 75);
   color: white;
   border-radius: 5px;
   cursor: pointer;
 }
 
 .cancel-btn {
-  background-color: gray;
+  background-color: rgb(16, 15, 15);
 }
 
 
