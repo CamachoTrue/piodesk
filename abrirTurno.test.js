@@ -73,6 +73,7 @@ describe('AbrirTurno Component', () => {
       }
     });
 
+
     // Método simplificado para evitar problemas con trigger
     const closeBtn = wrapper.find('.close-btn');
     await closeBtn.trigger('click');
@@ -205,3 +206,11 @@ describe('AbrirTurno Component', () => {
     expect(wrapper.emitted('cerrar')).toBeFalsy();
   });
 });
+    const closeButton = wrapper.find('.close-btn')
+    expect(closeButton.exists()).toBe(true)
+    //cerrar ventana
+    await closeButton.trigger('click')
+    expect(wrapper.emitted()).toHaveProperty('cerrar')
+  })
+})
+
