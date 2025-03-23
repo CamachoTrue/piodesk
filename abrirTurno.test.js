@@ -37,7 +37,7 @@ describe('AbrirTurno Component', () => {
 
     const closeButton = wrapper.find('.close-btn')
     expect(closeButton.exists()).toBe(true)
-
+    //cerrar ventana
     await closeButton.trigger('click')
     expect(wrapper.emitted()).toHaveProperty('cerrar')
   })
