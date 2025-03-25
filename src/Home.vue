@@ -9,7 +9,6 @@
     <button @click="salir">Salir</button>
   </div>
 
-
   <div v-if="mostrarAlertaTurnoAbierto" class="alert-red">
     <div role="alert" class="alert alert-error shadow-lg w-55">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
@@ -18,7 +17,6 @@
       <span class="font-semibold">Ya hay un turno abierto.</span>
     </div>
   </div>
-
 
   <div v-if="mostrarAlertaTurnoCreado" class="alert-green">
     <div role="alert" class="alert alert-success shadow-lg w-55">
@@ -29,12 +27,9 @@
     </div>
   </div>
 
-
   <AbrirTurno :mostrar="mostrarVentana" @cerrar="mostrarVentana = false" @turnoAbierto="mostrarAlertaTurno" />
 
-  <div class="container">
-    <img src="/PIO2.jpeg" alt="">
-  </div>
+  <div class="background-container"></div> <!-- Imagen de fondo incrustada en el div -->
 </template>
 
 <script setup>
@@ -43,7 +38,6 @@ import { useRouter } from "vue-router";
 import AbrirTurno from "@/views/abrirTurno.vue";
 import { turno } from "@/store/auth.js";
 
-// Estado
 const mostrarVentana = ref(false);
 const mostrarAlertaTurnoAbierto = ref(false);
 const mostrarAlertaTurnoCreado = ref(false);
@@ -60,7 +54,6 @@ const abrirPestana = () => {
   }
 };
 
-// Se activa cuando el turno se abre correctamente
 const mostrarAlertaTurno = () => {
   mostrarAlertaTurnoCreado.value = true;
   setTimeout(() => {
@@ -78,10 +71,10 @@ const salir = () => {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  background-color: #e1e1e1;
+  background-color: #dcdcdc;
   padding: 15px;
   gap: 10px;
-} 
+}
 
 button {
   background-color: rgb(247, 219, 75);
@@ -98,28 +91,26 @@ button {
   transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-/* Alertas superpuestas debajo del botón "Abrir turno" */
 .alert-red,
 .alert-green {
   position: absolute;
-  top: 100px; /* Ajusta según la posición del botón */
+  top: 100px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 50;
   width: 300px;
 }
 
-.container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 80vh;
-}
-
-img {
+.background-container {
   width: 500px;
+  height: auto;
   max-width: 100%;
-  max-height: 100%;
+  aspect-ratio: 1 / 1;  
+  background-image: url('/PIO2.jpeg');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  margin: 80px auto 0 auto;
 }
 
 button:hover {
@@ -132,19 +123,5 @@ button:active {
 
 .salir-btn {
   margin-left: auto;
-}
-.vue-draggable-resizable {
-  outline: none !important;
-}
-
-.vue-draggable-resizable .handle {
-  display: none !important;
-}
-
-.vue-draggable-resizable .handle-tl,
-.vue-draggable-resizable .handle-tr,
-.vue-draggable-resizable .handle-bl,
-.vue-draggable-resizable .handle-br {
-  display: none !important;
 }
 </style>
