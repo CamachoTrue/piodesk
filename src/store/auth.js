@@ -12,7 +12,7 @@ export const obtenerTurno = async () => {
     const { data: turnoAbierto, error } = await supabase
       .from("turnos")
       .select("idturno")
-      .eq("horacierre", null);
+      .is("horacierre", null);
   
     if (error) {
       console.error("Error al obtener turno abierto:", error);
