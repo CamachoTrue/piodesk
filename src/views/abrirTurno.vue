@@ -7,7 +7,14 @@
       <span>¡Turno registrado correctamente!</span>
     </div>
 
-    <vue-draggable-resizable :w="300" :h="200" :x="window.innerWidth / 2 - 150" :y="window.innerHeight / 2 - 170" :resizable="false">
+    <vue-draggable-resizable 
+      :w="300" 
+      :h="200" 
+      :x="window.innerWidth / 2 - 150" 
+      :y="window.innerHeight / 2 - 170" 
+      :resizable="false"
+      class="custom-draggable"
+    >
       <div class="internal-frame">
         <div class="header">
           Abrir turno
@@ -31,7 +38,7 @@ import { supabase } from "@/supabase/supabase";
 import { defineEmits, defineProps, ref } from "vue";
 import VueDraggableResizable from "vue-draggable-resizable";
 import "vue-draggable-resizable/style.css";
-import { userLogin, turno, obtenerTurno } from "@/store/auth.js";
+import { userLogin, turno, obtenerTurno,idTurno } from "@/store/auth.js";
 
 // Props y eventos
 const props = defineProps(["mostrar"]);
@@ -78,6 +85,28 @@ const confirmar = async () => {
 </script>
 
 <style scoped>
+/* Estilos para eliminar líneas punteadas de vue-draggable-resizable */
+.custom-draggable {
+  outline: none !important;
+  border: none !important;
+}
+
+.custom-draggable > div {
+  outline: none !important;
+  border: none !important;
+}
+
+.vue-draggable-resizable .handle {
+  display: none !important;
+}
+
+.vue-draggable-resizable .handle-tl,
+.vue-draggable-resizable .handle-tr,
+.vue-draggable-resizable .handle-bl,
+.vue-draggable-resizable .handle-br {
+  display: none !important;
+}
+
 .internal-frame {
   outline: none;
   position: fixed;
@@ -89,8 +118,6 @@ const confirmar = async () => {
   height: 120%;
   display: flex;
   flex-direction: column;
-  
-  
 }
 
 .header {
@@ -104,7 +131,6 @@ const confirmar = async () => {
   position: relative;
   text-align: left;
   padding-left: 27px;
-
 }
 
 .close-btn {
@@ -152,6 +178,4 @@ button {
 .cancel-btn {
   background-color: rgb(16, 15, 15);
 }
-
-
 </style>

@@ -78,10 +78,10 @@ const salir = () => {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  background-color: #dcdcdc;
+  background-color: #e1e1e1;
   padding: 15px;
   gap: 10px;
-}
+} 
 
 button {
   background-color: rgb(247, 219, 75);
@@ -132,5 +132,19 @@ button:active {
 
 .salir-btn {
   margin-left: auto;
+}
+.vue-draggable-resizable {
+  outline: none !important;
+}
+
+.vue-draggable-resizable .handle {
+  display: none !important;
+}
+
+.vue-draggable-resizable .handle-tl,
+.vue-draggable-resizable .handle-tr,
+.vue-draggable-resizable .handle-bl,
+.vue-draggable-resizable .handle-br {
+  display: none !important;
 }
 </style>
