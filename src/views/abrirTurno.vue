@@ -61,7 +61,10 @@ const confirmar = async () => {
     console.log("Ya hay un turno abierto");
     return;
   }
-
+  if (montoInicial.value === null){
+    console.log("Debes de ingresar fondo inicial");
+    return;
+  }
   const { data, error } = await supabase.from("turnos").insert([
     {
       idusuario: userLogin.value,
