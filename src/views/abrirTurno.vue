@@ -22,7 +22,7 @@
         </div>
         <div class="content">
           <p>Efectivo en caja:</p>
-          <input v-model="montoInicial" type="number" placeholder="Monto" class="border-2 w-[295px] mt-4" />
+          <input v-model="montoInicial" type="number" placeholder="$0.00" class="border-2 w-[295px] mt-4" />
           <div class="button-group">
             <button @click="confirmar" class="transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white">Confirmar</button>
             <button @click="$emit('cerrar')" class="cancel-btn transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white">Cancelar</button>
@@ -45,7 +45,7 @@ const props = defineProps(["mostrar"]);
 const emit = defineEmits(["cerrar"]);
 
 // Variables
-const montoInicial = ref(0);
+const montoInicial = ref(null);
 const alertaVisible = ref(false);
 const window = ref(globalThis.window);
 
@@ -115,7 +115,7 @@ const confirmar = async () => {
   border-radius: 15px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   width: 120%;
-  height: 120%;
+  height: 110%;
   display: flex;
   flex-direction: column;
 }
@@ -161,21 +161,22 @@ const confirmar = async () => {
 .button-group {
   display: flex;
   justify-content: space-between;
-  margin-top: 35px;
-  margin-left: 25px;
-  margin-right: 40px;
+  margin-top: 30px;
+  margin-left: 20px;
+  margin-right: 35px;
 }
 
 button {
+  width: 110px;
   padding: 5px 15px;
   border: none;
-  background-color: rgb(247, 219, 75);
+  background-color: rgb(130, 165, 243);
   color: white;
   border-radius: 5px;
   cursor: pointer;
 }
 
 .cancel-btn {
-  background-color: rgb(16, 15, 15);
+  background-color: rgb(126 ,126, 126);
 }
 </style>

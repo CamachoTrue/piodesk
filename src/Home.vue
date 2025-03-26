@@ -5,7 +5,7 @@
     <button @click="">Retiro y <br> depósito</button>
     <button @click="">Consultar <br> citas</button>
     <button @click="abrirPestana()">Abrir turno</button>
-    <button @click="">Cerrar turno</button>
+    <button @click="PestanaCerrar()">Cerrar turno</button>
     <button @click="salir">Salir</button>
   </div>
 
@@ -15,6 +15,15 @@
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/>
       </svg>
       <span class="font-semibold">Ya hay un turno abierto.</span>
+    </div>
+  </div>
+
+  <div v-if="mostrarAlertaNoTurnoAbierto" class="alert-red2">
+    <div role="alert" class="alert alert-error shadow-lg w-55">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+      <span class="font-semibold">No hay un turno abierto.</span>
     </div>
   </div>
 
@@ -28,21 +37,27 @@
   </div>
 
   <AbrirTurno :mostrar="mostrarVentana" @cerrar="mostrarVentana = false" @turnoAbierto="mostrarAlertaTurno" />
+  <cerrarTurno :mostrar="mostrarVentanaCerrar" @cerrar="mostrarVentanaCerrar = false" />
 
-  <div class="background-container"></div> <!-- Imagen de fondo incrustada en el div -->
+  <div class="background-container"></div>
 </template>
 
 <script setup>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import AbrirTurno from "@/views/abrirTurno.vue";
+import cerrarTurno from "@/views/cerrarTurno.vue";
 import { turno } from "@/store/auth.js";
 
 const mostrarVentana = ref(false);
 const mostrarAlertaTurnoAbierto = ref(false);
 const mostrarAlertaTurnoCreado = ref(false);
+const mostrarAlertaNoTurnoAbierto = ref(false);
+const mostrarVentanaCerrar = ref(false);
 const router = useRouter();
 
+
+//abrir turno
 const abrirPestana = () => {
   if (!turno.value) {
     mostrarVentana.value = true;
@@ -54,12 +69,25 @@ const abrirPestana = () => {
   }
 };
 
+// Función para cerrar el turno
+const PestanaCerrar = () => {
+  if (turno.value) {
+    mostrarVentanaCerrar.value = true;
+  } else {
+    mostrarAlertaNoTurnoAbierto.value = true;
+    setTimeout(() => {
+      mostrarAlertaNoTurnoAbierto.value = false;
+    }, 3000);
+  }
+};
+
 const mostrarAlertaTurno = () => {
   mostrarAlertaTurnoCreado.value = true;
   setTimeout(() => {
     mostrarAlertaTurnoCreado.value = false;
   }, 3000);
 };
+
 
 const salir = () => {
   router.push("/");
@@ -91,8 +119,7 @@ button {
   transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-.alert-red,
-.alert-green {
+.alert-red,.alert-green,.alert-red2 {
   position: absolute;
   top: 100px;
   left: 50%;
@@ -105,7 +132,7 @@ button {
   width: 500px;
   height: auto;
   max-width: 100%;
-  aspect-ratio: 1 / 1;  
+  aspect-ratio: 1 / 1;
   background-image: url('/PIO2.jpeg');
   background-size: contain;
   background-position: center;
