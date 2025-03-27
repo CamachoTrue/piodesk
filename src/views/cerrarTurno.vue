@@ -50,7 +50,7 @@
 </template>
 
 <script setup>
-import { obtenerTurno, turno, userLogin } from "@/store/auth.js";
+import { obtenerTurno, turno, userLogin, idTurno } from "@/store/auth.js";
 import { supabase } from "@/supabase/supabase";
 import { defineEmits, defineProps, ref } from "vue";
 import VueDraggableResizable from "vue-draggable-resizable";
@@ -78,32 +78,31 @@ const caja = ref([
 ]);
 
 const confirmar = async () => {
-await obtenerTurno();
-
-if (turno.value) {
-    console.log("Ya hay un turno abierto");
-    return;
-}
-
-    const { data, error } = await supabase.from("turnos").insert([
-    {
-        idusuario: userLogin.value,
-        fecha: fecha.value,
-        horaapertura: hora.value,
-        montoinicial: montoInicial.value,
-    },
-    ]);
-
-    if (error) {
-    console.error("Error:", error.message);
-    return;
+    if(caja.value[0].importe === null || caja.value[1].importe === null || caja.value[2].importe === null){
+        console.log('Llenar todos los campos'); //Alert para cuando no se llenaron todos los campos
+        return;
     }
+    console.log(idTurno.value);
 
-    await obtenerTurno();
-    turno.value = true;
+    const{error} = await supabase
+    .from('turnos')
+    .update({
+        horacierre: hora.value,
+        efectivoFinal: caja.value[0].importe,
+        tarjetasFinal: caja.value[1].importe,
+        transferFinal: caja.value[2].importe
+    },)
+    .eq('idturno', idTurno.value);
 
-    emit("turnoAbierto");
-    emit("cerrar");
+    if(error){
+        console.error('Error al guardar cierre de turno: ', error);
+    }else{
+        console.log('Cierre de turno exitoso'); //Alert de turno cerrador correctamente
+        turno.value = false;
+        idTurno.value = ref(null);
+        emit('cerrar');
+    }
+    
 };
 </script>
 
