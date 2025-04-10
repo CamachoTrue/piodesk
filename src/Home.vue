@@ -1,12 +1,25 @@
 <template>
   <div class="home-container">
-    <button @click="">Comedor</button>
-    <button @click="">Domicilio</button>
-    <button @click="">Retiro y <br> depósito</button>
-    <button @click="">Consultar <br> citas</button>
-    <button @click="abrirPestana()">Abrir turno</button>
-    <button @click="PestanaCerrar()">Cerrar turno</button>
-    <button @click="salir">Salir</button>
+    <button @click="" class="comedor-btn"><img src="/mesa.png" class="comedor-icon" />Comedor</button>
+    <button @click="" class="domicilio-btn"><img src="/moto.png" class="domicilio-icon" />Domicilio</button>
+    <button @click="" class="deposito-btn"><img src="/retirar.png" class="deposito-icon" />Retiro y <br> depósito</button>
+    <button @click="" class="consultar-btn"><img src="/consulta.png" class="consultar-icon" />Consultar <br> citas</button>
+    <button @click="abrirPestana()" class="abrir-btn"><img src="/candado-abierto.png" class="abrir-icon" />Abrir turno</button>
+    <button @click="PestanaCerrar()" class="cerrar-btn"><img src="/candado.png" class="cerrar-icon" />Cerrar turno</button>
+    <button @click="" class="corte-btn"><img src="/caja-registradora.png" class="corte-icon" />Corte caja</button>
+    <div class="dropdown">
+  <button @click.stop="mostrarDropdown = !mostrarDropdown" class="ajustes-btn">
+    <img src="/icons8-ajustes-48.png"  class="ajustes-icon" />Ajustes</button>
+  <transition name="fade">
+    <div v-show="mostrarDropdown" class="dropdown-content">
+      <a href="#">Añadir productos</a>
+      <a href="#">Agregar usuarios</a>
+      <a href="#">Impresoras</a>
+    </div>
+  </transition>
+</div>
+    <button @click="salir" class="salir-btn" >
+      <img src="/cerrar.png" alt="Salir" class="salir-icon" />Salir</button>
   </div>
 
   <div v-if="mostrarAlertaTurnoAbierto" class="alert-red">
@@ -43,7 +56,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted, onBeforeUnmount } from "vue";
 import { useRouter } from "vue-router";
 import AbrirTurno from "@/views/abrirTurno.vue";
 import cerrarTurno from "@/views/cerrarTurno.vue";
@@ -54,10 +67,10 @@ const mostrarAlertaTurnoAbierto = ref(false);
 const mostrarAlertaTurnoCreado = ref(false);
 const mostrarAlertaNoTurnoAbierto = ref(false);
 const mostrarVentanaCerrar = ref(false);
+const mostrarDropdown = ref(false);
 const router = useRouter();
 
-
-//abrir turno
+// Función para abrir turno
 const abrirPestana = () => {
   if (!turno.value) {
     mostrarVentana.value = true;
@@ -69,7 +82,7 @@ const abrirPestana = () => {
   }
 };
 
-// Función para cerrar el turno
+// Función para cerrar turno
 const PestanaCerrar = () => {
   if (turno.value) {
     mostrarVentanaCerrar.value = true;
@@ -81,6 +94,7 @@ const PestanaCerrar = () => {
   }
 };
 
+// Mostrar alerta de turno creado
 const mostrarAlertaTurno = () => {
   mostrarAlertaTurnoCreado.value = true;
   setTimeout(() => {
@@ -88,7 +102,23 @@ const mostrarAlertaTurno = () => {
   }, 3000);
 };
 
+//menu
+function handleClickOutside(event) {
+  const dropdown = document.querySelector('.dropdown');
+  if (dropdown && !dropdown.contains(event.target)) {
+    mostrarDropdown.value = false;
+  }
+}
 
+onMounted(() => {
+  window.addEventListener('click', handleClickOutside);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener('click', handleClickOutside);
+});
+
+// Ir al inicio
 const salir = () => {
   router.push("/");
 };
@@ -99,7 +129,7 @@ const salir = () => {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  background-color: #dcdcdc;
+  background-color: #e8e8e8;
   padding: 15px;
   gap: 10px;
 }
@@ -111,12 +141,18 @@ button {
   min-width: 100px;
   height: 65px;
   border-radius: 10px;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: bold;
   cursor: pointer;
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
   text-align: center;
   transition: background-color 0.3s ease, transform 0.2s ease;
+
+  
+}
+
+.salir-btn {
+  margin-left: auto;
 }
 
 .alert-red,.alert-green,.alert-red2 {
@@ -148,7 +184,76 @@ button:active {
   background-color: white;
 }
 
-.salir-btn {
-  margin-left: auto;
+
+.ajustes-btn, .salir-btn, .comedor-btn, .domicilio-btn, .deposito-btn, .consultar-btn, .abrir-btn, .cerrar-btn, .corte-btn{
+  flex-direction: column;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
 }
+
+.ajustes-icon, .salir-icon, .comedor-icon, .domicilio-icon, .deposito-icon, .consultar-icon, .abrir-icon, .cerrar-icon, .corte-icon{
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+.consultar-btn, .deposito-btn {
+  line-height: 1;
+}
+
+/*boton ajustes*/
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: block;
+  position: absolute;
+  background-color: white;
+  min-width: 180px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 8px 0;
+  z-index: 10;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  top: 110%; /* para que no choque con el botón */
+
+  left: -40%;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.dropdown-content a {
+  color: #333;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  font-size: 14px;
+  transition: background-color 0.2s ease;
+}
+
+.dropdown-content a:hover {
+  background-color: #e7e7e7;
+  color: #000;
+}
+
+.dropdown-content[v-cloak], /* fallback en caso de parpadeo inicial */
+.dropdown-content[style*="display: none"] {
+  display: none !important;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+  pointer-events: none;
+}
+
 </style>

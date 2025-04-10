@@ -12,8 +12,8 @@
           <input type="text" v-model="usuario" placeholder="Usuario" class="h-11 w-[300px] mt-5 px-3 text-base border border-gray-300 rounded-md outline-none focus:ring-2 focus:ring-blue-400" ref="usuarioInput">
           <input type="password" v-model="password" placeholder="Contraseña" class="h-11 w-[300px] mt-5 px-3 text-base border border-gray-300 rounded-md outline-none focus:ring-2 focus:ring-blue-400" ref="passwordInput">
           <!-- Botón "Iniciar sesión" con tipografía bold (similar al h1 "Bienvenido!") -->
-          <button @click="iniciarSesion" class="bg-yellow-300 h-11 w-[300px] rounded-lg mt-5 transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white login-button-text font-bold">
-              Iniciar sesión
+          <button @click="iniciarSesion" class="bg-yellow-300 h-11 w-[300px] rounded-lg mt-5 transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white login-button-text">
+              Login
           </button>
           <!-- Botón "Usuario rápido" mantiene el subrayado y se le añade también font-bold -->
           <button v-show="isVisible" @click="userRapido" class="mt-3 underline font-bold">
@@ -97,9 +97,3 @@ const mostrarError = (mensaje) => {
 };
 </script>
 
-<style scoped>
-.login-button-text {
-  letter-spacing: 2px; /* Espacio entre letras */
-  /* Se ha eliminado el subrayado de este botón; solo "Usuario rápido" conserva underline */
-}
-</style>
