@@ -12,7 +12,7 @@
     <img src="/icons8-ajustes-48.png"  class="ajustes-icon" />Ajustes</button>
   <transition name="fade">
     <div v-show="mostrarDropdown" class="dropdown-content">
-      <a href="#">Añadir productos</a>
+      <a href="#" @click="abrirAggProductos()">Añadir productos</a>
       <a href="#">Agregar usuarios</a>
       <a href="#">Impresoras</a>
     </div>
@@ -51,6 +51,8 @@
 
   <AbrirTurno :mostrar="mostrarVentana" @cerrar="mostrarVentana = false" @turnoAbierto="mostrarAlertaTurno" />
   <cerrarTurno :mostrar="mostrarVentanaCerrar" @cerrar="mostrarVentanaCerrar = false" />
+  <aggProductos :mostrar="mostrarAggProductos" @cerrar="mostrarAggProductos = false" />
+  
 
   <div class="background-container"></div>
 </template>
@@ -60,7 +62,9 @@ import { ref, onMounted, onBeforeUnmount } from "vue";
 import { useRouter } from "vue-router";
 import AbrirTurno from "@/views/abrirTurno.vue";
 import cerrarTurno from "@/views/cerrarTurno.vue";
+import aggProductos from "./views/agg.Productos.vue";
 import { turno } from "@/store/auth.js";
+
 
 const mostrarVentana = ref(false);
 const mostrarAlertaTurnoAbierto = ref(false);
@@ -69,6 +73,7 @@ const mostrarAlertaNoTurnoAbierto = ref(false);
 const mostrarVentanaCerrar = ref(false);
 const mostrarDropdown = ref(false);
 const router = useRouter();
+const mostrarAggProductos = ref(false);
 
 // Función para abrir turno
 const abrirPestana = () => {
@@ -94,6 +99,11 @@ const PestanaCerrar = () => {
   }
 };
 
+//funcion para abrir aggProductos
+const abrirAggProductos = () => {
+  mostrarAggProductos.value = true;
+}
+
 // Mostrar alerta de turno creado
 const mostrarAlertaTurno = () => {
   mostrarAlertaTurnoCreado.value = true;
@@ -117,6 +127,7 @@ onMounted(() => {
 onBeforeUnmount(() => {
   window.removeEventListener('click', handleClickOutside);
 });
+
 
 // Ir al inicio
 const salir = () => {

@@ -9,8 +9,8 @@
           </div>
           <img src="../PIO.jpg" alt="Logo" class="w-20 mt-6">
           <h1 class="text-3xl font-bold mt-2">Bienvenido!</h1>
-          <input type="text" v-model="usuario" placeholder="Usuario" class="h-11 w-[300px] mt-5 px-3 text-base border border-gray-300 rounded-md outline-none focus:ring-2 focus:ring-blue-400" ref="usuarioInput">
-          <input type="password" v-model="password" placeholder="Contraseña" class="h-11 w-[300px] mt-5 px-3 text-base border border-gray-300 rounded-md outline-none focus:ring-2 focus:ring-blue-400" ref="passwordInput">
+          <input type="text" v-model="usuario" placeholder="Usuario" class="h-11 w-[300px] mt-5 pb-1 px-3 text-base border border-gray-300 rounded-md outline-none focus:ring-2 focus:ring-blue-400" ref="usuarioInput">
+          <input type="password" v-model="password" placeholder="Contraseña" class="h-11 w-[300px] pb-1 mt-5 px-3 text-base border border-gray-300 rounded-md outline-none focus:ring-2 focus:ring-blue-400" ref="passwordInput">
           <!-- Botón "Iniciar sesión" con tipografía bold (similar al h1 "Bienvenido!") -->
           <button @click="iniciarSesion" class="bg-yellow-300 h-11 w-[300px] rounded-lg mt-5 transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white login-button-text">
               Login
