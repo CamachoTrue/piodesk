@@ -1,105 +1,111 @@
 <template>
-    <div v-if="mostrar">
-      <vue-draggable-resizable
-        :w="800"
-        :h="500"
-        :x="window.innerWidth / 2 - 490"
-        :y="window.innerHeight / 2 - 320"
-        :resizable="false"
-        class="custom-draggable"
-      >
-        <div class="internal-frame">
-          <div class="header">
-            Productos
-            <button
-              class="close-btn transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white"
-              @click="$emit('cerrar')"
-            >
-              X
-            </button>
-          </div>
-          <div class="content">
-            <div class="main-grid">
-              <!-- Tabla -->
-              <div class="left-panel">
-                <div class="tabla-wrapper">
-                  <table class="tablaProductos">
-                    <thead>
-                      <tr>
-                        <th>Clave</th>
-                        <th>Grupo</th>
-                        <th>Descripción</th>
-                        <th>Precio</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr v-for="i in 20" :key="i">
-                        <td>{{ 1000 + i }}</td>
-                        <td>{{ i }}</td>
-                        <td>Producto número {{ i }}</td>
-                        <td>{{ (Math.random() * 100).toFixed(2) }}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
+  <div v-if="mostrar">
+    <vue-draggable-resizable
+      :w="820"
+      :h="500"
+      :x="window.innerWidth / 2 - 500"
+      :y="window.innerHeight / 2 - 320"
+      :resizable="false"
+      class="custom-draggable"
+    >
+      <div class="internal-frame">
+        <div class="header">
+          Productos
+          <button
+            class="close-btn transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white"
+            @click="$emit('cerrar')"
+          >
+            X
+          </button>
+        </div>
+        <div class="content">
+          <div class="main-grid">
+            <!-- Tabla -->
+            <div class="left-panel">
+              <div class="tabla-wrapper">
+                <table class="tablaProductos">
+                  <thead>
+                    <tr>
+                      <th>Clave</th>
+                      <th>Grupo</th>
+                      <th>Descripción</th>
+                      <th>Precio</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="i in 20" :key="i">
+                      <td>{{ 1000 + i }}</td>
+                      <td>{{ i }}</td>
+                      <td>Producto número {{ i }}</td>
+                      <td>{{ (Math.random() * 100).toFixed(2) }}</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
-  
-              <!-- Panel derecho con botones e inputs -->
-              <div class="right-panel">
-                <div class="agregar-producto">
-                  <span>Agregar nuevos productos:</span>
-                </div>
-                <div class="button-group right-buttons">
+            </div>
+
+            <!-- Panel derecho -->
+            <div class="right-panel">
+              <div class="agregar-producto">
+                <span>Agregar nuevos productos:</span>
+              </div>
+
+              <div class="button-group right-buttons">
+                <button
+                  @click=""
+                  class="transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white">
+                  Guardar
+                </button>
+
+                <!-- Botón producto compuesto + checkbox -->
+                <div class="composite-wrapper">
                   <button
                     @click=""
-                    class="transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white"
-                  >
-                    Guardar
-                  </button>
-                  <button
-                    @click=""
-                    class="productoComp-btn transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white"
-                  >
+                    class="productoComp-btn transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white">
                     Producto compuesto
                   </button>
+                  <input type="checkbox" class="producto-checkbox" />
                 </div>
-                <div class="input-frame">
-                  <div class="input-row">
-                    <label>Grupo</label>
-                    <input type="number" class="input-tabla input-chico grupo" />
-                  </div>
-                  <div class="input-row">
-                    <label>Subgrupo</label>
-                    <input type="number" class="input-tabla input-chico subgrupo" />
-                  </div>
-                  <div class="input-row">
-                    <label>Clave</label>
-                    <input type="text" class="input-tabla input-mediano clave" />
-                  </div>
-                  <div class="input-row">
-                    <label>Descripción</label>
-                    <input type="text" class="input-tabla descripcion" />
-                  </div>
-                  <div class="input-row">
-                    <label>Precio</label>
-                    <input type="number" class="input-tabla input-mediano precio" />
-                  </div>
-                  <div class="input-row">
-                    <label>Precio sin imp.</label>
-                    <input type="number" class="input-tabla input-mediano precio-sin-imp" />
-                  </div>
-                  <div class="input-row">
-                    <label>IVA</label>
-                    <input type="text" class="input-tabla input-chico iva" />
-                  </div>
+              </div>
+
+              <!-- Inputs -->
+              <div class="input-frame">
+                <div class="input-row">
+                  <label>Grupo</label>
+                  <input type="number" class="input-tabla input-chico grupo" />
+                </div>
+                <div class="input-row">
+                  <label>Subgrupo</label>
+                  <input type="number" class="input-tabla input-chico subgrupo" />
+                </div>
+                <div class="input-row">
+                  <label>Clave</label>
+                  <input type="text" class="input-tabla input-mediano clave" />
+                </div>
+                <div class="input-row">
+                  <label>Descripción</label>
+                  <input type="text" class="input-tabla descripcion" />
+                </div>
+                <div class="input-row">
+                  <label>Precio</label>
+                  <input type="number" class="input-tabla input-mediano precio" />
+                </div>
+                <div class="input-row">
+                  <label>Precio sin imp.</label>
+                  <input type="number" class="input-tabla input-mediano precio-sin-imp" />
+                </div>
+                <div class="input-row">
+                  <label>IVA</label>
+                  <input type="text" class="input-tabla input-chico iva" />
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </vue-draggable-resizable>
-    </div>
-  </template>
+      </div>
+    </vue-draggable-resizable>
+  </div>
+</template>
   
   <script setup>
   import { defineEmits, defineProps, ref } from "vue";
@@ -304,5 +310,17 @@
     font-size: 16px;
     
   }
+
+  .composite-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.producto-checkbox {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
   </style>
   
