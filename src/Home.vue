@@ -6,22 +6,25 @@
     <button @click="" class="consultar-btn"><img src="/consulta.png" class="consultar-icon" />Consultar <br> citas</button>
     <button @click="abrirPestana()" class="abrir-btn"><img src="/candado-abierto.png" class="abrir-icon" />Abrir turno</button>
     <button @click="PestanaCerrar()" class="cerrar-btn"><img src="/candado.png" class="cerrar-icon" />Cerrar turno</button>
-    <button @click="" class="corte-btn"><img src="/caja-registradora.png" class="corte-icon" />Corte caja</button>
+    <button @click="abrirProductoComp()" class="corte-btn"><img src="/caja-registradora.png" class="corte-icon" />Corte caja</button>
     <div class="dropdown">
-  <button @click.stop="mostrarDropdown = !mostrarDropdown" class="ajustes-btn">
-    <img src="/icons8-ajustes-48.png"  class="ajustes-icon" />Ajustes</button>
-  <transition name="fade">
-    <div v-show="mostrarDropdown" class="dropdown-content">
-      <a href="#" @click="abrirAggProductos()">Añadir productos</a>
-      <a href="#">Agregar usuarios</a>
-      <a href="#">Impresoras</a>
+      <button @click.stop="mostrarDropdown = !mostrarDropdown" class="ajustes-btn">
+        <img src="/icons8-ajustes-48.png" class="ajustes-icon" />Ajustes
+      </button>
+      <transition name="fade">
+        <div v-show="mostrarDropdown" class="dropdown-content">
+          <a href="#" @click="abrirAggProductos(); mostrarDropdown = false">Añadir productos</a>
+          <a href="#">Agregar usuarios</a>
+          <a href="#">Impresoras</a>
+        </div>
+      </transition>
     </div>
-  </transition>
-</div>
-    <button @click="salir" class="salir-btn" >
-      <img src="/cerrar.png" alt="Salir" class="salir-icon" />Salir</button>
+    <button @click="salir" class="salir-btn">
+      <img src="/cerrar.png" alt="Salir" class="salir-icon" />Salir
+    </button>
   </div>
 
+  <!-- ALERTAS -->
   <div v-if="mostrarAlertaTurnoAbierto" class="alert-red">
     <div role="alert" class="alert alert-error shadow-lg w-55">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
@@ -49,10 +52,20 @@
     </div>
   </div>
 
+  <div v-if="alertaTurnoCerrado" class="alert-green2">
+    <div role="alert" class="alert alert-success shadow-lg w-55">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+      <span class="font-semibold">¡Turno cerrado correctamente!</span>
+    </div>
+  </div>
+
+  <!-- COMPONENTES MODALES -->
   <AbrirTurno :mostrar="mostrarVentana" @cerrar="mostrarVentana = false" @turnoAbierto="mostrarAlertaTurno" />
-  <cerrarTurno :mostrar="mostrarVentanaCerrar" @cerrar="mostrarVentanaCerrar = false" />
+  <cerrarTurno :mostrar="mostrarVentanaCerrar" @cerrar="mostrarVentanaCerrar = false" @turnoCerrado="MostrarAlertaTurnoCerrado" />
   <aggProductos :mostrar="mostrarAggProductos" @cerrar="mostrarAggProductos = false" />
-  
+  <productoComp :mostrar="mostrarProductoComp" @cerrar="mostrarProductoComp = false" />
 
   <div class="background-container"></div>
 </template>
@@ -63,19 +76,21 @@ import { useRouter } from "vue-router";
 import AbrirTurno from "@/views/abrirTurno.vue";
 import cerrarTurno from "@/views/cerrarTurno.vue";
 import aggProductos from "./views/agg.Productos.vue";
+import productoComp from "./views/productoComp.vue";
 import { turno } from "@/store/auth.js";
-
 
 const mostrarVentana = ref(false);
 const mostrarAlertaTurnoAbierto = ref(false);
 const mostrarAlertaTurnoCreado = ref(false);
 const mostrarAlertaNoTurnoAbierto = ref(false);
+const alertaTurnoCerrado = ref(false);
 const mostrarVentanaCerrar = ref(false);
 const mostrarDropdown = ref(false);
 const router = useRouter();
 const mostrarAggProductos = ref(false);
+const mostrarProductoComp = ref(false);
 
-// Función para abrir turno
+// Funcion para abrir turno
 const abrirPestana = () => {
   if (!turno.value) {
     mostrarVentana.value = true;
@@ -87,7 +102,7 @@ const abrirPestana = () => {
   }
 };
 
-// Función para cerrar turno
+// Funcion para cerrar turno
 const PestanaCerrar = () => {
   if (turno.value) {
     mostrarVentanaCerrar.value = true;
@@ -99,12 +114,7 @@ const PestanaCerrar = () => {
   }
 };
 
-//funcion para abrir aggProductos
-const abrirAggProductos = () => {
-  mostrarAggProductos.value = true;
-}
-
-// Mostrar alerta de turno creado
+// Funcion para mostrar alerta turno creado
 const mostrarAlertaTurno = () => {
   mostrarAlertaTurnoCreado.value = true;
   setTimeout(() => {
@@ -112,7 +122,25 @@ const mostrarAlertaTurno = () => {
   }, 3000);
 };
 
-//menu
+// Funcion para mostrar alerta turno cerrado
+const MostrarAlertaTurnoCerrado = () => {
+  alertaTurnoCerrado.value = true;
+  setTimeout(() => {
+    alertaTurnoCerrado.value = false;
+  }, 3000);
+};
+
+// Abrir producto compuesto
+const abrirProductoComp = () => {
+  mostrarProductoComp.value = true;
+};
+
+// Abrir modal de productos
+const abrirAggProductos = () => {
+  mostrarAggProductos.value = true;
+};
+
+// Manejo del dropdown fuera de foco
 function handleClickOutside(event) {
   const dropdown = document.querySelector('.dropdown');
   if (dropdown && !dropdown.contains(event.target)) {
@@ -128,8 +156,7 @@ onBeforeUnmount(() => {
   window.removeEventListener('click', handleClickOutside);
 });
 
-
-// Ir al inicio
+// Salir
 const salir = () => {
   router.push("/");
 };
@@ -166,7 +193,7 @@ button {
   margin-left: auto;
 }
 
-.alert-red,.alert-green,.alert-red2 {
+.alert-red,.alert-green,.alert-red2, .alert-green2 {
   position: absolute;
   top: 100px;
   left: 50%;
@@ -231,7 +258,7 @@ button:active {
   z-index: 10;
   border: 1px solid #ddd;
   border-radius: 10px;
-  top: 110%; /* para que no choque con el botón */
+  top: 110%;
 
   left: -40%;
   opacity: 1;
@@ -252,7 +279,7 @@ button:active {
   color: #000;
 }
 
-.dropdown-content[v-cloak], /* fallback en caso de parpadeo inicial */
+.dropdown-content[v-cloak],
 .dropdown-content[style*="display: none"] {
   display: none !important;
 }

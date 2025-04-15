@@ -50,6 +50,12 @@
 </template>
 
 <script setup>
+
+
+const cerrarTurno = () => {
+  emit('turnoCerrado'); // dispara la alerta
+  emit('cerrar'); // cierra la ventana modal
+};
 import { obtenerTurno, turno, userLogin, idTurno } from "@/store/auth.js";
 import { supabase } from "@/supabase/supabase";
 import { defineEmits, defineProps, ref } from "vue";
@@ -103,7 +109,11 @@ const confirmar = async () => {
         emit('cerrar');
     }
     
+    emit("turnoCerrado");
+    emit("cerrar");
 };
+
+
 </script>
 
 <style scoped>
