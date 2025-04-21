@@ -52,8 +52,7 @@
 
               <div class="button-group right-buttons">
                 <button
-                  @click=""
-                  class="transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white">
+                  @click="" class="transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white">
                   Guardar
                 </button>
 
@@ -198,7 +197,7 @@
   }
   
   .input-frame {
-    border: 1px solid #ccc;
+    border: 1px solid #b6b6b6;
     border-radius: 10px;
     padding: 10px;
     margin-top: 15px;
@@ -211,18 +210,19 @@
     display: flex;
     align-items: center;
     gap: 10px;
+    
 
   }
   
   .input-row label {
-    width: 110px;
+    width: 125px;
     color: #3e3e3e;
   }
   
   .input-tabla {
     width: 65%;
     padding: 5px;
-    border: 1px solid #ccc;
+    border: 1px solid #b6b6b6;
     border-radius: 4px;
     text-align: left;
   }

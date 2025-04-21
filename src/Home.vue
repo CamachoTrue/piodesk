@@ -14,7 +14,7 @@
       <transition name="fade">
         <div v-show="mostrarDropdown" class="dropdown-content">
           <a href="#" @click="abrirAggProductos(); mostrarDropdown = false">Añadir productos</a>
-          <a href="#">Agregar usuarios</a>
+          <a href="#" @click="abrirAggUsuarios(); mostrarDropdown = false">Agregar usuarios</a>
           <a href="#">Impresoras</a>
         </div>
       </transition>
@@ -66,6 +66,7 @@
   <cerrarTurno :mostrar="mostrarVentanaCerrar" @cerrar="mostrarVentanaCerrar = false" @turnoCerrado="MostrarAlertaTurnoCerrado" />
   <aggProductos :mostrar="mostrarAggProductos" @cerrar="mostrarAggProductos = false" />
   <productoComp :mostrar="mostrarProductoComp" @cerrar="mostrarProductoComp = false" />
+  <aggUsuarios :mostrar="mostrarAggUsuarios" @cerrar="mostrarAggUsuarios = false" />
 
   <div class="background-container"></div>
 </template>
@@ -77,6 +78,7 @@ import AbrirTurno from "@/views/abrirTurno.vue";
 import cerrarTurno from "@/views/cerrarTurno.vue";
 import aggProductos from "./views/agg.Productos.vue";
 import productoComp from "./views/productoComp.vue";
+import aggUsuarios from "./views/aggUsuarios.vue";
 import { turno } from "@/store/auth.js";
 
 const mostrarVentana = ref(false);
@@ -89,6 +91,7 @@ const mostrarDropdown = ref(false);
 const router = useRouter();
 const mostrarAggProductos = ref(false);
 const mostrarProductoComp = ref(false);
+const mostrarAggUsuarios = ref(false);
 
 // Funcion para abrir turno
 const abrirPestana = () => {
@@ -135,9 +138,14 @@ const abrirProductoComp = () => {
   mostrarProductoComp.value = true;
 };
 
-// Abrir modal de productos
+// Abrir Agg productos
 const abrirAggProductos = () => {
   mostrarAggProductos.value = true;
+};
+
+// Abrir Agg usuarios
+const abrirAggUsuarios = () => {
+  mostrarAggUsuarios.value = true;
 };
 
 // Manejo del dropdown fuera de foco
