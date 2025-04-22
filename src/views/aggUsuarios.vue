@@ -36,8 +36,8 @@
             </div>
 
             <div class="button-group">
-                <button @click="" class="transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white" >Nuevo</button>
-                <button @click="" class="transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white">Agregar</button>
+                <button @click="aggUsuario" class="transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white" >Guardar</button>
+                <button @click="" class="transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white">Eliminar</button>
                 <button @click="" class="transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white">Limpiar</button>
             </div>
 
@@ -45,23 +45,23 @@
             <div class="input-frame">
                 <div class="input-row">
                     <label>Clave</label>
-                    <input type="number" class="input-tabla input-chico" />
+                    <input v-model="clave" type="number" class="input-tabla input-chico" />
                 </div>
                 <div class="input-row">
                     <label>Nombre</label>
-                    <input type="text" class="input-tabla" />
+                    <input v-model="nombre" type="text" class="input-tabla" />
                 </div>
                 <div class="input-row">
                     <label>Tipo</label>
-                    <input type="text" class="input-tabla input-mediano" />
+                    <input v-model="tipo" type="text" class="input-tabla input-mediano" />
                 </div>
                 <div class="input-row">
                     <label>Contraseña</label>
-                    <input type="password" class="input-tabla" />
+                    <input v-model="password" type="password" class="input-tabla" />
                 </div>
                 <div class="input-row">
                     <label>Usuario</label>
-                    <input type="text" class="input-tabla input-mediano" />
+                    <input v-model="usuario" type="text" class="input-tabla input-mediano" />
                 </div>
                 </div>
             </div>
@@ -76,11 +76,76 @@
 import { defineProps, defineEmits, ref } from "vue";
 import VueDraggableResizable from "vue-draggable-resizable";
 import "vue-draggable-resizable/style.css";
+import {supabase} from "@/supabase/supabase";
+
+
+//Inputs
+const clave = ref(null);
+const nombre = ref(null);
+const tipo = ref(null);
+const password = ref(null);
+const usuario = ref(null);
+
 
 const props = defineProps(["mostrar"]);
 const emit = defineEmits(["cerrar"]);
 
 const window = ref(globalThis.window);
+
+const aggUsuario = async () => {
+  // Primero obtenemos todos los usuarios
+  const { data: usuarios, error } = await supabase
+    .from("usuarios")
+    .select();
+
+  if (error) {
+    console.error("Error al obtener usuarios: ", error);
+    return;
+  }
+
+  // Buscamos si ya existe un usuario con el id 'clave'
+  const existe = usuarios.find(u => u.idusuario === clave.value); // <- clave es un ref
+
+  if (existe) {
+    // Actualizamos
+    const { data: dataUp, error: errorUp } = await supabase
+      .from("usuarios")
+      .update({
+        name: nombre.value,
+        password: password.value,
+        rol: tipo.value,
+        userName: usuario.value
+      })
+      .eq("idusuario", clave.value);
+
+    if (errorUp) {
+      console.error("Error al actualizar: ", errorUp);
+    } else {
+      console.log("Usuario actualizado correctamente");
+    }
+  } else {
+    // Insertamos
+    const { data: dataAgg, error: errorAg } = await supabase
+      .from("usuarios")
+      .insert([{
+        name: nombre.value,
+        password: password.value,
+        rol: tipo.value,
+        userName: usuario.value
+      }])
+      .select(); // <- para obtener el ID generado
+
+    if (errorAg) {
+      console.error("Error al agregar usuario", errorAg);
+    } else {
+      console.log("Usuario agregado:", dataAgg[0]);
+      clave.value = dataAgg[0].idusuario; // <- guardamos el ID generado
+    }
+  }
+};
+
+
+
 </script>
 
 <style scoped>

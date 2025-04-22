@@ -76,7 +76,7 @@ import { ref, onMounted, onBeforeUnmount } from "vue";
 import { useRouter } from "vue-router";
 import AbrirTurno from "@/views/abrirTurno.vue";
 import cerrarTurno from "@/views/cerrarTurno.vue";
-import aggProductos from "./views/agg.Productos.vue";
+import aggProductos from "./views/aggProductos.vue";
 import productoComp from "./views/productoComp.vue";
 import aggUsuarios from "./views/aggUsuarios.vue";
 import { turno } from "@/store/auth.js";
