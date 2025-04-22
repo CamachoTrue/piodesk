@@ -14,14 +14,14 @@
                         <thead>
                         <tr>
                         <th>Clave</th>
-                        <th>Nombre</th>
+                        <th>Usuario</th>
                         <th>Tipo</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr v-for="usuario in usuarios" :key="usuarios.idusuario">
                         <td>{{ usuario.idusuario }}</td>
-                        <td>{{ usuario.name }}</td>
+                        <td>{{ usuario.userName }}</td>
                         <td>{{ usuario.rol }}</td>
                         </tr>
                     </tbody>
