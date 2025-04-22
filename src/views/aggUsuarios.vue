@@ -37,8 +37,8 @@
 
             <div class="button-group">
                 <button @click="aggUsuario" class="transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white" >Guardar</button>
-                <button @click="" class="transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white">Eliminar</button>
-                <button @click="" class="transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white">Limpiar</button>
+                <button @click="delUsuario" class="transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white">Eliminar</button>
+                <button @click="limpiarCampos" class="transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white">Limpiar</button>
             </div>
 
 
@@ -92,8 +92,18 @@ const emit = defineEmits(["cerrar"]);
 
 const window = ref(globalThis.window);
 
+
+const limpiarCampos = () => {
+    clave.value = null;
+    nombre.value = null;
+    tipo.value = null; 
+    password.value = null;
+    usuario.value = null;
+}
+
 const aggUsuario = async () => {
   // Primero obtenemos todos los usuarios
+  
   const { data: usuarios, error } = await supabase
     .from("usuarios")
     .select();
