@@ -19,10 +19,10 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="i in 10" :key="i">
-                        <td>{{ 2000 + i }}</td>
-                        <td>Usuario {{ i }}</td>
-                        <td>{{ i % 2 === 0 ? 'Admin' : 'Normal' }}</td>
+                        <tr v-for="usuario in usuarios" :key="usuarios.idusuario">
+                        <td>{{ usuario.idusuario }}</td>
+                        <td>{{ usuario.name }}</td>
+                        <td>{{ usuario.rol }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -73,7 +73,7 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits, ref } from "vue";
+import { defineProps, defineEmits, ref, onMounted } from "vue";
 import VueDraggableResizable from "vue-draggable-resizable";
 import "vue-draggable-resizable/style.css";
 import {supabase} from "@/supabase/supabase";
@@ -86,12 +86,24 @@ const tipo = ref(null);
 const password = ref(null);
 const usuario = ref(null);
 
+const usuarios = ref([]);
 
 const props = defineProps(["mostrar"]);
 const emit = defineEmits(["cerrar"]);
 
 const window = ref(globalThis.window);
 
+const cargarUsuarios = async () => {
+    const { data, error } = await supabase
+    .from('usuarios')
+    .select()
+
+    if (error) {
+        errorMsg.value = ('Error al cargar usuarios: ' + error.message);
+    } else {
+        usuarios.value = data;
+    }
+}
 
 const limpiarCampos = () => {
     clave.value = null;
@@ -100,6 +112,35 @@ const limpiarCampos = () => {
     password.value = null;
     usuario.value = null;
 }
+
+const delUsuario = async () => {
+    if(clave.value === null){
+        console.error("Llena el campo clave");
+    }else{
+        const { data, error } = await supabase
+        .from("usuarios")
+        .select();
+
+        const existe = data.find(u => u.idusuario === clave.value);
+        if(existe){
+            const {datadel,errordel} = await supabase
+                .from("usuarios")
+                .delete()
+                .eq("idusuario",clave.value);
+            if(error){
+                console.error("Erroal eliminar el usuario", errordel); //Cambiar por alert
+            }else{
+                console.log("Usuario eliminado correctamente");
+                await cargarUsuarios();
+                limpiarCampos();
+            }
+        }else{
+            console.error("No existe un usuario con esa clave");
+        }
+
+    }
+}
+
 
 const aggUsuario = async () => {
   // Primero obtenemos todos los usuarios
@@ -132,6 +173,7 @@ const aggUsuario = async () => {
       console.error("Error al actualizar: ", errorUp);
     } else {
       console.log("Usuario actualizado correctamente");
+      await cargarUsuarios();
     }
   } else {
     // Insertamos
@@ -149,11 +191,15 @@ const aggUsuario = async () => {
       console.error("Error al agregar usuario", errorAg);
     } else {
       console.log("Usuario agregado:", dataAgg[0]);
+      await cargarUsuarios();
       clave.value = dataAgg[0].idusuario; // <- guardamos el ID generado
     }
   }
 };
 
+onMounted(() => {
+  cargarUsuarios();
+})
 
 
 </script>
