@@ -148,12 +148,12 @@
   }
   
   .content {
-    padding: 20px;
+    padding-left: 20px;
     text-align: left;
   }
   
   .section-title {
-
+    padding-top: 10px;
     margin-bottom: 10px;
     color: #333;
   }

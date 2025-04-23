@@ -1,7 +1,7 @@
 <template>
   <div v-if="mostrar">
     <vue-draggable-resizable
-      :w="820"
+      :w="833"
       :h="500"
       :x="window.innerWidth / 2 - 500"
       :y="window.innerHeight / 2 - 320"
@@ -44,7 +44,6 @@
               </div>
             </div>
 
-            <!-- Panel derecho -->
             <div class="right-panel">
               <div class="agregar-producto">
                 <span>Agregar nuevos productos:</span>
@@ -55,8 +54,10 @@
                   @click="aggProducto()" class="transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white">
                   Guardar
                 </button>
-
-                <!-- Botón producto compuesto + checkbox -->
+                <button
+                  @click="" class="transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white">
+                  Eliminar
+                </button>
                 <div class="composite-wrapper">
                   <button
                     @click="abrirProductoComp()"
@@ -67,7 +68,7 @@
                 </div>
               </div>
 
-              <!-- Inputs -->
+
               <div class="input-frame">
                 <div class="input-row">
                   <label>Grupo</label>
@@ -244,7 +245,7 @@
   .left-panel {
     flex: 2;
     padding: 10px;
-    padding-right: 30px;
+    padding-right: 20px;
   }
   
   .right-panel {
@@ -256,13 +257,14 @@
   
   .right-buttons {
     justify-content: flex-start;
-    gap: 10px;
+    gap: 8px;
   }
   
   .input-frame {
     border: 1px solid #b6b6b6;
     border-radius: 10px;
     padding: 10px;
+    margin-right: 30px;
     margin-top: 15px;
     display: flex;
     flex-direction: column;
@@ -283,7 +285,7 @@
   }
   
   .input-tabla {
-    width: 65%;
+    width: 67%;
     padding: 5px;
     border: 1px solid #b6b6b6;
     border-radius: 4px;
@@ -354,7 +356,7 @@
   }
   
   button {
-    width: 150px;
+    width: 100px;
     padding: 5px 15px;
     border: none;
     background-color: rgb(130, 165, 243);

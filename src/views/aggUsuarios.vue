@@ -268,7 +268,7 @@ onMounted(() => {
     flex: 1.5;
     padding: 10px;
     padding-right: 5px;
-    padding-top: 20px;
+    padding-top: 10px;
     
 }
 
@@ -327,7 +327,7 @@ onMounted(() => {
 }
 
 .tabla-wrapper {
-    max-height: 300px;
+    max-height: 310px;
     overflow: auto;
     border: 1px solid #ccc;
     display: inline-block; /* Esto hace que el div se ajuste al ancho del contenido interno */
