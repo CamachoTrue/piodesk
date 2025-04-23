@@ -52,18 +52,18 @@
 
               <div class="button-group right-buttons">
                 <button
-                  @click="" class="transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white">
+                  @click="aggProducto()" class="transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white">
                   Guardar
                 </button>
 
                 <!-- Botón producto compuesto + checkbox -->
                 <div class="composite-wrapper">
                   <button
-                    @click=""
+                    @click="abrirProductoComp()"
                     class="productoComp-btn transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white">
                     Producto compuesto
                   </button>
-                  <input type="checkbox" class="producto-checkbox" />
+                  <input v-model="isChecked" type="checkbox" class="producto-checkbox" />
                 </div>
               </div>
 
@@ -71,31 +71,31 @@
               <div class="input-frame">
                 <div class="input-row">
                   <label>Grupo</label>
-                  <input type="number" class="input-tabla input-chico grupo" />
+                  <input v-model="grupo" type="number" class="input-tabla input-chico grupo" />
                 </div>
                 <div class="input-row">
                   <label>Subgrupo</label>
-                  <input type="number" class="input-tabla input-chico subgrupo" />
+                  <input v-model="subgrupo" type="number" class="input-tabla input-chico subgrupo" />
                 </div>
                 <div class="input-row">
                   <label>Clave</label>
-                  <input type="text" class="input-tabla input-mediano clave" />
+                  <input v-model="clave" type="text" class="input-tabla input-mediano clave" />
                 </div>
                 <div class="input-row">
                   <label>Descripción</label>
-                  <input type="text" class="input-tabla descripcion" />
+                  <input v-model="descripcion" type="text" class="input-tabla descripcion" />
                 </div>
                 <div class="input-row">
                   <label>Precio</label>
-                  <input type="number" class="input-tabla input-mediano precio" />
+                  <input v-model="precio" type="number" class="input-tabla input-mediano precio" @keyup.enter="calcularPrecioSinIVA()"/>
                 </div>
                 <div class="input-row">
                   <label>Precio sin imp.</label>
-                  <input type="number" class="input-tabla input-mediano precio-sin-imp" />
+                  <input v-model="preciosinimp" type="number" class="input-tabla input-mediano precio-sin-imp" readonly />
                 </div>
                 <div class="input-row">
                   <label>IVA</label>
-                  <input type="text" class="input-tabla input-chico iva" />
+                  <input v-model="iva" type="text" class="input-tabla input-chico iva" />
                 </div>
               </div>
             </div>
@@ -103,22 +103,85 @@
         </div>
       </div>
     </vue-draggable-resizable>
+    <productoComp :mostrar="mostrarProductoComp" @cerrar="mostrarProductoComp = false" />
   </div>
 </template>
   
   <script setup>
-  import { defineEmits, defineProps, ref } from "vue";
+  import { defineEmits, defineProps, ref , watch} from "vue";
   import VueDraggableResizable from "vue-draggable-resizable";
   import "vue-draggable-resizable/style.css";
+  import productoComp from "./productoComp.vue";
+  import { supabase } from "../supabase/supabase";
   
   const props = defineProps(["mostrar"]);
   const emit = defineEmits(["cerrar"]);
-  
+  const mostrarProductoComp = ref(false); 
+  const isChecked = ref(false);
+  const grupo = ref(null);
+  const subgrupo = ref(null);
+  const clave = ref(null);
+  const descripcion = ref(null);
+  const precio = ref(null);
+  const preciosinimp = ref(null);
+  const iva = ref(16);
+
   const window = ref(globalThis.window);
   
+
+  // Abrir producto compuesto
+  const abrirProductoComp = () => {
+    if(isChecked.value){
+      mostrarProductoComp.value = true;
+    }
+  };
+  
+  //Funcion para guardar producto
+  const aggProducto = async () => {
+    const {data, error} = await supabase
+      .from('productos')
+      .insert([{
+        nombre: descripcion.value,
+        precio: precio.value,
+        preciosinimporte: preciosinimp.value,
+        compuesto: isChecked.value,
+        idgrupo: grupo.value,
+        idsubgrupo: subgrupo.value
+      }])
+      .select();
+
+      if(error){
+        console.error("Error al agregar producto", error);
+      }else{
+        console.log("Producto Agregado Correctamente");
+        clave.value = data[0].idproducto;
+        
+      }
+  }
+
+  // Función para calcular el precio sin IVA
+  const calcularPrecioSinIVA = () => {
+    if (precio.value) {
+      preciosinimp.value = (precio.value / (1 + (iva.value / 100))).toFixed(2);
+    }
+  };
+  
+  // Watch para actualizar automáticamente cuando cambie el precio
+  watch(precio, (newValue) => {
+    if (newValue) {
+      calcularPrecioSinIVA();
+    }
+  });
+
   </script>
   
   <style scoped>
+  /*Para quitar las flechas del spinner*/
+  input[type=number]::-webkit-inner-spin-button, 
+  input[type=number]::-webkit-outer-spin-button { 
+    -webkit-appearance: none; 
+    margin: 0; 
+  }
   .custom-draggable {
     outline: none !important;
     border: none !important;

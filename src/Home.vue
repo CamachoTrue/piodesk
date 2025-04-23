@@ -6,7 +6,7 @@
     <button @click="" class="consultar-btn"><img src="/consulta.png" class="consultar-icon" />Consultar <br> citas</button>
     <button @click="abrirPestana()" class="abrir-btn"><img src="/candado-abierto.png" class="abrir-icon" />Abrir turno</button>
     <button @click="PestanaCerrar()" class="cerrar-btn"><img src="/candado.png" class="cerrar-icon" />Cerrar turno</button>
-    <button @click="abrirProductoComp()" class="corte-btn"><img src="/caja-registradora.png" class="corte-icon" />Corte caja</button>
+    <button @click="" class="corte-btn"><img src="/caja-registradora.png" class="corte-icon" />Corte caja</button>
     <div class="dropdown">
       <button @click.stop="mostrarDropdown = !mostrarDropdown" class="ajustes-btn">
         <img src="/icons8-ajustes-48.png" class="ajustes-icon" />Ajustes
@@ -65,7 +65,7 @@
   <AbrirTurno :mostrar="mostrarVentana" @cerrar="mostrarVentana = false" @turnoAbierto="mostrarAlertaTurno" />
   <cerrarTurno :mostrar="mostrarVentanaCerrar" @cerrar="mostrarVentanaCerrar = false" @turnoCerrado="MostrarAlertaTurnoCerrado" />
   <aggProductos :mostrar="mostrarAggProductos" @cerrar="mostrarAggProductos = false" />
-  <productoComp :mostrar="mostrarProductoComp" @cerrar="mostrarProductoComp = false" />
+  
   <aggUsuarios :mostrar="mostrarAggUsuarios" @cerrar="mostrarAggUsuarios = false" />
 
   <div class="background-container"></div>
@@ -77,7 +77,7 @@ import { useRouter } from "vue-router";
 import AbrirTurno from "@/views/abrirTurno.vue";
 import cerrarTurno from "@/views/cerrarTurno.vue";
 import aggProductos from "./views/aggProductos.vue";
-import productoComp from "./views/productoComp.vue";
+
 import aggUsuarios from "./views/aggUsuarios.vue";
 import { turno } from "@/store/auth.js";
 
@@ -90,7 +90,7 @@ const mostrarVentanaCerrar = ref(false);
 const mostrarDropdown = ref(false);
 const router = useRouter();
 const mostrarAggProductos = ref(false);
-const mostrarProductoComp = ref(false);
+
 const mostrarAggUsuarios = ref(false);
 
 // Funcion para abrir turno
@@ -133,10 +133,7 @@ const MostrarAlertaTurnoCerrado = () => {
   }, 3000);
 };
 
-// Abrir producto compuesto
-const abrirProductoComp = () => {
-  mostrarProductoComp.value = true;
-};
+
 
 // Abrir Agg productos
 const abrirAggProductos = () => {
