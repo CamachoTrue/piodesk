@@ -19,7 +19,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="usuario in usuarios" :key="usuarios.idusuario">
+                        <tr v-for="usuario in usuarios" :key="usuarios.idusuario" @dblclick="seleccionarUsuario(usuario)">
                         <td>{{ usuario.idusuario }}</td>
                         <td>{{ usuario.userName }}</td>
                         <td>{{ usuario.rol }}</td>
@@ -61,7 +61,7 @@
                 </div>
                 <div class="input-row">
                     <label>Usuario</label>
-                    <input v-model="usuario" type="text" class="input-tabla input-mediano" />
+                    <input v-model="user" type="text" class="input-tabla input-mediano" />
                 </div>
                 </div>
             </div>
@@ -84,7 +84,7 @@ const clave = ref(null);
 const nombre = ref(null);
 const tipo = ref(null);
 const password = ref(null);
-const usuario = ref(null);
+const user = ref(null);
 
 const usuarios = ref([]);
 
@@ -105,12 +105,20 @@ const cargarUsuarios = async () => {
     }
 }
 
+const seleccionarUsuario = (usuario) => {
+    clave.value = usuario.idusuario;
+    nombre.value = usuario.name;
+    tipo.value = usuario.rol;
+    password.value = usuario.password;
+    user.value = usuario.userName;
+};
+
 const limpiarCampos = () => {
     clave.value = null;
     nombre.value = null;
     tipo.value = null; 
     password.value = null;
-    usuario.value = null;
+    user.value = null;
 }
 
 const delUsuario = async () => {
@@ -165,7 +173,7 @@ const aggUsuario = async () => {
         name: nombre.value,
         password: password.value,
         rol: tipo.value,
-        userName: usuario.value
+        userName: user.value
       })
       .eq("idusuario", clave.value);
 
@@ -183,7 +191,7 @@ const aggUsuario = async () => {
         name: nombre.value,
         password: password.value,
         rol: tipo.value,
-        userName: usuario.value
+        userName: user.value
       }])
       .select(); // <- para obtener el ID generado
 
