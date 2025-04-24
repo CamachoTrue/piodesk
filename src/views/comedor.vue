@@ -47,29 +47,29 @@
                     <div class="column">
                         <div class="input-row">
                         <label>Cuenta:</label>
-                        <input class="input-control cuenta-input" type="text" />
+                        <input class="input-control cuenta-input" type="text" readonly/>
                         </div>
                         <div class="input-row">
                         <label>Folio:</label>
-                        <input class="input-control folio-input" type="number" />
+                        <input class="input-control folio-input" type="number"readonly/>
                         </div>
                         <div class="input-row">
                         <label>Orden:</label>
-                        <input class="input-control orden-input" type="number" />
+                        <input class="input-control orden-input" type="number" readonly/>
                         </div>
                     </div>
                     <div class="column">
                         <div class="input-row">
                         <label>Apertura:</label>
-                        <input class="input-control apertura-input" type="text" />
+                        <input class="input-control apertura-input" type="text" readonly/>
                         </div>
                         <div class="input-row">
                         <label>Cierre:</label>
-                        <input class="input-control cierre-input" type="text" />
+                        <input class="input-control cierre-input" type="text" readonly/>
                         </div>
                         <div class="input-row">
                         <label>Impreso:</label>
-                        <input class="impreso-input" type="checkbox" />
+                        <input v-model="checkimpreso" class="impreso-input" type="checkbox" readonly/>
                         </div>
                     </div>
                     </div>
@@ -163,12 +163,25 @@ import { defineEmits, defineProps } from "vue";
 import VueDraggableResizable from "vue-draggable-resizable";
 import "vue-draggable-resizable/style.css";
 
+const checkimpreso = ref(false);
 const props = defineProps(["mostrar"]);
 const emit = defineEmits(["cerrar"]);
 const window = ref(globalThis.window);
 </script>
 
 <style scoped>
+/*Para quitar las flechas del spinner*/
+input[type=number]::-webkit-inner-spin-button, 
+  input[type=number]::-webkit-outer-spin-button { 
+    -webkit-appearance: none; 
+    margin: 0; 
+  }
+  .custom-draggable {
+    outline: none !important;
+    border: none !important;
+  }
+
+
 .custom-draggable {
     outline: none !important;
     border: none !important;

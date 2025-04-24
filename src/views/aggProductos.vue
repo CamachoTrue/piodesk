@@ -15,7 +15,7 @@
             class="close-btn transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white"
             @click="$emit('cerrar')"
           >
-            X
+            
           </button>
         </div>
         <div class="content">
@@ -33,11 +33,11 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="i in 20" :key="i">
-                      <td>{{ 1000 + i }}</td>
-                      <td>{{ i }}</td>
-                      <td>Producto número {{ i }}</td>
-                      <td>{{ (Math.random() * 100).toFixed(2) }}</td>
+                    <tr v-for="producto in productos" :key="productos.idproducto" @dblclick="seleccionarProducto(producto)">
+                      <td>{{ producto.idproducto }}</td>
+                      <td>{{ producto.idgrupo === null ? producto.idsubgrupo : producto.idgrupo+','+producto.idsubgrupo }}</td>
+                      <td>{{ producto.nombre }}</td>
+                      <td>{{ producto.precio }}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -61,7 +61,7 @@
                 <div class="composite-wrapper">
                   <button
                     @click="abrirProductoComp()"
-                    class="productoComp-btn transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white">
+                    class="productoComp-btn transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white" :style="{ backgroundColor: color }">
                     Producto compuesto
                   </button>
                   <input v-model="isChecked" type="checkbox" class="producto-checkbox" />
@@ -96,7 +96,7 @@
                 </div>
                 <div class="input-row">
                   <label>IVA</label>
-                  <input v-model="iva" type="text" class="input-tabla input-chico iva" />
+                  <input v-model="iva" value="16" type="text"con class="input-tabla input-chico iva" readonly/>
                 </div>
               </div>
             </div>
@@ -109,13 +109,15 @@
 </template>
   
   <script setup>
-  import { defineEmits, defineProps, ref , watch} from "vue";
+  import { defineEmits, defineProps, onMounted, ref , watch} from "vue";
   import VueDraggableResizable from "vue-draggable-resizable";
   import "vue-draggable-resizable/style.css";
   import productoComp from "./productoComp.vue";
   import { supabase } from "../supabase/supabase";
+import { errorMessages } from "@vue/compiler-sfc";
   
-  const props = defineProps(["mostrar"]);
+  const grupoOSub = ref(false);
+  const props = defineProps(["mostrar"]); 
   const emit = defineEmits(["cerrar"]);
   const mostrarProductoComp = ref(false); 
   const isChecked = ref(false);
@@ -127,14 +129,54 @@
   const preciosinimp = ref(null);
   const iva = ref(16);
 
+  const productos = ref([]);
   const window = ref(globalThis.window);
   
 
+  watch(iva, (newValue) => {
+    if (newValue !== 16) {
+      iva.value = 16;
+    }
+  }); 
   // Abrir producto compuesto
   const abrirProductoComp = () => {
     if(isChecked.value){
       mostrarProductoComp.value = true;
     }
+  };
+  
+  // Seleccionar producto al hacer doble clic
+  const seleccionarProducto = (producto) => {
+    // Llenar el formulario con los datos del producto
+    if(producto.grupo != null){
+      grupo.value = producto.idgrupo
+    }else{
+      subgrupo.value = producto.idsubgrupo;
+    }
+    clave.value = producto.idproducto;
+    descripcion.value = producto.nombre;
+    precio.value = producto.precio;
+    preciosinimp.value = producto.preciosinimporte;
+    iva.value = producto.iva;
+    productoId.value = producto.id;
+    modoEdicion.value = true;
+    
+    // Opcional: desplazarse al formulario
+    
+  };
+
+  const consultarProductos = async () =>{
+    const {data,error} = await supabase
+      .from('productos')
+      .select();
+
+      if(error){
+        errorMessages("Erro al obtener productos",error);
+      }else{
+        productos.value = data; 
+        
+        
+      }
   };
   
   //Funcion para guardar producto
@@ -174,6 +216,15 @@
     }
   });
 
+  const color = ref('rgb(126, 126, 126)');
+
+  watch(isChecked, (newValue) => {
+    color.value = newValue ? 'rgb(130, 165, 243)' : 'rgb(126, 126, 126)';
+  });
+
+  onMounted( () => {
+    consultarProductos();
+  });
   </script>
   
   <style scoped>
@@ -366,7 +417,7 @@
   }
   
   .productoComp-btn {
-    background-color: rgb(126, 126, 126);
+    /*background-color: rgb(126, 126, 126);*/
     width: 200px;
   }
 

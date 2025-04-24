@@ -88,6 +88,16 @@ const confirmar = async () => {
 </script>
 
 <style scoped>
+/*Para quitar las flechas del spinner*/
+input[type=number]::-webkit-inner-spin-button, 
+  input[type=number]::-webkit-outer-spin-button { 
+    -webkit-appearance: none; 
+    margin: 0; 
+  }
+  .custom-draggable {
+    outline: none !important;
+    border: none !important;
+  }
 /* Estilos para eliminar líneas punteadas de vue-draggable-resizable */
 .custom-draggable {
   outline: none !important;
