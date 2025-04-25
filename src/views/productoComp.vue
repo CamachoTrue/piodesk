@@ -18,7 +18,7 @@
             <h2 class="section-title">Grupos de modificadores</h2>
   
             <div class="button-group">
-              <button @click="abrirAggGrupo()" class="transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white">Editar</button>
+              <button  @click="abrirAggGrupo()" class="transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white">Editar</button>
             </div>
   
             <div class="tabla-wrapper">
@@ -71,8 +71,8 @@
           </div>
         </div>
       </vue-draggable-resizable>
-      <aggGrupo :mostrar="mostrarAggGrupo" @cerrar="mostrarAggGrupo = false"/>
     </div>
+    <aggGrupo :mostrar="mostrarAggGrupo" @cerrar="mostrarAggGrupo = false" />
   </template>
   
   <script setup>
@@ -81,14 +81,18 @@
   import "vue-draggable-resizable/style.css";
   import aggGrupo from "./ProductosCompuestos/aggGrupo.vue";
 
-  const mostrarAggGrupo = ref(false);
+
   const props = defineProps(["mostrar"]);
   const emit = defineEmits(["cerrar"]);
   const window = ref(globalThis.window);
+  const mostrarAggGrupo = ref(false);
 
-  const abrirAggGrupo = () =>{
-    mostrarAggGrupo.value = true;
-  };
+
+  // Abrir Agg grupos
+const abrirAggGrupo = () => {
+  mostrarAggGrupo.value = true;
+};
+
 
   </script>
   
