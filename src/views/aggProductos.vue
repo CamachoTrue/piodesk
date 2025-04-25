@@ -117,6 +117,7 @@
   import productoComp from "./productoComp.vue";
   import { supabase } from "../supabase/supabase";
 import { errorMessages } from "@vue/compiler-sfc";
+import { comma } from "postcss/lib/list";
   
   const grupoOSub = ref(false);
   const props = defineProps(["mostrar"]); 
@@ -159,9 +160,7 @@ import { errorMessages } from "@vue/compiler-sfc";
     descripcion.value = producto.nombre;
     precio.value = producto.precio;
     preciosinimp.value = producto.preciosinimporte;
-    iva.value = producto.iva;
-    productoId.value = producto.id;
-    modoEdicion.value = true;
+    isChecked.value = producto.compuesto;
     
     // Opcional: desplazarse al formulario
     
@@ -176,33 +175,65 @@ import { errorMessages } from "@vue/compiler-sfc";
         errorMessages("Erro al obtener productos",error);
       }else{
         productos.value = data; 
-        
-        
       }
   };
   
   //Funcion para guardar producto
   const aggProducto = async () => {
-    const {data, error} = await supabase
+    const {data:prodext, errorprod} = await supabase
       .from('productos')
-      .insert([{
-        nombre: descripcion.value,
-        precio: precio.value,
-        preciosinimporte: preciosinimp.value,
-        compuesto: isChecked.value,
-        idgrupo: grupo.value,
-        idsubgrupo: subgrupo.value
-      }])
       .select();
+    if(errorprod){
+      console.error("Error al consultar productos",error);      
+    }
 
-      if(error){
-        console.error("Error al agregar producto", error);
-      }else{
-        console.log("Producto Agregado Correctamente");
-        clave.value = data[0].idproducto;
-        
+    const existe = prodext.find(u => u.idproducto === clave.value);
+
+    console.log("Productos existe",existe);
+    
+
+    if (existe) {
+      const { data:actualizar, error:erroractualizar } = await supabase
+        .from('productos')
+        .update({
+          idgrupo: grupo.value,
+          idsubgrupo: subgrupo.value || null,
+          nombre: descripcion.value,
+          precio: precio.value,
+          preciosinimporte: preciosinimp.value,
+          compuesto: isChecked.value
+        })
+        .eq('idproducto', clave.value);
+
+      if (erroractualizar) {
+        console.error("Error al actualizar producto", erroractualizar);
+      } else {
+        console.log("Producto actualizado correctamente");
+        consultarProductos();
       }
-  }
+    } else {
+      const { data, error } = await supabase
+        .from('productos')
+        .insert([{
+          nombre: descripcion.value,
+          precio: precio.value,
+          preciosinimporte: preciosinimp.value,
+          compuesto: isChecked.value,
+          idgrupo: grupo.value,
+          idsubgrupo: subgrupo.value
+        }])
+        .select();
+
+      if (error) {
+        console.error("Error al agregar producto", error);
+      } else {
+        console.log("Producto Agregado Correctamente");
+        consultarProductos();
+        clave.value = data[0].idproducto;
+      }
+    }
+  };
+
 
   // Función para calcular el precio sin IVA
   const calcularPrecioSinIVA = () => {

@@ -53,9 +53,9 @@
                 </div>
                 <div class="input-row">
                     <label>Tipo</label>
-                    <select v-model="tipoUsuario" class="input-tabla input-mediano">
-                    <option value="gerente">Gerente</option>
-                    <option value="cajero">Cajero</option>
+                    <select v-model="tipo" class="input-tabla input-mediano">
+                    <option value="Gerente">Gerente</option>
+                    <option value="Cajero">Cajero</option>
                     </select>
                 </div>
                 <div class="input-row">
@@ -116,7 +116,7 @@ const seleccionarUsuario = (usuario) => {
     user.value = usuario.userName;
 };
 
-const limpiarCampos = () => {
+const limpiarCampos = () => {   
     clave.value = null;
     nombre.value = null;
     tipo.value = null; 
@@ -167,7 +167,7 @@ const aggUsuario = async () => {
 
   // Buscamos si ya existe un usuario con el id 'clave'
   const existe = usuarios.find(u => u.idusuario === clave.value); // <- clave es un ref
-
+  
   if (existe) {
     // Actualizamos
     const { data: dataUp, error: errorUp } = await supabase
