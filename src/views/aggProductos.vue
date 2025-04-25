@@ -14,7 +14,7 @@
           <button
             class="close-btn transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white"
             @click="$emit('cerrar')"
-          >
+          >X
             
           </button>
         </div>
@@ -73,10 +73,12 @@
                 <div class="input-row">
                   <label>Grupo</label>
                   <input v-model="grupo" type="number" class="input-tabla input-chico grupo" />
+                  <button class="icon-btn" @click="accionGrupo"><img src="/admin.png  " class="icon-img"><span></span></button>
                 </div>
                 <div class="input-row">
                   <label>Subgrupo</label>
                   <input v-model="subgrupo" type="number" class="input-tabla input-chico subgrupo" />
+                  <button class="icon-btn" @click="accionGrupo"><img src="/admin.png" class="icon-img"><span></span></button>
                 </div>
                 <div class="input-row">
                   <label>Clave</label>
@@ -367,6 +369,7 @@ import { errorMessages } from "@vue/compiler-sfc";
     border: 1px solid #ccc;
     font-weight: normal;
     color: #3e3e3e;
+    cursor: pointer;
   }
   
   /* Sticky header */
@@ -438,5 +441,25 @@ import { errorMessages } from "@vue/compiler-sfc";
   height: 18px;
   cursor: pointer;
 }
+
+.icon-btn {
+  width: 32px;
+  height: 32px;
+  padding: 4px;
+  background-color: #e0e0e0;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.icon-btn:hover {
+  background-color: #bdbdbd;
+}
+
+
   </style>
   

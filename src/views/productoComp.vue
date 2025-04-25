@@ -1,7 +1,7 @@
 <template>
     <div v-if="mostrar">
       <vue-draggable-resizable 
-        :w="590" 
+        :w="540" 
         :h="580" 
         :x="window.innerWidth / 2 - 300" 
         :y="window.innerHeight / 2 - 330" 
@@ -18,15 +18,13 @@
             <h2 class="section-title">Grupos de modificadores</h2>
   
             <div class="button-group">
-              <button class="transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white">Agregar</button>
-              <button class="transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white">Guardar</button>
+              <button class="transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white">Editar</button>
             </div>
   
             <div class="tabla-wrapper">
-                <table class="tablaProductos">
+                <table class="tablaProductos1">
                     <thead>
                     <tr>
-                        <th>Botón</th>
                         <th>Clave</th>
                         <th>Descripción</th>
                         <th>Modificadores máx.</th>
@@ -37,7 +35,7 @@
                         <td>201</td>
                         <td>{{ 100 + i }}</td>
                         <td>Grupo {{ i }}</td>
-                        <td>{{ i }}</td>
+
                     </tr>
                     </tbody>
                 </table>
@@ -46,12 +44,11 @@
             <h2 class="section-title">Modificadores de productos</h2>
   
             <div class="button-group">
-              <button class="transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white">Agregar</button>
-              <button class="transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white">Guardar</button>
+              <button class="transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white">Editar</button>
             </div>
   
             <div class="tabla-wrapper">
-  <table class="tablaProductos">
+  <table class="tablaProductos2">
     <thead>
             <tr>
                 <th>Clave</th>
@@ -179,7 +176,7 @@
     width: 110px;
     padding: 5px 15px;
     border: none;
-    background-color: rgb(126, 126, 126);
+    background-color: rgb(130, 165, 243);
     color: white;
     border-radius: 5px;
     cursor: pointer;
@@ -187,28 +184,29 @@
   
   
   .tabla-wrapper {
-  width: 550px;
+  width: 500px;
   max-height: 150px;
-  overflow-y: auto; /* ✅ Esto es lo correcto */
+  overflow-y: auto;
   border: 1px solid #ccc;
   padding-right: 4px;
   margin-bottom: 20px;
   display: inline-block;
 }
   
-  .tablaProductos {
+  .tablaProductos1, .tablaProductos2 {
     width: 100%;
     border-collapse: collapse;
     table-layout: auto;
   }
 
-  .tablaProductos th:nth-child(3),
-.tablaProductos td:nth-child(3) {
-  width: 250px;
+  .tablaProductos1 th:nth-child(3),
+.tablaProductos1 td:nth-child(3) {
+  width: 160px;
 }
   
-  .tablaProductos th,
-  .tablaProductos td {
+
+.tablaProductos1 th, .tablaProductos2 th,
+.tablaProductos1 td, .tablaProductos2 td {
     padding: 5px;
     padding-left: 8px;
     text-align: left;
@@ -217,7 +215,7 @@
     color: #3e3e3e;
   }
   
-  .tablaProductos thead th {
+  .tablaProductos1 thead th, .tablaProductos2 thead th {
     position: sticky;
     top: 0;
     background-color: #e7e7e7;
