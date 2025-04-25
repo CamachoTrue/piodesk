@@ -53,7 +53,10 @@
                 </div>
                 <div class="input-row">
                     <label>Tipo</label>
-                    <input v-model="tipo" type="text" class="input-tabla input-mediano" />
+                    <select v-model="tipoUsuario" class="input-tabla input-mediano">
+                    <option value="gerente">Gerente</option>
+                    <option value="cajero">Cajero</option>
+                    </select>
                 </div>
                 <div class="input-row">
                     <label>Contraseña</label>
@@ -351,6 +354,7 @@ input[type=number]::-webkit-outer-spin-button {
 .tablaUsuarios {
     border-collapse: collapse;
     table-layout: fixed;
+    cursor: pointer;
 }
 
 .tablaUsuarios th,
@@ -392,4 +396,14 @@ button {
 .agregar-producto {
     font-size: 16px;
 }
+
+select.input-tabla {
+  border: 1px solid #b6b6b6;
+  border-radius: 4px;
+  color: #000000;
+  cursor: pointer;
+}
+
+
+
 </style>

@@ -13,8 +13,8 @@
       </button>
       <transition name="fade">
         <div v-show="mostrarDropdown" class="dropdown-content">
-          <a href="#" @click="abrirAggProductos(); mostrarDropdown = false">Añadir productos</a>
-          <a href="#" @click="abrirAggUsuarios(); mostrarDropdown = false">Agregar usuarios</a>
+          <a href="#" @click="abrirAggProductos(); mostrarDropdown = false">Administrar productos</a>
+          <a href="#" @click="abrirAggUsuarios(); mostrarDropdown = false">Administrar usuarios</a>
           <a href="#">Impresoras</a>
         </div>
       </transition>
