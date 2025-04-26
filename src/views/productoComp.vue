@@ -18,7 +18,8 @@
             <h2 class="section-title">Grupos de modificadores</h2>
   
             <div class="button-group">
-              <button  @click="abrirAggGrupo()" class="transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white">Editar</button>
+              <button  @click="abrirAggGrupo()" class="transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white">Agregar</button>
+              <button  @click="abrirEditarGrupo()" class="transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white">Editar</button>
             </div>
   
             <div class="tabla-wrapper">
@@ -44,7 +45,8 @@
             <h2 class="section-title">Modificadores de productos</h2>
   
             <div class="button-group">
-              <button class="transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white">Editar</button>
+              <button @click="abrirAggModProd()" class="transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white">Agregar</button>
+              <button @click="abrirEditarModProd()" class="transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white">Editar</button>
             </div>
   
             <div class="tabla-wrapper">
@@ -73,6 +75,9 @@
       </vue-draggable-resizable>
     </div>
     <aggGrupo :mostrar="mostrarAggGrupo" @cerrar="mostrarAggGrupo = false" />
+    <editarGrupo :mostrar="mostrarEditarGrupo" @cerrar="mostrarEditarGrupo = false" />
+    <aggModProd :mostrar="mostrarAggModProd" @cerrar="mostrarAggModProd = false" />
+    <editarModProd :mostrar="mostrarEditarModProd" @cerrar="mostrarEditarModProd = false" />
   </template>
   
   <script setup>
@@ -80,17 +85,37 @@
   import VueDraggableResizable from "vue-draggable-resizable";
   import "vue-draggable-resizable/style.css";
   import aggGrupo from "./ProductosCompuestos/aggGrupo.vue";
+  import editarGrupo from "./ProductosCompuestos/editarGrupo.vue";
+  import aggModProd from "./ProductosCompuestos/aggModProd.vue";
+  import editarModProd from "./ProductosCompuestos/editarModProd.vue";
 
 
   const props = defineProps(["mostrar"]);
   const emit = defineEmits(["cerrar"]);
   const window = ref(globalThis.window);
   const mostrarAggGrupo = ref(false);
-
+  const mostrarEditarGrupo = ref(false);
+  const mostrarAggModProd = ref(false);
+  const mostrarEditarModProd = ref(false);
 
   // Abrir Agg grupos
 const abrirAggGrupo = () => {
   mostrarAggGrupo.value = true;
+};
+
+  // Abrir editar grupos
+  const abrirEditarGrupo = () => {
+  mostrarEditarGrupo.value = true;
+};
+
+  // Abrir editar grupos
+  const abrirAggModProd = () => {
+  mostrarAggModProd.value = true;
+};
+
+  // Abrir editar grupos
+  const abrirEditarModProd = () => {
+  mostrarEditarModProd.value = true;
 };
 
 
@@ -191,6 +216,7 @@ const abrirAggGrupo = () => {
     color: white;
     border-radius: 5px;
     cursor: pointer;
+    
   }
   
   

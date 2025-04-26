@@ -77,12 +77,12 @@
 
                     <div class="button-section">
                         <div class="button-grid">
-                            <button class="transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white">Abrir cuenta</button>
-                            <button class="transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white">Cancelar cuenta</button>
-                            <button class="transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white">Descuento</button>
-                            <button class="transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white">Captura</button>
-                            <button class="transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white">Renombrar cuenta</button>
-                            <button class="transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white">Imprimir</button>
+                            <button class="button">Abrir cuenta</button>
+                            <button class="button">Cancelar cuenta</button>
+                            <button class="button">Descuento</button>
+                            <button class="button">Captura</button>
+                            <button class="button">Renombrar cuenta</button>
+                            <button class="button">Imprimir</button>
                         </div>
                     </div>
                 </div>
@@ -119,9 +119,9 @@
 
                 <div class="bottom-controls">
                     <div class="left-buttons">
-                    <button class="transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white">Reabrir cuenta</button>
-                    <button class="transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white">Cancelar cuenta</button>
-                    <button class="transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white">Pagar cuenta</button>
+                    <button class="button">Reabrir cuenta</button>
+                    <button class="button">Cancelar cuenta</button>
+                    <button class="button">Pagar cuenta</button>
                     </div>
                 <div class="right-totals-wrapper">
                     <div class="bordered-box" style="min-width: 395px;">
@@ -299,9 +299,9 @@ input[type=number]::-webkit-inner-spin-button,
 .button-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    padding-top: 10px;
-    padding-bottom: 20px;
+    gap: 5px;
+    padding-top: 15px;
+    padding-bottom: 25px;
     
 }
 .bordered-box {
@@ -326,18 +326,29 @@ input[type=number]::-webkit-inner-spin-button,
 }
 .left-buttons {
     display: flex;
-    gap: 10px;
+    gap: 5px;
 }
+
+.left-buttons button {
+    width: 148px;
+}
+
 button {
     border: none;
-    background-color: rgb(130, 165, 243);
+    background-color: rgb(144, 176, 245);
     color: white;
     border-radius: 5px;
     cursor: pointer;
     width: 145px;
     height: 45px;
     font-size: 15px;
+    transition: background-color 0.3s ease;
 }
+
+.button:hover {
+    background-color: rgb(105, 133, 194);
+}
+
 .form-columns {
     display: flex;
     justify-content: space-between;
@@ -389,12 +400,12 @@ button {
 
 .impreso-input {
     width: auto !important;
-height: auto !important;
-margin-left: 4px;
-margin-top: 4px;
-transform: scale(1.5); /* Escala el checkbox */
-transform-origin: left center;
-cursor: pointer;
+    height: auto !important;
+    margin-left: 4px;
+    margin-top: 4px;
+    transform: scale(1.5); /* Escala el checkbox */
+    transform-origin: left center;
+    cursor: pointer;
 
 }
 
