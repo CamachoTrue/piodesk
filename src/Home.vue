@@ -80,6 +80,7 @@ import aggProductos from "./views/aggProductos.vue";
 import comedor from "./views/comedor.vue";
 import aggUsuarios from "./views/aggUsuarios.vue";
 import { turno } from "@/store/auth.js";
+import PosPrinter from "./impresora/PosPrinter.vue";
 
 const mostrarVentana = ref(false);
 const mostrarAlertaTurnoAbierto = ref(false);
