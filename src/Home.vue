@@ -15,7 +15,7 @@
         <div v-show="mostrarDropdown" class="dropdown-content">
           <a href="#" @click="abrirAggProductos(); mostrarDropdown = false">Administrar productos</a>
           <a href="#" @click="abrirAggUsuarios(); mostrarDropdown = false">Administrar usuarios</a>
-          <a href="#">Impresoras</a>
+          <a href="#" @click="abrirPrinter(); mostrarDropdown = false">Impresoras</a>
         </div>
       </transition>
     </div>
@@ -67,6 +67,7 @@
   <aggProductos :mostrar="mostrarAggProductos" @cerrar="mostrarAggProductos = false" />
   <aggUsuarios :mostrar="mostrarAggUsuarios" @cerrar="mostrarAggUsuarios = false" />
   <comedor :mostrar="mostrarComedor" @cerrar="mostrarComedor = false" />
+  <PosPrinter :mostrar="mostrarPrinter" @cerrar="mostrarPrinter = false"/>
   <div class="background-container"></div>
 
 </template>
@@ -80,7 +81,7 @@ import aggProductos from "./views/aggProductos.vue";
 import comedor from "./views/comedor.vue";
 import aggUsuarios from "./views/aggUsuarios.vue";
 import { turno } from "@/store/auth.js";
-import PosPrinter from "./impresora/PosPrinter.vue";
+import PosPrinter from "@/impresora/PosPrinter.vue";
 
 const mostrarVentana = ref(false);
 const mostrarAlertaTurnoAbierto = ref(false);
@@ -93,6 +94,18 @@ const router = useRouter();
 const mostrarAggProductos = ref(false);
 const mostrarAggUsuarios = ref(false);
 const mostrarComedor = ref(false);
+const mostrarPrinter = ref(false);
+
+const abrirPrinter = () => {
+  try {
+    mostrarPrinter.value = true;
+    console.log('Modal de impresora abierto correctamente');
+  } catch (error) {
+    console.error('Error al abrir el modal de impresora:', error);
+  }
+};
+
+
 
 // Funcion para abrir turno
 const abrirPestana = () => {

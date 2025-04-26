@@ -119,9 +119,9 @@
 import { errorMessages } from "@vue/compiler-sfc";
 import { comma } from "postcss/lib/list";
   
-  const grupoOSub = ref(false);
   const props = defineProps(["mostrar"]); 
   const emit = defineEmits(["cerrar"]);
+  const grupoOSub = ref(false);
   const mostrarProductoComp = ref(false); 
   const isChecked = ref(false);
   const grupo = ref(null);
