@@ -2,7 +2,7 @@
     <div v-if="mostrar">
       <vue-draggable-resizable 
         :w="540" 
-        :h="580" 
+        :h="570" 
         :x="window.innerWidth / 2 - 300" 
         :y="window.innerHeight / 2 - 330" 
         :resizable="false"
@@ -11,15 +11,15 @@
         <div class="internal-frame">
           <div class="header">
             Producto compuesto
-            <button class="close-btn transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white" @click="$emit('cerrar')">X</button>
+            <button class="close-btn" @click="$emit('cerrar')">X</button>
           </div>
           <div class="content">
 
             <h2 class="section-title">Grupos de modificadores</h2>
   
             <div class="button-group">
-              <button  @click="abrirAggGrupo()" class="transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white">Agregar</button>
-              <button  @click="abrirEditarGrupo()" class="transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white">Editar</button>
+              <button  @click="abrirAggGrupo()" class="button">Agregar</button>
+              <button  @click="abrirEditarGrupo()" class="button">Editar</button>
             </div>
   
             <div class="tabla-wrapper">
@@ -45,8 +45,8 @@
             <h2 class="section-title">Modificadores de productos</h2>
   
             <div class="button-group">
-              <button @click="abrirAggModProd()" class="transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white">Agregar</button>
-              <button @click="abrirEditarModProd()" class="transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white">Editar</button>
+              <button @click="abrirAggModProd()" class="button">Agregar</button>
+              <button @click="abrirEditarModProd()" class="button">Editar</button>
             </div>
   
             <div class="tabla-wrapper">
@@ -165,20 +165,22 @@ const abrirAggGrupo = () => {
   .header {
     background: rgb(247, 219, 75);
     color: white;
-    padding: 10px 27px;
+    padding: 5px 20px;
     font-weight: bold;
     border-top-left-radius: 15px;
     border-top-right-radius: 15px;
     position: relative;
     text-align: left;
-  }
-  
-  .close-btn {
-    width: 25px;
-    height: 25px;
+}
+
+.close-btn {
+    padding: 0 !important;
+    width: 21px;
+    height: 21px;
     position: absolute;
-    right: 5px;
-    top: 5px;
+    right: 2px;
+    top: 2px;
+    bottom: 2px;
     background: red;
     color: white;
     border: none;
@@ -189,8 +191,13 @@ const abrirAggGrupo = () => {
     align-items: center;
     margin-top: 4px;
     margin-right: 4px;
-  }
-  
+    font-size: 13px;
+}
+
+.close-btn:hover{
+    background-color: rgb(209, 0, 0);
+}
+
   .content {
     padding-left: 20px;
     text-align: left;
@@ -216,9 +223,14 @@ const abrirAggGrupo = () => {
     color: white;
     border-radius: 5px;
     cursor: pointer;
+    transition: background-color 0.3s ease;
     
   }
-  
+
+  .button:hover {
+    background-color: rgb(105, 133, 194);
+}
+
   
   .tabla-wrapper {
   width: 500px;

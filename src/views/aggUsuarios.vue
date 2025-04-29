@@ -3,7 +3,7 @@
         <vue-draggable-resizable :w="750" :h="390" :x="window.innerWidth / 2 - 450" :y="window.innerHeight / 2 - 280" :resizable="false" class="custom-draggable">
         <div class="internal-frame">
             <div class="header">Usuarios
-                <button class="close-btn transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white" @click="$emit('cerrar')">X</button>
+                <button class="close-btn" @click="$emit('cerrar')">X</button>
             </div>
             <div class="content">
                 <div class="main-grid">
@@ -36,9 +36,9 @@
             </div>
 
             <div class="button-group">
-                <button @click="aggUsuario" class="transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white" >Guardar</button>
-                <button @click="delUsuario" class="transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white">Eliminar</button>
-                <button @click="limpiarCampos" class="transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white">Limpiar</button>
+                <button @click="aggUsuario" class="button" >Guardar</button>
+                <button @click="delUsuario" class="button">Eliminar</button>
+                <button @click="limpiarCampos" class="button">Limpiar</button>
             </div>
 
 
@@ -246,7 +246,7 @@ input[type=number]::-webkit-outer-spin-button {
 .header {
     background: rgb(247, 219, 75);
     color: white;
-    padding: 10px 27px;
+    padding: 5px 20px;
     font-weight: bold;
     border-top-left-radius: 15px;
     border-top-right-radius: 15px;
@@ -255,11 +255,13 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 .close-btn {
-    width: 30px;
-    height: 25px;
+    padding: 0 !important;
+    width: 21px;
+    height: 21px;
     position: absolute;
-    right: 5px;
-    top: 5px;
+    right: 2px;
+    top: 2px;
+    bottom: 2px;
     background: red;
     color: white;
     border: none;
@@ -270,10 +272,15 @@ input[type=number]::-webkit-outer-spin-button {
     align-items: center;
     margin-top: 4px;
     margin-right: 4px;
+    font-size: 13px;
+}
+
+.close-btn:hover{
+    background-color: rgb(209, 0, 0);
 }
 
 .content {
-    padding: 15px;
+    padding: 20px;
     flex-grow: 1;
 }
 
@@ -284,9 +291,7 @@ input[type=number]::-webkit-outer-spin-button {
 
 .left-panel {
     flex: 1.5;
-    padding: 10px;
-    padding-right: 5px;
-    padding-top: 10px;
+    padding-right: 10px;
     
 }
 
@@ -294,7 +299,7 @@ input[type=number]::-webkit-outer-spin-button {
     flex: 1.5;
     display: flex;
     flex-direction: column;
-    padding: 10px;
+
     padding-left: 18px;
 
 }
@@ -391,6 +396,11 @@ button {
     color: white;
     border-radius: 5px;
     cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.button:hover {
+    background-color: rgb(105, 133, 194);
 }
 
 .agregar-producto {
@@ -403,7 +413,5 @@ select.input-tabla {
   color: #000000;
   cursor: pointer;
 }
-
-
 
 </style>

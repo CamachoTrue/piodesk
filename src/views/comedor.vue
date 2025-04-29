@@ -78,7 +78,7 @@
                     <div class="button-section">
                         <div class="button-grid">
                             <button class="button">Abrir cuenta</button>
-                            <button class="button">Cancelar cuenta</button>
+                            <button class="button">Borrar cuenta</button>
                             <button class="button">Descuento</button>
                             <button class="button">Captura</button>
                             <button class="button">Renombrar cuenta</button>
@@ -213,7 +213,7 @@ input[type=number]::-webkit-inner-spin-button,
 .header {
     background: rgb(247, 219, 75);
     color: white;
-    padding: 5px 15px;
+    padding: 5px 20px;
     font-weight: bold;
     border-top-left-radius: 15px;
     border-top-right-radius: 15px;
@@ -221,10 +221,10 @@ input[type=number]::-webkit-inner-spin-button,
     text-align: left;
 }
 .close-btn {
-    width: 23px;
-    height: 23px;
+    width: 21px;
+    height: 21px;
     position: absolute;
-    right: 5px;
+    right: 2px;
     top: 2px;
     bottom: 2px;
     background: red;
@@ -237,6 +237,11 @@ input[type=number]::-webkit-inner-spin-button,
     align-items: center;
     margin-top: 4px;
     margin-right: 4px;
+    font-size: 13px;
+}
+
+.close-btn:hover{
+    background-color: rgb(209, 0, 0);
 }
 .content {
     flex-grow: 1;
@@ -286,7 +291,7 @@ input[type=number]::-webkit-inner-spin-button,
     height: 135px;
 }
 .form-section {
-    width: 400px;
+    width: 430px;
     height: 123px;
 
 }
@@ -295,6 +300,7 @@ input[type=number]::-webkit-inner-spin-button,
     display: flex;
     justify-content: flex-end;
 
+
 }
 .button-grid {
     display: grid;
@@ -302,7 +308,7 @@ input[type=number]::-webkit-inner-spin-button,
     gap: 5px;
     padding-top: 15px;
     padding-bottom: 25px;
-    
+
 }
 .bordered-box {
     border: 1px solid #b4b4b4;
@@ -339,7 +345,7 @@ button {
     color: white;
     border-radius: 5px;
     cursor: pointer;
-    width: 145px;
+    width: 135px;
     height: 45px;
     font-size: 15px;
     transition: background-color 0.3s ease;
@@ -390,11 +396,11 @@ button {
 }
 
 .apertura-input {
-    width: 80px !important;
+    width: 108px !important;
 }
 
 .cierre-input {
-    width: 80px !important;
+    width: 108px !important;
     margin-left: 20px;
 }
 

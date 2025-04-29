@@ -1,8 +1,8 @@
 <template>
   <div v-if="mostrar">
     <vue-draggable-resizable
-      :w="833"
-      :h="500"
+      :w="825"
+      :h="475"
       :x="window.innerWidth / 2 - 500"
       :y="window.innerHeight / 2 - 320"
       :resizable="false"
@@ -12,7 +12,7 @@
         <div class="header">
           Productos
           <button
-            class="close-btn transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white"
+            class="close-btn"
             @click="$emit('cerrar')"
           >X
             
@@ -51,17 +51,17 @@
 
               <div class="button-group right-buttons">
                 <button
-                  @click="aggProducto()" class="transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white">
+                  @click="aggProducto()" class="button">
                   Guardar
                 </button>
                 <button
-                  @click="" class="transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white">
+                  @click="" class="button">
                   Eliminar
                 </button>
                 <div class="composite-wrapper">
                   <button
                     @click="abrirProductoComp()"
-                    class="productoComp-btn transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white" :style="{ backgroundColor: color }">
+                    class="productoComp-btn" :style="{ backgroundColor: color }">
                     Producto compuesto
                   </button>
                   <input v-model="isChecked" type="checkbox" class="producto-checkbox" />
@@ -116,8 +116,8 @@
   import "vue-draggable-resizable/style.css";
   import productoComp from "./productoComp.vue";
   import { supabase } from "../supabase/supabase";
-import { errorMessages } from "@vue/compiler-sfc";
-import { comma } from "postcss/lib/list";
+  import { errorMessages } from "@vue/compiler-sfc";
+  import { comma } from "postcss/lib/list";
   
   const grupoOSub = ref(false);
   const props = defineProps(["mostrar"]); 
@@ -253,6 +253,7 @@ import { comma } from "postcss/lib/list";
 
   watch(isChecked, (newValue) => {
     color.value = newValue ? 'rgb(130, 165, 243)' : 'rgb(126, 126, 126)';
+
   });
 
   onMounted( () => {
@@ -290,20 +291,22 @@ import { comma } from "postcss/lib/list";
   .header {
     background: rgb(247, 219, 75);
     color: white;
-    padding: 10px 27px;
+    padding: 5px 20px;
     font-weight: bold;
     border-top-left-radius: 15px;
     border-top-right-radius: 15px;
     position: relative;
     text-align: left;
-  }
-  
-  .close-btn {
-    width: 25px;
-    height: 25px;
+}
+
+.close-btn {
+    padding: 0 !important;
+    width: 21px;
+    height: 21px;
     position: absolute;
-    right: 5px;
-    top: 5px;
+    right: 2px;
+    top: 2px;
+    bottom: 2px;
     background: red;
     color: white;
     border: none;
@@ -314,10 +317,15 @@ import { comma } from "postcss/lib/list";
     align-items: center;
     margin-top: 4px;
     margin-right: 4px;
-  }
+    font-size: 13px;
+}
+
+.close-btn:hover{
+    background-color: rgb(209, 0, 0);
+}
   
   .content {
-    padding: 15px;
+    padding: 20px;
     flex-grow: 1;
   }
   
@@ -328,15 +336,15 @@ import { comma } from "postcss/lib/list";
   
   .left-panel {
     flex: 2;
-    padding: 10px;
-    padding-right: 20px;
+    padding-right: 27px;
   }
   
   .right-panel {
     flex: 1;
     display: flex;
     flex-direction: column;
-    padding: 10px;
+    padding-top: 15px;
+
   }
   
   .right-buttons {
@@ -448,13 +456,18 @@ import { comma } from "postcss/lib/list";
     color: white;
     border-radius: 5px;
     cursor: pointer;
-  }
-  
-  .productoComp-btn {
-    /*background-color: rgb(126, 126, 126);*/
-    width: 200px;
+    transition: background-color 0.3s ease;
   }
 
+  .button:hover {
+    background-color: rgb(105, 133, 194);
+}
+
+  
+  .productoComp-btn {
+    background-color: rgb(126, 126, 126);
+    width: 200px;
+  }
 
   .agregar-producto {
     font-size: 16px;

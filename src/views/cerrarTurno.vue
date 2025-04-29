@@ -7,10 +7,10 @@
     <span>¡Turno cerrado correctamente!</span>
     </div>
 
-<vue-draggable-resizable :w="300" :h="200" :x="window.innerWidth / 2 - 270" :y="window.innerHeight / 2 - 230" :resizable="false" class="custom-draggable">
+<vue-draggable-resizable :w="271" :h="193" :x="window.innerWidth / 2 - 270" :y="window.innerHeight / 2 - 230" :resizable="false" class="custom-draggable">
 <div class="internal-frame">
     <div class="header">Cerrar turno
-        <button class="close-btn transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white" @click="$emit('cerrar')">X</button>
+        <button class="close-btn" @click="$emit('cerrar')">X</button>
     </div>
         <div class="content">
         <p>Ingresa los importes declarados para el cierre de caja</p>
@@ -40,8 +40,8 @@
         </table>
         
         <div class="button-group">
-            <button @click="confirmar" class="transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white">Confirmar</button>
-            <button @click="$emit('cerrar')" class="cancel-btn transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white">Cancelar</button>
+            <button @click="confirmar" class="button">Confirmar</button>
+            <button @click="$emit('cerrar')" class="cancel-btn">Cancelar</button>
         </div>
         </div>
     </div>
@@ -129,7 +129,7 @@ input[type=number]::-webkit-outer-spin-button {
   }
 
 .tabla-cierre {
-    width: 96%;
+    width: 500px;
     border-collapse: collapse;
     margin-top: 20px;
     
@@ -208,22 +208,22 @@ input[type=number]::-webkit-outer-spin-button {
 .header {
     background: rgb(247, 219, 75);
     color: white;
-    padding: 10px;
-    text-align: center;
+    padding: 5px 20px;
     font-weight: bold;
     border-top-left-radius: 15px;
     border-top-right-radius: 15px;
     position: relative;
     text-align: left;
-    padding-left: 27px;
 }
 
 .close-btn {
-    width: 25px;
-    height: 25px;
+    padding: 0 !important;
+    width: 21px;
+    height: 21px;
     position: absolute;
-    right: 5px;
-    top: 5px;
+    right: 2px;
+    top: 2px;
+    bottom: 2px;
     background: red;
     color: white;
     border: none;
@@ -234,21 +234,26 @@ input[type=number]::-webkit-outer-spin-button {
     align-items: center;
     margin-top: 4px;
     margin-right: 4px;
+    font-size: 13px;
+}
+
+.close-btn:hover{
+    background-color: rgb(209, 0, 0);
 }
 
 .content {
-    padding: 15px;
+    padding: 20px;
     text-align: center;
     text-align: left;
-    padding-left: 35px;
+    padding-left: 20px;
 }
 
 .button-group {
     display: flex;
     justify-content: space-between;
-    margin-top: 26px;
+    margin-top: 25px;
     margin-left: 110px;
-    margin-right: 130px;
+    margin-right: 110px;
 }
 
 button {
@@ -259,9 +264,18 @@ button {
     color: white;
     border-radius: 5px;
     cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.button:hover {
+    background-color: rgb(105, 133, 194);
 }
 
 .cancel-btn {
     background-color: rgb(126, 126, 126);
+}
+
+.cancel-btn:hover {
+    background-color: rgb(92, 92, 92);
 }
 </style>
