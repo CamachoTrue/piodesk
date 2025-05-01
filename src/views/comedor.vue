@@ -77,12 +77,12 @@
 
                     <div class="button-section">
                         <div class="button-grid">
-                            <button class="button">Abrir cuenta</button>
-                            <button class="button">Borrar cuenta</button>
-                            <button class="button">Descuento</button>
-                            <button class="button">Captura</button>
-                            <button class="button">Renombrar</button>
-                            <button class="button">Imprimir</button>
+                            <button @click="abrirAbrir()" class="button">Abrir cuenta</button>
+                            <button @click="abrirBorrar()" class="button">Borrar cuenta</button>
+                            <button @click="abrirDescuento()" class="button">Descuento</button>
+                            <button @click="abrirCaptura()" class="button">Captura</button>
+                            <button @click="abrirRenombrar()" class="button">Renombrar</button>
+                            <button @click="abrirImprimir()" class="button">Imprimir</button>
                         </div>
                     </div>
                 </div>
@@ -119,9 +119,9 @@
 
                 <div class="bottom-controls">
                     <div class="left-buttons">
-                    <button class="button">Reabrir cuenta</button>
-                    <button class="button">Cancelar cuenta</button>
-                    <button class="button">Pagar cuenta</button>
+                    <button @click="abrirReabrir()"class="button">Reabrir cuenta</button>
+                    <button @click="abrirCancelar()"class="button">Cancelar cuenta</button>
+                    <button @click="abrirPagar()"class="button">Pagar cuenta</button>
                     </div>
                 <div class="right-totals-wrapper">
                     <div class="bordered-box" style="min-width: 395px;">
@@ -155,6 +155,16 @@
             </div>
         </vue-draggable-resizable>
     </div>
+
+    <abrir :mostrar="mostrarAbrir" @cerrar="mostrarAbrir = false" />
+    <borrar :mostrar="mostrarBorrar" @cerrar="mostrarBorrar = false" />
+    <descuento :mostrar="mostrarDescuento" @cerrar="mostrarDescuento = false" />
+    <captura :mostrar="mostrarCaptura" @cerrar="mostrarCaptura = false" />
+    <renombrar :mostrar="mostrarRenombrar" @cerrar="mostrarRenombrar = false" />
+    <imprimir :mostrar="mostrarImprimir" @cerrar="mostrarImprimir = false" />
+    <reabrir :mostrar="mostrarReabrir" @cerrar="mostrarReabrir = false" />
+    <cancelar :mostrar="mostrarCancelar" @cerrar="mostrarCancelar = false" />
+    <pagar :mostrar="mostrarPagar" @cerrar="mostrarPagar = false" />
 </template>
 
 <script setup>
@@ -162,11 +172,76 @@ import { ref } from "vue";
 import { defineEmits, defineProps } from "vue";
 import VueDraggableResizable from "vue-draggable-resizable";
 import "vue-draggable-resizable/style.css";
+import abrir from "./Comedor/abrir.vue";
+import borrar from "./Comedor/borrar.vue";
+import descuento from "./Comedor/descuento.vue";
+import captura from "./Comedor/captura.vue";
+import renombrar from "./Comedor/renombrar.vue";
+import imprimir from "./Comedor/imprimir.vue";
+import reabrir from "./Comedor/reabrir.vue";
+import cancelar from "./Comedor/cancelar.vue";
+import pagar from "./Comedor/pagar.vue";
 
 const checkimpreso = ref(false);
 const props = defineProps(["mostrar"]);
 const emit = defineEmits(["cerrar"]);
 const window = ref(globalThis.window);
+const mostrarAbrir = ref(false);
+const mostrarBorrar = ref(false);
+const mostrarDescuento = ref(false);
+const mostrarCaptura = ref(false);
+const mostrarRenombrar = ref(false);
+const mostrarImprimir = ref(false);
+const mostrarReabrir = ref(false);
+const mostrarCancelar = ref(false);
+const mostrarPagar = ref(false);
+
+
+//Abrir cuenta
+const abrirAbrir = () => {
+    mostrarAbrir.value = true;
+};
+
+//borrar cuenta
+const abrirBorrar = () => {
+    mostrarBorrar.value = true;
+};
+
+//descuento
+const abrirDescuento = () => {
+    mostrarDescuento.value = true;
+};
+
+//captura
+const abrirCaptura = () => {
+    mostrarCaptura.value = true;
+};
+
+//renombrar
+const abrirRenombrar = () => {
+    mostrarRenombrar.value = true;
+};
+
+//imprimir
+const abrirImprimir = () => {
+    mostrarImprimir.value = true;
+};
+
+//reabrir
+const abrirReabrir = () => {
+    mostrarReabrir.value = true;
+};
+
+//cancelar
+const abrirCancelar = () => {
+    mostrarCancelar.value = true;
+};
+
+//pagar
+const abrirPagar = () => {
+    mostrarPagar.value = true;
+};
+
 </script>
 
 <style scoped>
@@ -345,8 +420,8 @@ button {
     color: white;
     border-radius: 5px;
     cursor: pointer;
-    width: 125px;
-    height: 45px;
+    width: 126px;
+    height: 35px;
     font-size: 15px;
     transition: background-color 0.3s ease;
 }

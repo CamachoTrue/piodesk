@@ -9,7 +9,7 @@
 
     <vue-draggable-resizable 
       :w="280" 
-      :h="190" 
+      :h="195" 
       :x="window.innerWidth / 2 - 150" 
       :y="window.innerHeight / 2 - 170" 
       :resizable="false"
@@ -204,4 +204,11 @@ button {
 .cancel-btn:hover {
     background-color: rgb(92, 92, 92);
 }
+
+input {
+    padding-left: 10px;
+    padding: 5px;
+    border: 1px solid #b4b4b4;
+    border-radius: 4px;
+    }
 </style>
