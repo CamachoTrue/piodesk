@@ -389,7 +389,7 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 button {
-    width: 125px;
+    width: 133px;
     padding: 5px 10px;
     border: none;
     background-color: rgb(130, 165, 243);

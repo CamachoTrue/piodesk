@@ -18,7 +18,7 @@
             <h2 class="section-title">Grupos de modificadores</h2>
   
             <div class="button-group">
-              <button  @click="abrirAggGrupo()" class="button">Agregar</button>
+              
               <button  @click="abrirEditarGrupo()" class="button">Editar</button>
             </div>
   
@@ -45,7 +45,7 @@
             <h2 class="section-title">Modificadores de productos</h2>
   
             <div class="button-group">
-              <button @click="abrirAggModProd()" class="button">Agregar</button>
+            
               <button @click="abrirEditarModProd()" class="button">Editar</button>
             </div>
   
@@ -74,9 +74,9 @@
         </div>
       </vue-draggable-resizable>
     </div>
-    <aggGrupo :mostrar="mostrarAggGrupo" @cerrar="mostrarAggGrupo = false" />
+    
     <editarGrupo :mostrar="mostrarEditarGrupo" @cerrar="mostrarEditarGrupo = false" />
-    <aggModProd :mostrar="mostrarAggModProd" @cerrar="mostrarAggModProd = false" />
+    
     <editarModProd :mostrar="mostrarEditarModProd" @cerrar="mostrarEditarModProd = false" />
   </template>
   
@@ -84,9 +84,7 @@
   import { defineEmits, defineProps, ref } from "vue";
   import VueDraggableResizable from "vue-draggable-resizable";
   import "vue-draggable-resizable/style.css";
-  import aggGrupo from "./ProductosCompuestos/aggGrupo.vue";
   import editarGrupo from "./ProductosCompuestos/editarGrupo.vue";
-  import aggModProd from "./ProductosCompuestos/aggModProd.vue";
   import editarModProd from "./ProductosCompuestos/editarModProd.vue";
 
 

@@ -1,70 +1,63 @@
 <template>
     <div v-if="mostrar">
-        <vue-draggable-resizable :w="750" :h="390" :x="window.innerWidth / 2 - 450" :y="window.innerHeight / 2 - 280" :resizable="false" class="custom-draggable">
+        <vue-draggable-resizable :w="750" :h="320" :x="window.innerWidth / 2 - 450" :y="window.innerHeight / 2 - 280" :resizable="false" class="custom-draggable">
         <div class="internal-frame">
             <div class="header">Editar grupos
-                <button class="close-btn transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white" @click="$emit('cerrar')">X</button>
+                <button class="close-btn" @click="$emit('cerrar')">X</button>
             </div>
             <div class="content">
                 <div class="main-grid">
                 <!-- Tabla -->
-                    <div class="left-panel">
-                        <div class="tabla-wrapper">
-                        <table class="tablaUsuarios">
+                <div class="left-panel">
+                <div class="tabla-wrapper">
+                    <table class="tablaUsuarios">
                         <thead>
-                        <tr>
-                        <th>Clave</th>
-                        <th>Usuario</th>
-                        <th>Tipo</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="usuario in usuarios" :key="usuarios.idusuario" @dblclick="seleccionarUsuario(usuario)">
-                        <td>{{ usuario.idusuario }}</td>
-                        <td>{{ usuario.userName }}</td>
-                        <td>{{ usuario.rol }}</td>
-                        </tr>
-                    </tbody>
-                </table>
+                            <tr>
+                                <th>Clave</th>
+                                <th>Descripción</th>
+                                <th>Modif. maximo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>001</td><td>Usuario Admin</td><td>5</td></tr>
+                            <tr><td>002</td><td>Editor Principal</td><td>4</td></tr>
+                            <tr><td>003</td><td>Supervisor</td><td>3</td></tr>
+                            <tr><td>004</td><td>Operador</td><td>2</td></tr>
+                            <tr><td>005</td><td>Usuario Invitado</td><td>1</td></tr>
+                            <tr><td>006</td><td>Soporte Técnico</td><td>3</td></tr>
+                            <tr><td>007</td><td>Gestor de Datos</td><td>4</td></tr>
+                            <tr><td>008</td><td>Analista</td><td>2</td></tr>
+                            <tr><td>009</td><td>Auditor</td><td>3</td></tr>
+                            <tr><td>010</td><td>Administrador Global</td><td>5</td></tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
   
             <!-- Panel derecho -->
             <div class="right-panel">
             <div class="agregar-producto">
-                <span>Agregar nuevo usuario:</span>
             </div>
   
             <div class="button-group">
-                <button @click="aggUsuario" class="transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white" >Guardar</button>
-                <button @click="delUsuario" class="transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white">Eliminar</button>
-                <button @click="limpiarCampos" class="transition-transform duration-200 ease-in-out transform hover:scale-105 active:bg-white">Limpiar</button>
+                <button @click="" class="button" >Guardar</button>
+                <button @click="" class="button">Eliminar</button>
+                <button @click="" class="button">Limpiar</button>
             </div>
   
   
             <div class="input-frame">
                 <div class="input-row">
                     <label>Clave</label>
-                    <input v-model="clave" type="number" class="input-tabla input-chico" />
+                    <input v-model="clave" type="number" class="input-tabla input-mediano" />
                 </div>
                 <div class="input-row">
-                    <label>Nombre</label>
-                    <input v-model="nombre" type="text" class="input-tabla" />
+                    <label>Descripción</label>
+                    <input v-model="descripcion" type="text" class="input-tabla" />
                 </div>
                 <div class="input-row">
-                    <label>Tipo</label>
-                    <select v-model="tipo" class="input-tabla input-mediano">
-                    <option value="Gerente">Gerente</option>
-                    <option value="Cajero">Cajero</option>
-                    </select>
-                </div>
-                <div class="input-row">
-                    <label>Contraseña</label>
-                    <input v-model="password" type="password" class="input-tabla" />
-                </div>
-                <div class="input-row">
-                    <label>Usuario</label>
-                    <input v-model="user" type="text" class="input-tabla input-mediano" />
+                    <label>Modificador maximo</label>
+                    <input v-model="modif" type="number" class="input-tabla input-mediano" />
                 </div>
                 </div>
             </div>
@@ -80,53 +73,15 @@
   import { defineEmits, defineProps, ref } from "vue";
   import VueDraggableResizable from "vue-draggable-resizable";
   import "vue-draggable-resizable/style.css";
-  import { userLogin, turno, obtenerTurno,idTurno } from "@/store/auth.js";
-  
+
+
   // Props y eventos
   const props = defineProps(["mostrar"]);
   const emit = defineEmits(["cerrar"]);
   
   // Variables
-  const montoInicial = ref(null);
-  const alertaVisible = ref(false);
   const window = ref(globalThis.window);
   
-  // Fecha y Hora en formato correcto
-  const now = new Date();
-  const fecha = ref(now.toISOString().split("T")[0]);
-  const hora = ref(now.toISOString().split("T")[1].split(".")[0]);
-  
-  const confirmar = async () => {
-    await obtenerTurno();
-  
-    if (turno.value) {
-      console.log("Ya hay un turno abierto");
-      return;
-    }
-    if (montoInicial.value === null){
-      console.log("Debes de ingresar fondo inicial");
-      return;
-    }
-    const { data, error } = await supabase.from("turnos").insert([
-      {
-        idusuario: userLogin.value,
-        fecha: fecha.value,
-        horaapertura: hora.value,
-        montoinicial: montoInicial.value,
-      },
-    ]);
-  
-    if (error) {
-      console.error("Error:", error.message);
-      return;
-    }
-  
-    await obtenerTurno();
-    turno.value = true;
-  
-    emit("turnoAbierto");
-    emit("cerrar");
-  };
   </script>
   
   <style scoped>
@@ -158,36 +113,43 @@
   }
   
   .header {
-      background: rgb(247, 219, 75);
-      color: white;
-      padding: 10px 27px;
-      font-weight: bold;
-      border-top-left-radius: 15px;
-      border-top-right-radius: 15px;
-      position: relative;
-      text-align: left;
-  }
-  
-  .close-btn {
-      width: 30px;
-      height: 25px;
-      position: absolute;
-      right: 5px;
-      top: 5px;
-      background: red;
-      color: white;
-      border: none;
-      cursor: pointer;
-      border-radius: 5px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin-top: 4px;
-      margin-right: 4px;
-  }
+    background: rgb(247, 219, 75);
+    color: white;
+    padding: 5px 20px;
+    font-weight: bold;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    position: relative;
+    text-align: left;
+}
+
+.close-btn {
+    padding: 0 !important;
+    width: 21px;
+    height: 21px;
+    position: absolute;
+    right: 2px;
+    top: 2px;
+    bottom: 2px;
+    background: red;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 4px;
+    margin-right: 4px;
+    font-size: 13px;
+}
+
+.close-btn:hover{
+    background-color: rgb(209, 0, 0);
+}
   
   .content {
-      padding: 15px;
+      padding: 20px;
       flex-grow: 1;
   }
   
@@ -196,20 +158,17 @@
       height: 100%;
   }
   
-  .left-panel {
-      flex: 1.5;
-      padding: 10px;
-      padding-right: 5px;
-      padding-top: 10px;
-      
-  }
-  
+.left-panel {
+    flex: 1.5;
+    padding-right: 10px;
+}
+
   .right-panel {
       flex: 1.5;
       display: flex;
       flex-direction: column;
-      padding: 10px;
       padding-left: 18px;
+      padding-top: 15px;
   
   }
   
@@ -259,10 +218,10 @@
   }
   
   .tabla-wrapper {
-      max-height: 310px;
+      max-height: 270px;
       overflow: auto;
       border: 1px solid #ccc;
-      display: inline-block; /* Esto hace que el div se ajuste al ancho del contenido interno */
+      display: inline-block;
   }
   
   .tablaUsuarios {
@@ -298,14 +257,19 @@
   }
   
   button {
-      width: 125px;
+      width: 133px;
       padding: 5px 10px;
       border: none;
       background-color: rgb(130, 165, 243);
       color: white;
       border-radius: 5px;
       cursor: pointer;
+      transition: background-color 0.3s ease;
   }
+
+  .button:hover {
+    background-color: rgb(105, 133, 194);
+}
   
   .agregar-producto {
       font-size: 16px;

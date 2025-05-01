@@ -81,7 +81,7 @@
                             <button class="button">Borrar cuenta</button>
                             <button class="button">Descuento</button>
                             <button class="button">Captura</button>
-                            <button class="button">Renombrar cuenta</button>
+                            <button class="button">Renombrar</button>
                             <button class="button">Imprimir</button>
                         </div>
                     </div>
@@ -291,7 +291,7 @@ input[type=number]::-webkit-inner-spin-button,
     height: 135px;
 }
 .form-section {
-    width: 430px;
+    width: 458px;
     height: 123px;
 
 }
@@ -345,7 +345,7 @@ button {
     color: white;
     border-radius: 5px;
     cursor: pointer;
-    width: 135px;
+    width: 125px;
     height: 45px;
     font-size: 15px;
     transition: background-color 0.3s ease;
@@ -396,11 +396,11 @@ button {
 }
 
 .apertura-input {
-    width: 108px !important;
+    width: 135px !important;
 }
 
 .cierre-input {
-    width: 108px !important;
+    width: 135px !important;
     margin-left: 20px;
 }
 
