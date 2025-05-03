@@ -73,12 +73,12 @@
                 <div class="input-row">
                   <label>Grupo</label>
                   <input v-model="grupo" type="number" class="input-tabla input-chico grupo" />
-                  <button class="icon-btn" @click="accionGrupo"><img src="/admin.png  " class="icon-img"><span></span></button>
+                  <button @click="abrirAggGrupo()" class="icon-btn" ><img src="/admin.png  " class="icon-img"><span></span></button>
                 </div>
                 <div class="input-row">
                   <label>Subgrupo</label>
                   <input v-model="subgrupo" type="number" class="input-tabla input-chico subgrupo" />
-                  <button class="icon-btn" @click="accionGrupo"><img src="/admin.png" class="icon-img"><span></span></button>
+                  <button @click="abrirAggSubgrupo()" class="icon-btn" ><img src="/admin.png" class="icon-img"><span></span></button>
                 </div>
                 <div class="input-row">
                   <label>Clave</label>
@@ -107,6 +107,8 @@
       </div>
     </vue-draggable-resizable>
     <productoComp :mostrar="mostrarProductoComp" @cerrar="mostrarProductoComp = false" />
+    <aggGrupo :mostrar="mostrarAggGrupo" @cerrar="mostrarAggGrupo = false" />
+    <aggSubgrupo :mostrar="mostrarAggSubgrupo" @cerrar="mostrarAggSubgrupo = false" />
   </div>
 </template>
   
@@ -118,11 +120,15 @@
   import { supabase } from "../supabase/supabase";
   import { errorMessages } from "@vue/compiler-sfc";
   import { comma } from "postcss/lib/list";
+  import aggGrupo from "./ProductosCompuestos/aggGrupo.vue";
+  import aggSubgrupo from "./ProductosCompuestos/aggSubgrupo.vue";
   
   const grupoOSub = ref(false);
-  const props = defineProps(["mostrar"]); 
+  const props = defineProps(["mostrar"]);
   const emit = defineEmits(["cerrar"]);
-  const mostrarProductoComp = ref(false); 
+  const mostrarProductoComp = ref(false);
+  const mostrarAggGrupo = ref(false);
+  const mostrarAggSubgrupo = ref(false);
   const isChecked = ref(false);
   const grupo = ref(null);
   const subgrupo = ref(null);
@@ -147,6 +153,17 @@
       mostrarProductoComp.value = true;
     }
   };
+
+  // Abrir admin grupos
+  const abrirAggGrupo = () => {
+      mostrarAggGrupo.value = true;
+  };
+
+    // Abrir admin subgrupo
+    const abrirAggSubgrupo = () => {
+      mostrarAggSubgrupo.value = true;
+  };
+
   
   // Seleccionar producto al hacer doble clic
   const seleccionarProducto = (producto) => {
