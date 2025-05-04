@@ -98,8 +98,8 @@ const window = ref(globalThis.window);
 
 const cargarUsuarios = async () => {
     const { data, error } = await supabase
-    .from('usuarios')
-    .select()
+        .from('usuarios')
+        .select();
 
     if (error) {
         errorMsg.value = ('Error al cargar usuarios: ' + error.message);
@@ -134,11 +134,11 @@ const delUsuario = async () => {
 
         const existe = data.find(u => u.idusuario === clave.value);
         if(existe){
-            const {datadel,errordel} = await supabase
+            const {data: datadel,error: errordel} = await supabase
                 .from("usuarios")
                 .delete()
                 .eq("idusuario",clave.value);
-            if(error){
+            if(errordel){
                 console.error("Erroal eliminar el usuario", errordel); //Cambiar por alert
             }else{
                 console.log("Usuario eliminado correctamente");

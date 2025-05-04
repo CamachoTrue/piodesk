@@ -14,9 +14,9 @@
                 </div>
 
                 <div class="button-group">
-                <button @click="" class="button">Guardar</button>
-                <button @click="" class="button">Eliminar</button>
-                <button @click="" class="button">Limpiar</button>
+                <button @click="aggGrupo()" class="button">Guardar</button>
+                <button @click="delGrupo()" class="button">Eliminar</button>
+                <button @click="limpiarCampos()" class="button">Limpiar</button>
                 </div>
 
                 <div class="input-frame">
@@ -41,46 +41,10 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                    <td>001</td>
-                    <td>Usuario A</td>
-                    </tr>
-                    <tr>
-                    <td>002</td>
-                    <td>Usuario B</td>
-                    </tr>
-                    <tr>
-                    <td>003</td>
-                    <td>Usuario C</td>
-                    </tr>
-                        <tr>
-                    <td>004</td>
-                    <td>Usuario D</td>
-                    </tr>
-                        <tr>
-                    <td>005</td>
-                    <td>Usuario E</td>
-                    </tr>
-                    <tr>
-                    <td>006</td>
-                    <td>Usuario F</td>
-                    </tr>
-                    <tr>
-                    <td>007</td>
-                    <td>Usuario G</td>
-                    </tr>
-                    <tr>
-                    <td>008</td>
-                    <td>Usuario H</td>
-                    </tr>
-                    <tr>
-                    <td>009</td>
-                    <td>Usuario I</td>
-                    </tr>
-                    <tr>
-                    <td>010</td>
-                    <td>Usuario J</td>
-                    </tr>
+                    <tr v-for="grupo in grupos" :key="grupos.idgrupo" @dblclick="seleccionarGrupo(grupo)">
+                    <td>{{ grupo.idgrupo }}</td>
+                    <td>{{ grupo.nombre }}</td>
+                    </tr>                  
                 </tbody>
                 </table>
             </div>
@@ -91,18 +55,110 @@
     </template>
 
 <script setup>
-import { defineProps, defineEmits, ref, onMounted } from "vue";
+import { defineProps, defineEmits, ref, onMounted, onUnmounted } from "vue";
 import VueDraggableResizable from "vue-draggable-resizable";
 import "vue-draggable-resizable/style.css";
 import {supabase} from "@/supabase/supabase";
+import { getJSDocReadonlyTag } from "typescript";
 
 
 
 const props = defineProps(["mostrar"]);
 const emit = defineEmits(["cerrar"]);
 const window = ref(globalThis.window);
+const clave =ref(null);
+const nombre = ref(null);
+const grupos = ref([]);
 
+const limpiarCampos = () => {
+    clave.value = null;
+    nombre.value = null;
+};
 
+const cargarGrupos = async () => {
+    const {data: dataConsult, error: erroConsult } = await supabase
+        .from('grupos')
+        .select();
+    
+    if(erroConsult){
+        console.error("Error al consultar grupos");
+    }else{
+        grupos.value = dataConsult;
+    }
+};
+
+const aggGrupo = async () => {
+    const { data: datagrupos, error:errorGrupos } = await supabase
+        .from('grupos')
+        .select();
+
+    if(errorGrupos){
+        console.error("Error al obtener grupos: ",errorGrupos);
+    }
+
+    const existe = datagrupos.find(u => u.idgrupo === clave.value);
+    console.log();
+    
+
+    if(existe){
+        const { data: dataUP, error: errorUp } = await supabase
+            .from('grupos')
+            .update({
+                nombre: nombre.value
+            })
+            .eq('idgrupo',clave.value);
+
+        if(errorUp){
+            console.error("Error al actualizar grupo", errorUp);
+            return;
+        }else{
+            console.log("Grupo actualizdo correctamente");
+            await cargarGrupos();
+            
+        }
+    }else{
+        const { data: dataAgg,  error: errorAgg } = await supabase
+            .from('grupos')
+            .insert([{
+                nombre: nombre.value
+            }])
+            .select();
+
+        if(errorAgg){
+            console.error("Error al agregar grupo", errorAgg);
+            return;
+        }else{
+            console.log("Grupo agregado correctamente", dataAgg[0]);
+            await cargarGrupos();
+            clave.value = dataAgg[0].idgrupo;
+        }
+    }
+
+};
+
+const delGrupo = async () => {
+    const { data: dataDel, error: errorDel } = await supabase
+        .from('grupos')
+        .delete()
+        .eq('idgrupo', clave.value);
+    
+    if(errorDel){
+        console.error("Error al eliminar grupo", errorDel);
+    }else{
+        console.log("Grupo eliminado correctamnete");
+        await cargarGrupos();
+        limpiarCampos();
+    }
+};
+
+const seleccionarGrupo = (grupo) => {
+    clave.value = grupo.idgrupo;
+    nombre.value = grupo.nombre;
+};
+
+onMounted(() => {
+    cargarGrupos();
+})
 
 </script>
 
