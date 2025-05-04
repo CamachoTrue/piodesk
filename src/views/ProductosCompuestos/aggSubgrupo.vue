@@ -22,15 +22,16 @@
                 <div class="input-frame">
                 <div class="input-row">
                     <label>Clave</label>
-                    <input v-model="clave" type="number" class="input-tabla input-chico" />
+                    <input v-model="clave" type="number" class="input-tabla input-mediano" />
                 </div>
                 <div class="input-row">
                     <label>Descripción</label>
                     <input v-model="descrp" type="text" class="input-tabla" />
                 </div>
                 <div class="input-row">
-                    <label>Clave</label>
-                    <input v-model="grupo" type="number" class="input-tabla input-chico" />
+                    <label>Grupo</label>
+                    <select v-model="tipo" class="input-tabla input-mediano">
+                    </select>
                 </div>
                 </div>
             </div>
