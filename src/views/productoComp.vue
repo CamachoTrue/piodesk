@@ -19,6 +19,7 @@
   
             <div class="button-group">
               
+              <button  @click="abrirAsignarMod()" class="button">Asignar</button>
               <button  @click="abrirEditarGrupo()" class="button">Editar</button>
             </div>
   
@@ -78,6 +79,8 @@
     <editarGrupo :mostrar="mostrarEditarGrupo" @cerrar="mostrarEditarGrupo = false" />
     
     <editarModProd :mostrar="mostrarEditarModProd" @cerrar="mostrarEditarModProd = false" />
+
+    <asignarMod :mostrar="mostrarAsignarMod" @cerrar="mostrarAsignarMod = false" />
   </template>
   
   <script setup>
@@ -86,6 +89,7 @@
   import "vue-draggable-resizable/style.css";
   import editarGrupo from "./ProductosCompuestos/editarGrupoModificador.vue";
   import editarModProd from "./ProductosCompuestos/editarModProd.vue";
+  import asignarMod from "./ProductosCompuestos/asignarMod.vue";
 
 
   const props = defineProps(["mostrar"]);
@@ -95,6 +99,7 @@
   const mostrarEditarGrupo = ref(false);
   const mostrarAggModProd = ref(false);
   const mostrarEditarModProd = ref(false);
+  const mostrarAsignarMod = ref(false);
 
   // Abrir Agg grupos
 const abrirAggGrupo = () => {
@@ -114,6 +119,12 @@ const abrirAggGrupo = () => {
   // Abrir editar grupos
   const abrirEditarModProd = () => {
   mostrarEditarModProd.value = true;
+};
+
+
+  // Abrir asignar
+  const abrirAsignarMod = () => {
+  mostrarAsignarMod.value = true;
 };
 
 
