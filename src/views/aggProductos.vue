@@ -61,6 +61,8 @@
                 <div class="composite-wrapper">
                   <button
                     @click="abrirProductoComp()"
+                    @mouseenter="hover = true, cambiarColor()"
+                    @mouseleave="hover = false, cambiarColor()"
                     class="productoComp-btn" :style="{ backgroundColor: color }">
                     Producto compuesto
                   </button>
@@ -137,9 +139,11 @@
   const precio = ref(null);
   const preciosinimp = ref(null);
   const iva = ref(16);
+  const hover = ref(false);//Para cambio de color
 
   const productos = ref([]);
   const window = ref(globalThis.window);
+  
   
 
   watch(iva, (newValue) => {
@@ -197,17 +201,9 @@
   
   //Funcion para guardar producto
   const aggProducto = async () => {
-    const {data:prodext, errorprod} = await supabase
-      .from('productos')
-      .select();
-    if(errorprod){
-      console.error("Error al consultar productos",error);      
-    }
+    await consultarProductos;
 
-    const existe = prodext.find(u => u.idproducto === clave.value);
-
-    console.log("Productos existe",existe);
-    
+    const existe = productos.value.find(u => u.idproducto === clave.value);
 
     if (existe) {
       const { data:actualizar, error:erroractualizar } = await supabase
@@ -271,7 +267,17 @@
   watch(isChecked, (newValue) => {
     color.value = newValue ? 'rgb(130, 165, 243)' : 'rgb(126, 126, 126)';
 
-  });
+  }); 
+
+  const cambiarColor = () => {
+  if (isChecked.value && hover.value) {
+    color.value = 'rgb(105, 133, 194)'
+  } else if (isChecked.value) {
+    color.value = 'rgb(130, 165, 243)'
+  } else {
+    color.value = 'rgb(126, 126, 126)' // Color por defecto si nada está activo
+  }
+}
 
   onMounted( () => {
     consultarProductos();

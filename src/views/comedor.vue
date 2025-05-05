@@ -33,7 +33,7 @@
                     <tbody>
                     <tr v-for="i in 20" :key="i">
                         <td>Cuenta {{ i }}</td>
-                        <td><input type="checkbox" /></td>
+                        <td><input type="checkbox" disabled /></td>
                         <td> {{ i }}</td>
                     </tr>
                     </tbody>
@@ -69,7 +69,7 @@
                         </div>
                         <div class="input-row">
                         <label>Impreso:</label>
-                        <input v-model="checkimpreso" class="impreso-input" type="checkbox" readonly/>
+                        <input v-model="checkimpreso" class="impreso-input" type="checkbox" disabled/>
                         </div>
                     </div>
                     </div>
@@ -169,7 +169,7 @@
 
 <script setup>
 import { ref } from "vue";
-import { defineEmits, defineProps } from "vue";
+import { defineEmits, defineProps, onMounted } from "vue";
 import VueDraggableResizable from "vue-draggable-resizable";
 import "vue-draggable-resizable/style.css";
 import abrir from "./Comedor/abrir.vue";
@@ -196,6 +196,10 @@ const mostrarReabrir = ref(false);
 const mostrarCancelar = ref(false);
 const mostrarPagar = ref(false);
 
+
+onMounted(() => {
+    checkimpreso.value = true;
+})
 
 //Abrir cuenta
 const abrirAbrir = () => {

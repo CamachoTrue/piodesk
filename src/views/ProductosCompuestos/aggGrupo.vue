@@ -88,15 +88,9 @@ const cargarGrupos = async () => {
 };
 
 const aggGrupo = async () => {
-    const { data: datagrupos, error:errorGrupos } = await supabase
-        .from('grupos')
-        .select();
+    await cargarGrupos();
 
-    if(errorGrupos){
-        console.error("Error al obtener grupos: ",errorGrupos);
-    }
-
-    const existe = datagrupos.find(u => u.idgrupo === clave.value);
+    const existe = grupos.value.find(u => u.idgrupo === clave.value);
     console.log();
     
 
