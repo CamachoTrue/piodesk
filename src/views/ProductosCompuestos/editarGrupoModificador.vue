@@ -19,7 +19,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="grupoMod in gruposModificadores" :key="grupoMod.idgrupmod" >
+                            <tr v-for="grupoMod in gruposModificadores" :key="grupoMod.idgrupmod" @dblclick="obtenerGruposMod(grupoMod)">
                                 <td>{{ grupoMod.idgrupomod }}</td>
                                 <td>{{ grupoMod.nombre }}</td>
                                 <td>{{ grupoMod.modificadoresmax }}</td>
@@ -36,16 +36,16 @@
             </div>
   
             <div class="button-group">
-                <button @click="" class="button" >Guardar</button>
-                <button @click="" class="button">Eliminar</button>
-                <button @click="" class="button">Limpiar</button>
+                <button @click="aggGruposMod()" class="button" >Guardar</button>
+                <button @click="delGruposMod()" class="button">Eliminar</button>
+                <button @click="limpiarCampos()" class="button">Limpiar</button>
             </div>
   
   
             <div class="input-frame">
                 <div class="input-row">
                     <label>Clave</label>
-                    <input v-model="clave" type="number" class="input-tabla input-mediano" />
+                    <input v-model="clave" type="number" class="input-tabla input-mediano" readonly/>
                 </div>
                 <div class="input-row">
                     <label>Descripción</label>
@@ -53,7 +53,7 @@
                 </div>
                 <div class="input-row">
                     <label>Modificador maximo</label>
-                    <input v-model="modifmax" type="number" class="input-tabla input-mediano" />
+                    <input v-model="modifMax" type="number" class="input-tabla input-mediano" />
                 </div>
                 </div>
             </div>
@@ -96,8 +96,67 @@
     }
   };
 
+  const limpiarCampos = () =>{
+    clave.value = null;
+    descripcion.value = null;
+    modifMax.value = null;
+  };
+
+  const aggGruposMod = async () => {
+    await cargarGruposModif();
+
+    const existe = gruposModificadores.value.find(u => u.idgrupmod === clave.value);
+
+    if(existe){
+        const { error:errorUp } = await supabase
+            .from('grupomodificador')
+            .update({
+                nombre: descripcion.value,
+                modificadoresmax: modifMax.value
+            });
+    
+        if(errorAgg){
+            console.error("Error al actualizar grupo modificador", errorUp);
+        }else{
+            console.log("Grupo modificador actualizado correctamente");
+        }
+    }else{
+        const { data: dataAgg, error:errorAgg } = await supabase
+            .from('grupomodificador')
+            .insert([{
+                nombre: descripcion.value,
+                modificadoresmax: modifMax.value
+            }])
+            .select();
+
+        if(errorAgg){
+            console.error("Error al agregar grupo modificador", errorAgg);
+        }else{
+            console.log("Grupo modificador agregado correctamente");
+            await cargarGruposModif();
+            clave.value = dataAgg[0].idgrupomod;
+        }
+    }
+
+  };
+
+  const delGruposMod = async () => {
+    const { error: errorDel } = await supabase
+        .from('grupomodificador')
+        .delete()
+        .eq('idgrupomod', clave.value);
+
+    if(errorDel){
+        console.error("Error al eliminar grupo modificador", errorDel);
+    }else{
+        console.log("Grupo modificador eliminado correctamente");
+        await cargarGruposModif();
+        limpiarCampos();
+    }
+  };
+
   const obtenerGruposMod = (grupoMod) => {
-    clave.value = grupoMod.idgrupmod;
+    clave.value = grupoMod.idgrupomod;
     descripcion.value = grupoMod.nombre;
     modifMax.value = grupoMod.modificadoresmax;
   };

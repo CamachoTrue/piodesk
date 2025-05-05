@@ -60,7 +60,7 @@
                     <input v-model="precio" type="number" class="input-tabla input-mediano" />
                 </div>
                 <div class="input-row">
-                    <label>Tipo</label>
+                    <label>Grupo Modificador</label>
                     <select v-model="tipo" class="input-tabla input-mediano">
                     </select>
                 </div>

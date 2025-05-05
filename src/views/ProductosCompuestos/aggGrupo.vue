@@ -22,7 +22,7 @@
                 <div class="input-frame">
                 <div class="input-row">
                     <label>Clave</label>
-                    <input v-model="clave" type="number" class="input-tabla input-chico" />
+                    <input v-model="clave" type="number" class="input-tabla input-chico" readonly/>
                 </div>
                 <div class="input-row">
                     <label>Descripción</label>
