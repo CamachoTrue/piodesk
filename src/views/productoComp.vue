@@ -84,7 +84,7 @@
   import { defineEmits, defineProps, ref } from "vue";
   import VueDraggableResizable from "vue-draggable-resizable";
   import "vue-draggable-resizable/style.css";
-  import editarGrupo from "./ProductosCompuestos/editarGrupo.vue";
+  import editarGrupo from "./ProductosCompuestos/editarGrupoModificador.vue";
   import editarModProd from "./ProductosCompuestos/editarModProd.vue";
 
 

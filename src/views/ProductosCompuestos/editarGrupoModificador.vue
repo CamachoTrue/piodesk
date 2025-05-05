@@ -2,7 +2,7 @@
     <div v-if="mostrar">
         <vue-draggable-resizable :w="750" :h="320" :x="window.innerWidth / 2 - 450" :y="window.innerHeight / 2 - 280" :resizable="false" class="custom-draggable">
         <div class="internal-frame">
-            <div class="header">Editar grupos
+            <div class="header">Editar grupos modificadores
                 <button class="close-btn" @click="$emit('cerrar')">X</button>
             </div>
             <div class="content">
@@ -19,16 +19,12 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr><td>001</td><td>Usuario Admin</td><td>5</td></tr>
-                            <tr><td>002</td><td>Editor Principal</td><td>4</td></tr>
-                            <tr><td>003</td><td>Supervisor</td><td>3</td></tr>
-                            <tr><td>004</td><td>Operador</td><td>2</td></tr>
-                            <tr><td>005</td><td>Usuario Invitado</td><td>1</td></tr>
-                            <tr><td>006</td><td>Soporte Técnico</td><td>3</td></tr>
-                            <tr><td>007</td><td>Gestor de Datos</td><td>4</td></tr>
-                            <tr><td>008</td><td>Analista</td><td>2</td></tr>
-                            <tr><td>009</td><td>Auditor</td><td>3</td></tr>
-                            <tr><td>010</td><td>Administrador Global</td><td>5</td></tr>
+                            <tr v-for="grupoMod in gruposModificadores" :key="grupoMod.idgrupmod" >
+                                <td>{{ grupoMod.idgrupomod }}</td>
+                                <td>{{ grupoMod.nombre }}</td>
+                                <td>{{ grupoMod.modificadoresmax }}</td>
+                            </tr>
+                            
                         </tbody>
                     </table>
                 </div>
@@ -57,7 +53,7 @@
                 </div>
                 <div class="input-row">
                     <label>Modificador maximo</label>
-                    <input v-model="modif" type="number" class="input-tabla input-mediano" />
+                    <input v-model="modifmax" type="number" class="input-tabla input-mediano" />
                 </div>
                 </div>
             </div>
@@ -70,9 +66,10 @@
   
   <script setup>
   import { supabase } from "@/supabase/supabase";
-  import { defineEmits, defineProps, ref } from "vue";
+  import { defineEmits, defineProps, ref, onMounted } from "vue";
   import VueDraggableResizable from "vue-draggable-resizable";
   import "vue-draggable-resizable/style.css";
+  
 
 
   // Props y eventos
@@ -82,6 +79,34 @@
   // Variables
   const window = ref(globalThis.window);
   
+  const clave = ref(null);
+  const descripcion = ref(null);
+  const modifMax = ref(null);
+  const gruposModificadores = ref([]);
+
+  const cargarGruposModif = async () => {
+    const { data: dataGrupos, error: errorGrupos } = await supabase
+        .from('grupomodificador')
+        .select();
+    
+    if(errorGrupos){
+        console.error("Error al obtener Grupos Modificadores", errorGrupos);
+    }else{
+        gruposModificadores.value = dataGrupos;
+    }
+  };
+
+  const obtenerGruposMod = (grupoMod) => {
+    clave.value = grupoMod.idgrupmod;
+    descripcion.value = grupoMod.nombre;
+    modifMax.value = grupoMod.modificadoresmax;
+  };
+
+
+
+  onMounted(() => {
+    cargarGruposModif();
+  })
   </script>
   
   <style scoped>
