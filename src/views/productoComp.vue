@@ -90,7 +90,7 @@
   import editarGrupo from "./ProductosCompuestos/editarGrupoModificador.vue";
   import editarModProd from "./ProductosCompuestos/editarModProd.vue";
   import asignarMod from "./ProductosCompuestos/asignarMod.vue";
-
+  import { cargarGruposModif } from "../store/auth.js";
 
   const props = defineProps(["mostrar"]);
   const emit = defineEmits(["cerrar"]);
@@ -123,8 +123,9 @@ const abrirAggGrupo = () => {
 
 
   // Abrir asignar
-  const abrirAsignarMod = () => {
+  const abrirAsignarMod = async () => {
   mostrarAsignarMod.value = true;
+  await cargarGruposModif();
 };
 
 
