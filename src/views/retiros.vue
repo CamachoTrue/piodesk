@@ -9,27 +9,27 @@
         class="custom-draggable">
         <div class="internal-frame">
           <div class="header"> Retiro y depósito
-            <button class="close-btn" @click="$emit('cerrar')">X</button>
+            <button class="close-btn" @click="$emit('cerrar'); limpiarCampos()">X</button>
           </div>
           <div class="content">
             <div class="input-row">
               <label>Movimiento:</label>
-              <select class="input-control">
+              <select v-model="movimiento" class="input-control">
                 <option value="" disabled>Selecciona una opción</option>
-                <option value="retiro">Retiro</option>
-                <option value="deposito">Depósito</option>
+                <option value="Retiro">Retiro</option>
+                <option value="Deposito">Deposito</option>
               </select>
             </div>
             <div class="input-row">
               <label>Concepto:</label>
-              <input type="text" class="input-control" />
+              <input v-model="concepto" type="text" class="input-control" />
             </div>
             <div class="input-row">
               <label>Importe:</label>
-              <input type="number" class="input-chico" />
+              <input v-model="importe" type="number" class="input-chico" />
             </div>
             <div class="button-group">
-              <button class="button">Aceptar</button>
+              <button class="button" @click="aggMovimiento()">Aceptar</button>
               <button class="cancel-btn">Cancelar</button>
             </div>
           </div>
@@ -43,6 +43,7 @@
     import { defineEmits, defineProps, ref } from "vue";
     import VueDraggableResizable from "vue-draggable-resizable";
     import "vue-draggable-resizable/style.css";
+    import { idTurno, userLogin } from "../store/auth.js";
 
 
   // Props y eventos
@@ -52,6 +53,42 @@
   // Variables
     const window = ref(globalThis.window);
 
+  // Fecha y Hora en formato correcto
+    const now = new Date();
+    const fecha = ref(now.toISOString().split("T")[0]);
+    const hora = ref(now.toISOString().split("T")[1].split(".")[0]);
+
+    const movimiento = ref(null);
+    const concepto = ref(null);
+    const importe = ref(null);
+
+    const limpiarCampos = () => {
+      movimiento.value = null;
+      concepto.value = null;
+      importe.value = null;
+    };
+
+    const aggMovimiento = async () =>{
+      const { data: dataAgg, error: errorAgg } = await supabase
+        .from('retirosdepositos')
+        .insert([{
+          idturno: idTurno.value,
+          idusuario: userLogin.value,
+          tipomovimiento: movimiento.value,
+          concepto: concepto.value,
+          cantidad: importe.value,
+          fecha: fecha.value,
+          hora: hora.value
+        }]);
+
+      if(errorAgg){
+        console.error("Error al realizar ",movimiento.value, errorAgg);
+        return;
+      }else{
+        console.log(movimiento.value, " realizado correctamente");
+        limpiarCampos();
+      }
+    };
 
 </script>
 
