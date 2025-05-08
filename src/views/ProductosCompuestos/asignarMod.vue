@@ -4,7 +4,7 @@
             <div class="internal-frame">
                 <div class="header">
                 Asignar Modificador
-                <button class="close-btn" @click="$emit('cerrar')">X</button>
+                <button class="close-btn" @click="$emit('cerrar'); limpiarCampos()">X</button>
             </div>
             <div class="content">
             <!-- Inputs y botones arriba -->
@@ -12,7 +12,7 @@
 
                 <div class="button-group">
                 <button @click="addGrupoModProd()" class="button">Guardar</button>
-                <button @click="delGrupoModProd()" class="button">Eliminar</button>
+                <button @click="delGrupoModProd()" class="button">Eliminar</button> 
                 <button @click="limpiarCampos()" class="button">Limpiar</button>
                 </div>
 
@@ -68,7 +68,7 @@ import { claveProducto, gruposModificadores, cargarGruposModif } from "@/store/a
 
 
 const props = defineProps(["mostrar"]);
-const emit = defineEmits(["cerrar"]);
+const emit = defineEmits(["cerrar","actualizado"]);
 const window = ref(globalThis.window);
 const claveMod = ref(null);
 const tipo = ref(null);
@@ -110,6 +110,7 @@ const addGrupoModProd = async () => {
             tipo.value = null;
             await cargarGruposAsignados();
             await cargarGruposModif();
+            emit('actualizado');
         }
     }else{
         const {data: dataAgg, error: errorAgg } = await supabase
@@ -127,6 +128,7 @@ const addGrupoModProd = async () => {
             await cargarGruposAsignados();
             await cargarGruposModif();
             claveMod.value = dataAgg[0].idprodgrupmod;
+            emit('actualizado');
         }
     }   
 };
@@ -145,6 +147,7 @@ const delGrupoModProd = async () => {
         await cargarGruposModif();
         await cargarGruposAsignados();
         limpiarCampos();
+        emit('actualizado');
     }
 };
 
@@ -186,34 +189,6 @@ const cargarGruposAsignados = async () => {
 };
 
 
-/*
-const obtenergrupos = async () => {
-    const idsAnadidos = ref(null);
-
-    const { data: datgruposAnadidos, error: errorAnadidos } = await supabase
-        .from('prodgrupmodificador')
-        .select('idgrupomod')
-        .eq('idproducto', claveProducto.value);
-
-    if(errorAnadidos){
-        console.error("Error al obtener id de grupos", errorAnadidos);
-        return;
-    }else{
-        idsAnadidos.value = datgruposAnadidos.map(u => u.idgrupomod);    
-    }
-
-    const { data: gruposMod, error: errorGruposMod } = await supabase
-        .from('grupomodificador')
-        .select()
-        .in('idgrupomod', idsAnadidos.value);
-
-    if(errorGruposMod){
-        console.error("Erro al obtener los grupos anadidos", errorGruposMod);
-    }else{
-        gruposAnadidos.value = gruposMod;
-    }
-};
-*/
 const arraySelecGrupoMod = ref(null);
 const selecGrupoMod = async () => {
     const { data, error } = await supabase
@@ -227,10 +202,7 @@ const selecGrupoMod = async () => {
     }
 };
 
-const obtenerNombreGrupoMod = (idgrupmod) =>{
-    const mod = arraySelecGrupoMod.value.find(g => g.idgrupmod === idgrupmod)
-    return mod ? mod.nombre : 'Sin grupo modificador'
-};
+
 
 
 
