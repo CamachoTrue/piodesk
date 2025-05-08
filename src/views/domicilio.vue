@@ -10,7 +10,7 @@
         >
         <div class="internal-frame">
             <div class="header">
-            Comedor
+            Domicilio
             <button class="close-btn" @click="$emit('cerrar')">X</button>
             </div>
 

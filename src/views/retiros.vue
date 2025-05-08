@@ -1,27 +1,42 @@
 <template>
     <div v-if="mostrar">
-        <vue-draggable-resizable
-        :w="280"
-        :h="185"
-        :x="window.innerWidth / 2 - 150"
+      <vue-draggable-resizable
+        :w="350"
+        :h="260"
+        :x="window.innerWidth / 2 + 200"
         :y="window.innerHeight / 2 - 170"
         :resizable="false"
         class="custom-draggable">
-            <div class="internal-frame">
-                <div class="header"> Eliminar Producto
-                    <button class="close-btn" @click="$emit('cerrar')">X</button>
-                </div>
-                    <div class="content">
-                        <p>¿Estas seguro de eliminar el producto?</p>
-                        <div class="button-group">
-                    <button @click="confirmar" class="button">Confirmar</button>
-                    <button @click="$emit('cerrar')" class="cancel-btn">Cancelar</button>
-                        </div>
-                    </div>
+        <div class="internal-frame">
+          <div class="header"> Retiro y depósito
+            <button class="close-btn" @click="$emit('cerrar')">X</button>
+          </div>
+          <div class="content">
+            <div class="input-row">
+              <label>Movimiento:</label>
+              <select class="input-control">
+                <option value="" disabled>Selecciona una opción</option>
+                <option value="retiro">Retiro</option>
+                <option value="deposito">Depósito</option>
+              </select>
             </div>
-        </vue-draggable-resizable>
+            <div class="input-row">
+              <label>Concepto:</label>
+              <input type="text" class="input-control" />
+            </div>
+            <div class="input-row">
+              <label>Importe:</label>
+              <input type="number" class="input-chico" />
+            </div>
+            <div class="button-group">
+              <button class="button">Aceptar</button>
+              <button class="cancel-btn">Cancelar</button>
+            </div>
+          </div>
+        </div>
+      </vue-draggable-resizable>
     </div>
-</template>
+  </template>
 
 <script setup>
     import { supabase } from "@/supabase/supabase";
@@ -126,16 +141,14 @@
         display: flex;
         flex-direction: column;
         padding: 20px;
-        padding-top: 40px;
-        text-align: center;
     }
 
     .button-group {
         display: flex;
         justify-content: space-between;
         margin-top: 25px;
-        margin-left: 28px;
-        margin-right: 28px;
+        margin-left: 70px;
+        margin-right: 70px;
     }
 
     button {
@@ -159,4 +172,38 @@
     .cancel-btn:hover {
         background-color: rgb(92, 92, 92);
     }
+
+    input {
+    padding-left: 10px;
+    width: 250px;
+    padding: 5px;
+    border: 1px solid #b4b4b4;
+    border-radius: 4px;
+    }
+
+    .input-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.input-control {
+  padding: 5px;
+  border-radius: 4px;
+  border: 1px solid #b4b4b4;
+}
+
+.input-row label {
+  width: 120px; 
+  
+}
+
+.input-chico{
+    width: 120px;
+}
+
+select{
+    width: 250px;
+}
 </style>

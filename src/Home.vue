@@ -1,8 +1,8 @@
 <template>
   <div class="home-container">
     <button @click="abrirComedor()" class="comedor-btn"><img src="/mesa.png" class="comedor-icon" />Comedor</button>
-    <button @click="" class="domicilio-btn"><img src="/moto.png" class="domicilio-icon" />Domicilio</button>
-    <button @click="" class="deposito-btn"><img src="/retirar.png" class="deposito-icon" />Retiro y <br> depósito</button>
+    <button @click="abrirAggClientes()" class="domicilio-btn"><img src="/moto.png" class="domicilio-icon" />Domicilio</button>
+    <button @click="abrirRetiros()" class="deposito-btn"><img src="/retirar.png" class="deposito-icon" />Retiro y <br> depósito</button>
     <button @click="" class="consultar-btn"><img src="/consulta.png" class="consultar-icon" />Consultar <br> citas</button>
     <button @click="abrirPestana()" class="abrir-btn"><img src="/candado-abierto.png" class="abrir-icon" />Abrir turno</button>
     <button @click="PestanaCerrar()" class="cerrar-btn"><img src="/candado.png" class="cerrar-icon" />Cerrar turno</button>
@@ -67,6 +67,8 @@
   <aggProductos :mostrar="mostrarAggProductos" @cerrar="mostrarAggProductos = false" />
   <aggUsuarios :mostrar="mostrarAggUsuarios" @cerrar="mostrarAggUsuarios = false" />
   <comedor :mostrar="mostrarComedor" @cerrar="mostrarComedor = false" />
+  <aggClientes :mostrar="mostrarAggClientes" @cerrar="mostrarAggClientes = false" />
+  <retiros :mostrar="mostrarRetiros" @cerrar="mostrarRetiros = false" />
   <div class="background-container"></div>
 
 </template>
@@ -79,6 +81,8 @@ import cerrarTurno from "@/views/cerrarTurno.vue";
 import aggProductos from "./views/aggProductos.vue";
 import comedor from "./views/comedor.vue";
 import aggUsuarios from "./views/aggUsuarios.vue";
+import aggClientes from "./views/Domicilio/aggClientes.vue";
+import retiros from "./views/retiros.vue";
 import { turno } from "@/store/auth.js";
 
 const mostrarVentana = ref(false);
@@ -92,6 +96,8 @@ const router = useRouter();
 const mostrarAggProductos = ref(false);
 const mostrarAggUsuarios = ref(false);
 const mostrarComedor = ref(false);
+const mostrarAggClientes = ref(false);
+const mostrarRetiros = ref(false);
 
 // Funcion para abrir turno
 const abrirPestana = () => {
@@ -147,6 +153,16 @@ const abrirAggProductos = () => {
 // Abrir Agg usuarios
 const abrirAggUsuarios = () => {
   mostrarAggUsuarios.value = true;
+};
+
+// Abrir Agg clientes
+const abrirAggClientes = () => {
+  mostrarAggClientes.value = true;
+};
+
+// Abrir retiros
+const abrirRetiros = () => {
+  mostrarRetiros.value = true;
 };
 
 // Manejo del dropdown fuera de foco
