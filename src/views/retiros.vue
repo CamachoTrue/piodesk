@@ -56,7 +56,7 @@
   // Fecha y Hora en formato correcto
     const now = new Date();
     const fecha = ref(now.toISOString().split("T")[0]);
-    const hora = ref(now.toISOString().split("T")[1].split(".")[0]);
+    const hora = ref(now.toTimeString().split(" ")[0]);
 
     const movimiento = ref(null);
     const concepto = ref(null);
@@ -69,6 +69,8 @@
     };
 
     const aggMovimiento = async () =>{
+      console.log(hora.value);
+      
       const { data: dataAgg, error: errorAgg } = await supabase
         .from('retirosdepositos')
         .insert([{
