@@ -2,7 +2,7 @@
     <div v-if="mostrar">
         <vue-draggable-resizable 
             :w="480" 
-            :h="440" 
+            :h="480" 
             :x="window.innerWidth / 2 - 280" 
             :y="window.innerHeight / 2 - 300" 
             :resizable="false"
@@ -41,13 +41,21 @@
               <input type="text" class="input-control" />
             </div>
             <div class="input-row">
+              <label>Colonia:</label>
+              <input type="text" class="input-control" />
+            </div>
+            <div class="input-row">
               <label>Número:</label>
               <input type="number" class="input-chico" />
             </div>
             <div class="input-row">
-              <label>Cruzamiento:</label>
+            <label>Cruzamiento:</label>
+            <div class="input-group">
+              <input type="text" class="input-control" />
+              <span class="separador">Y</span>
               <input type="text" class="input-control" />
             </div>
+          </div>
             <div class="input-row">
               <label>Referencias:</label>
               <input type="text" class="input-control" />
@@ -72,7 +80,7 @@
 import { defineProps, defineEmits, ref, onMounted } from "vue";
 import VueDraggableResizable from "vue-draggable-resizable";
 import "vue-draggable-resizable/style.css";
-import {supabase} from "@/supabase/supabase";
+import { supabase } from "@/supabase/supabase";
 import domicilio from "../domicilio.vue";
 
 
@@ -251,4 +259,10 @@ input {
     width: 130px;
 }
 
+.input-group .input-control {
+  width: 154px;
+}
+.input-group .separador {
+  margin: 0 12px;
+}
 </style>
