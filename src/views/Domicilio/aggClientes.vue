@@ -64,7 +64,7 @@
 
           <!-- Botones finales -->
           <div class="button-group">
-            <button @click="abrirDomicilio(); limpiarCampos(); emit('cerrar')" class="button">Aceptar</button>
+            <button @click="limpiarCampos(); emit('cerrar')" class="button">Aceptar</button>
             <button class="cancel-btn">Cancelar</button>
           </div>
         </div>
@@ -73,7 +73,6 @@
 
   </div>
 
-  <domicilio :mostrar="mostrarDomicilio" @cerrar="mostrarDomicilio = false" />
 </template>
 
 <script setup>
@@ -81,14 +80,13 @@ import { defineProps, defineEmits, ref, onMounted } from "vue";
 import VueDraggableResizable from "vue-draggable-resizable";
 import "vue-draggable-resizable/style.css";
 import { supabase } from "@/supabase/supabase";
-import domicilio from "../domicilio.vue";
 import { idCliente, idDireccion } from "@/store/auth.js";
 
 
 const props = defineProps(["mostrar"]);
 const emit = defineEmits(["cerrar"]);
 const window = ref(globalThis.window);
-const mostrarDomicilio = ref(false);
+
 
 //Variables
 const buscar = ref(null);
@@ -218,12 +216,6 @@ async function searchCliente() {
   
 
 }
-
-
-//domicilio
-const abrirDomicilio = () => {
-    mostrarDomicilio.value = true;
-};
 
 
 const aggCliente = async () =>{

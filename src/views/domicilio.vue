@@ -77,12 +77,12 @@
 
                     <div class="button-section">
                         <div class="button-grid">
-                            <button @click="abrirAbrir()" class="button">Abrir cuenta</button>
+                            <button @click="abrirAggClientes()" class="button">Abrir cuenta</button>
                             <button @click="abrirBorrar()" class="button">Eliminar Prod.</button>
                             <button @click="abrirDescuento()" class="button">Descuento</button>
                             <button @click="abrirCaptura()" class="button">Captura</button>
                             <button @click="abrirRenombrar()" class="button">Renombrar</button>
-                            <button @click="abrirImprimir()" class="button">Imprimir</button>
+                            <button @click="" class="button">Imprimir</button>
                         </div>
                     </div>
                 </div>
@@ -165,22 +165,24 @@
     <reabrir :mostrar="mostrarReabrir" @cerrar="mostrarReabrir = false" />
     <cancelar :mostrar="mostrarCancelar" @cerrar="mostrarCancelar = false" />
     <pagar :mostrar="mostrarPagar" @cerrar="mostrarPagar = false" />
+    <aggClientes :mostrar="mostrarAggClientes" @cerrar="mostrarAggClientes = false" />
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { defineEmits, defineProps, onMounted } from "vue";
+import { defineEmits, defineProps, onMounted, ref } from "vue";
 import VueDraggableResizable from "vue-draggable-resizable";
 import "vue-draggable-resizable/style.css";
 import abrir from "./Comedor/abrir.vue";
 import borrar from "./Comedor/borrar.vue";
-import descuento from "./Comedor/descuento.vue";
-import captura from "./Comedor/captura.vue";
-import renombrar from "./Comedor/renombrar.vue";
-import imprimir from "./Comedor/imprimir.vue";
-import reabrir from "./Comedor/reabrir.vue";
 import cancelar from "./Comedor/cancelar.vue";
+import captura from "./Comedor/captura.vue";
+import descuento from "./Comedor/descuento.vue";
+import imprimir from "./Comedor/imprimir.vue";
 import pagar from "./Comedor/pagar.vue";
+import reabrir from "./Comedor/reabrir.vue";
+import renombrar from "./Comedor/renombrar.vue";
+import aggClientes from "./Domicilio/aggClientes.vue";
+
 
 const checkimpreso = ref(false);
 const props = defineProps(["mostrar"]);
@@ -195,6 +197,7 @@ const mostrarImprimir = ref(false);
 const mostrarReabrir = ref(false);
 const mostrarCancelar = ref(false);
 const mostrarPagar = ref(false);
+const mostrarAggClientes = ref(false);
 
 
 onMounted(() => {
@@ -245,6 +248,12 @@ const abrirCancelar = () => {
 const abrirPagar = () => {
     mostrarPagar.value = true;
 };
+
+//agg clientes
+const abrirAggClientes = () => {
+    mostrarAggClientes.value = true;
+};
+
 
 </script>
 

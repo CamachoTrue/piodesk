@@ -1,12 +1,12 @@
 <template>
   <div class="home-container">
     <button @click="abrirComedor()" class="comedor-btn"><img src="/mesa.png" class="comedor-icon" />Comedor</button>
-    <button @click="abrirAggClientes()" class="domicilio-btn"><img src="/moto.png" class="domicilio-icon" />Domicilio</button>
+    <button @click="abrirDomicilio()" class="domicilio-btn"><img src="/moto.png" class="domicilio-icon" />Domicilio</button>
     <button @click="abrirRetiros()" class="deposito-btn"><img src="/retirar.png" class="deposito-icon" />Retiro y <br> depósito</button>
     <button @click="" class="consultar-btn"><img src="/consulta.png" class="consultar-icon" />Consultar <br> citas</button>
     <button @click="abrirPestana()" class="abrir-btn"><img src="/candado-abierto.png" class="abrir-icon" />Abrir turno</button>
     <button @click="PestanaCerrar()" class="cerrar-btn"><img src="/candado.png" class="cerrar-icon" />Cerrar turno</button>
-    <button @click="" class="corte-btn"><img src="/caja-registradora.png" class="corte-icon" />Corte caja</button>
+    <button @click="abrirCorte()" class="corte-btn"><img src="/caja-registradora.png" class="corte-icon" />Corte caja</button>
     <div class="dropdown">
       <button @click.stop="mostrarDropdown = !mostrarDropdown" class="ajustes-btn">
         <img src="/icons8-ajustes-48.png" class="ajustes-icon" />Ajustes
@@ -67,8 +67,9 @@
   <aggProductos :mostrar="mostrarAggProductos" @cerrar="mostrarAggProductos = false" />
   <aggUsuarios :mostrar="mostrarAggUsuarios" @cerrar="mostrarAggUsuarios = false" />
   <comedor :mostrar="mostrarComedor" @cerrar="mostrarComedor = false" />
-  <aggClientes :mostrar="mostrarAggClientes" @cerrar="mostrarAggClientes = false" />
   <retiros :mostrar="mostrarRetiros" @cerrar="mostrarRetiros = false" />
+  <corte :mostrar="mostrarCorte" @cerrar="mostrarCorte = false" />
+  <domicilio :mostrar="mostrarDomicilio" @cerrar="mostrarDomicilio = false" />
   <div class="background-container"></div>
 
 </template>
@@ -81,8 +82,9 @@ import cerrarTurno from "@/views/cerrarTurno.vue";
 import aggProductos from "./views/aggProductos.vue";
 import comedor from "./views/comedor.vue";
 import aggUsuarios from "./views/aggUsuarios.vue";
-import aggClientes from "./views/Domicilio/aggClientes.vue";
 import retiros from "./views/retiros.vue";
+import corte from "./views/corte.vue";
+import domicilio from "./views/domicilio.vue";
 import { turno } from "@/store/auth.js";
 
 const mostrarVentana = ref(false);
@@ -96,8 +98,9 @@ const router = useRouter();
 const mostrarAggProductos = ref(false);
 const mostrarAggUsuarios = ref(false);
 const mostrarComedor = ref(false);
-const mostrarAggClientes = ref(false);
 const mostrarRetiros = ref(false);
+const mostrarCorte = ref(false);
+const mostrarDomicilio = ref(false);
 
 // Funcion para abrir turno
 const abrirPestana = () => {
@@ -155,14 +158,22 @@ const abrirAggUsuarios = () => {
   mostrarAggUsuarios.value = true;
 };
 
-// Abrir Agg clientes
-const abrirAggClientes = () => {
-  mostrarAggClientes.value = true;
-};
 
 // Abrir retiros
 const abrirRetiros = () => {
   mostrarRetiros.value = true;
+};
+
+// abrir Corte CAja
+const abrirCorte = () => {
+  mostrarCorte.value = true;
+  
+};
+
+// abrir domicilio
+const abrirDomicilio = () => {
+  mostrarDomicilio.value = true;
+  
 };
 
 // Manejo del dropdown fuera de foco

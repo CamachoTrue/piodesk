@@ -82,7 +82,7 @@
                             <button @click="abrirDescuento()" class="button">Descuento</button>
                             <button @click="abrirCaptura()" class="button">Captura</button>
                             <button @click="abrirRenombrar()" class="button">Renombrar</button>
-                            <button @click="abrirImprimir()" class="button">Imprimir</button>
+                            <button @click="" class="button">Imprimir</button>
                         </div>
                     </div>
                 </div>
@@ -161,7 +161,6 @@
     <descuento :mostrar="mostrarDescuento" @cerrar="mostrarDescuento = false" />
     <captura :mostrar="mostrarCaptura" @cerrar="mostrarCaptura = false" />
     <renombrar :mostrar="mostrarRenombrar" @cerrar="mostrarRenombrar = false" />
-    <imprimir :mostrar="mostrarImprimir" @cerrar="mostrarImprimir = false" />
     <reabrir :mostrar="mostrarReabrir" @cerrar="mostrarReabrir = false" />
     <cancelar :mostrar="mostrarCancelar" @cerrar="mostrarCancelar = false" />
     <pagar :mostrar="mostrarPagar" @cerrar="mostrarPagar = false" />
@@ -224,11 +223,6 @@ const abrirCaptura = () => {
 //renombrar
 const abrirRenombrar = () => {
     mostrarRenombrar.value = true;
-};
-
-//imprimir
-const abrirImprimir = () => {
-    mostrarImprimir.value = true;
 };
 
 //reabrir
