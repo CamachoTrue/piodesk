@@ -10,6 +10,11 @@ export const resultadoLogin = ref(localStorage.getItem("resultadoLogin") || 0);
 export const claveProducto = ref(null);
 export const gruposModificadores = ref([]);
 
+
+export const idCliente = ref(null);
+export const idDireccion = ref(null);
+
+
 export const cargarGruposModif = async () => {
   try {
     const productoId = claveProducto.value;
