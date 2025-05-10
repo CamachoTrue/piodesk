@@ -1,8 +1,8 @@
 <template>
     <div v-if="mostrar">
       <vue-draggable-resizable
-        :w="350"
-        :h="260"
+        :w="365"
+        :h="270"
         :x="window.innerWidth / 2 + 200"
         :y="window.innerHeight / 2 - 170"
         :resizable="false"
@@ -12,7 +12,8 @@
             <button class="close-btn" @click="$emit('cerrar'); limpiarCampos()">X</button>
           </div>
           <div class="content">
-            <div class="input-row">
+            <div class="bordered-box">
+              <div class="input-row">
               <label>Movimiento:</label>
               <select v-model="movimiento" class="input-control">
                 <option value="" disabled>Selecciona una opción</option>
@@ -28,10 +29,12 @@
               <label>Importe:</label>
               <input v-model="importe" type="number" class="input-chico" />
             </div>
-            <div class="button-group">
+            </div>
+              <div class="button-group">
               <button class="button" @click="aggMovimiento()">Aceptar</button>
               <button class="cancel-btn">Cancelar</button>
             </div>
+
           </div>
         </div>
       </vue-draggable-resizable>
@@ -244,5 +247,12 @@
 
 select{
     width: 250px;
+}
+
+.bordered-box {
+    border: 1px solid #b4b4b4;
+    padding: 10px;
+    border-radius: 10px;
+    width: 400px;
 }
 </style>
