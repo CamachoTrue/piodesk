@@ -45,13 +45,13 @@
   const message = ref('');
   
   const ticketData = {
-    titulo: 'PIO PIO',
+    titulo: '***Pio Pio Bonless and wings***',
     pedido: '1234',
     items: [
       { nombre: 'Boneless', cantidad: 1, precio: 180 },
       { nombre: 'Coca-Cola', cantidad: 2, precio: 25 }
     ],
-    mensaje: 'FELIZ DIA DE LAS MADRES NELY TQM'
+    mensaje: 'Mensaje de ejemplo'
   };
   
   ticketData.total = ticketData.items.reduce((acc, item) => acc + item.precio * item.cantidad, 0);

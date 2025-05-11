@@ -10,26 +10,26 @@ process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL ? path.join(process.env.APP_ROOT, 
 let win;
 function buildPlainText(data) {
   const fecha = (/* @__PURE__ */ new Date()).toLocaleString();
-  const separador = "----------------------------------------\n";
-  const espaciador = "                                        \n";
-  const encabezado = `${data.titulo.toUpperCase().padStart((40 + data.titulo.length) / 2)}
-${fecha}
+  const separador = "------------------------------------------------\n";
+  const espaciador = "                                    \n";
+  const encabezado = `${data.titulo.toUpperCase().padStart((70 + data.titulo.length) / 2)}
+${fecha.padStart(32)}
 ${separador}`;
   const pedido = `Pedido #: ${data.pedido}
 
 `;
   const items = data.items.map((item) => {
-    const nombre = `${item.cantidad}x ${item.nombre}`.padEnd(30);
+    const nombre = `${item.cantidad}x ${item.nombre}`.padEnd(39);
     const precio = `$${(item.precio * item.cantidad).toFixed(2)}`.padStart(9);
     return `${nombre}${precio}`;
   }).join("\n") + "\n";
-  const total = `${separador}TOTAL:${" ".repeat(40)}$${data.total.toFixed(2)}
+  const total = `${separador}TOTAL:${" ".repeat(35)}$${data.total.toFixed(2)}
 `;
   const mensaje = `
 ${separador}${data.mensaje}
 
 `;
-  return encabezado + pedido + items + total + mensaje + espaciador + espaciador + espaciador + espaciador + espaciador + espaciador + espaciador + espaciador + espaciador + espaciador + espaciador + espaciador;
+  return encabezado + pedido + items + total + mensaje + espaciador + espaciador + espaciador + espaciador + espaciador + espaciador + espaciador + espaciador + espaciador + espaciador + espaciador;
 }
 function createWindow() {
   win = new BrowserWindow({
