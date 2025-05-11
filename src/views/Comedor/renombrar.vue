@@ -13,11 +13,11 @@
                 </div>
                     <div class="content">
                         <p>Nombre actual:</p>
-                        <input v-model="montoInicial" type="text" class="border-2 w-[295px] mt-4" />
+                        <input v-model="nombreActual" type="text" class="border-2 w-[295px] mt-4" readonly/>
                         <p class="nuevo">Nombre nuevo:</p>
-                        <input v-model="montoInicial" type="text" class="border-2 w-[295px] mt-4" />
+                        <input v-model="nombreNuevo" type="text" class="border-2 w-[295px] mt-4" />
                         <div class="button-group">
-                    <button @click="confirmar" class="button">Confirmar</button>
+                    <button @click="upNombrePedido()" class="button">Confirmar</button>
                     <button @click="$emit('cerrar')" class="cancel-btn">Cancelar</button>
                         </div>
                     </div>
@@ -28,17 +28,93 @@
 
 <script setup>
     import { supabase } from "@/supabase/supabase";
-    import { defineEmits, defineProps, ref } from "vue";
+    import { defineEmits, defineProps, ref, onMounted, watch } from "vue";
     import VueDraggableResizable from "vue-draggable-resizable";
     import "vue-draggable-resizable/style.css";
+    import { idPedido } from "@/store/auth.js";
+
 
 
   // Props y eventos
     const props = defineProps(["mostrar"]);
-    const emit = defineEmits(["cerrar"]);
+    const emit = defineEmits(["cerrar","actualizado"]);
 
   // Variables
     const window = ref(globalThis.window);
+
+    const nombreActual = ref(null);
+    const nombreNuevo = ref(null);
+    const pedido = ref([]);
+
+    const cargarPedido = async () => {
+        const { data } = await supabase
+            .from('pedidos')
+            .select()
+            .eq('idpedido', idPedido.value);
+
+        pedido.value = data[0];
+    };
+
+    const upNombrePedido = async () => {
+        if(nombreNuevo.value === null){
+            console.error("Ingrese nombre nuevo");
+            return;
+        }
+        const { data: dataPedidos, error: errorPedidos } = await supabase
+            .from('pedidos')
+            .select()
+            .eq('abierto', true);
+        
+        if(errorPedidos){
+            console.error("Error al obtener pedidos ", errorPedidos);
+            return;
+        }
+
+        const existe = dataPedidos.find(u => u.nombre === nombreNuevo.value);
+
+        if(existe){
+            console.log("Ya existe una cuenta con ese nombre");
+            return;
+        }
+
+        const { data, error} = await supabase
+            .from('pedidos')
+            .update({
+                nombre: nombreNuevo.value
+            })
+            .eq('idpedido', idPedido.value);
+        if(error){
+            console.error("Error al actualizar nombre ",error);
+            return;
+        }
+        console.log("Nombre actualizado");
+        
+        emit('actualizado');
+        limpiarCampos();
+        emit('cerrar');
+    };
+    
+    const limpiarCampos = () => {
+        nombreActual.value = null;
+        nombreNuevo.value = null;
+    };
+
+
+
+    watch(idPedido, (newValue) => {
+        if (newValue !== null && newValue !== undefined) {
+            cargarPedido();
+            nombreActual.value = pedido.value.nombre;          
+        }
+    }, { immediate: true });
+
+    onMounted(() => {
+        if(idPedido){
+            cargarPedido();
+            nombreActual.value = pedido.value.nombre;
+        }
+        
+    });
 
 
 </script>

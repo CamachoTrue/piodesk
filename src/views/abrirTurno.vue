@@ -38,7 +38,7 @@ import { supabase } from "@/supabase/supabase";
 import { defineEmits, defineProps, ref } from "vue";
 import VueDraggableResizable from "vue-draggable-resizable";
 import "vue-draggable-resizable/style.css";
-import { userLogin, turno, obtenerTurno,idTurno } from "@/store/auth.js";
+import { userLogin, turno, obtenerTurno,idTurno, numPedidos} from "@/store/auth.js";
 
 // Props y eventos
 const props = defineProps(["mostrar"]);
@@ -82,6 +82,7 @@ const confirmar = async () => {
   await obtenerTurno();
   turno.value = true;
 
+  numPedidos.value = 1;
   emit("turnoAbierto");
   emit("cerrar");
 };

@@ -31,11 +31,17 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr v-for="i in 20" :key="i">
-                        <td>Cuenta {{ i }}</td>
-                        <td><input type="checkbox" disabled /></td>
-                        <td> {{ i }}</td>
-                    </tr>
+                    <tr v-for="pedido in pedidosAbiertos" :key="pedido.idpedido" @dblclick="obtenerPedido(pedido)">
+                        <td>{{ pedido.nombre }}</td>
+                        <td>
+                            <input
+                            type="checkbox"
+                            :checked="Boolean(pedido.impreso)"
+                            disabled
+                            />
+                        </td>
+                        <td>{{ pedido.idpedido }}</td>
+                        </tr>
                     </tbody>
                 </table>
                 </div>
@@ -47,25 +53,25 @@
                     <div class="column">
                         <div class="input-row">
                         <label>Cuenta:</label>
-                        <input class="input-control cuenta-input" type="text" readonly/>
+                        <input v-model="cuenta" class="input-control cuenta-input" type="text" readonly/>
                         </div>
                         <div class="input-row">
                         <label>Folio:</label>
-                        <input class="input-control folio-input" type="number"readonly/>
+                        <input v-model="folio" class="input-control folio-input" type="number"readonly/>
                         </div>
                         <div class="input-row">
                         <label>Orden:</label>
-                        <input class="input-control orden-input" type="number" readonly/>
+                        <input v-model="orden" class="input-control orden-input" type="number" readonly/>
                         </div>
                     </div>
                     <div class="column">
                         <div class="input-row">
                         <label>Apertura:</label>
-                        <input class="input-control apertura-input" type="text" readonly/>
+                        <input v-model="horaApertura" class="input-control apertura-input" type="text" readonly/>
                         </div>
                         <div class="input-row">
-                        <label>Cierre:</label>
-                        <input class="input-control cierre-input" type="text" readonly/>
+                        <label>Impresion:</label>
+                        <input v-model="horaImpresa" class="input-control cierre-input" type="text" readonly/>
                         </div>
                         <div class="input-row">
                         <label>Impreso:</label>
@@ -106,12 +112,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="i in 10" :key="i">
-                            <td>{{ i }}</td>
-                            <td>CLV{{ i }}</td>
-                            <td>Descripción {{ i }}</td>
-                            <td>$10.00</td>
-                            <td>$10.00</td>
+                        <tr>
                         </tr>
                     </tbody>
                     </table>
@@ -127,23 +128,23 @@
                     <div class="bordered-box" style="min-width: 395px;">
                     <div class="input-row">
                         <label>Subtotal:</label>
-                        <input class="input-control" type="text" />
+                        <input v-model="subtotal" class="input-control" type="text" />
                     </div>
                     <div class="input-row">
                         <label>Descuento:</label>
-                        <input class="input-control" type="text" />
+                        <input v-model="descuent" class="input-control" type="text" />
                     </div>
                     <div class="input-row">
                         <label>Impuestos:</label>
-                        <input class="input-control" type="text" />
+                        <input v-model="impuestos" class="input-control" type="text" />
                     </div>
                     <div class="input-row">
                         <label>Propina:</label>
-                        <input class="input-control" type="text" />
+                        <input v-model="propinas" class="input-control" type="text" />
                     </div>
                     <div class="input-row">
                         <label>Total:</label>
-                        <input class="input-control" type="text" />
+                        <input v-model="total" class="input-control" type="text" />
                     </div>
                     </div>
                 </div>
@@ -156,11 +157,11 @@
         </vue-draggable-resizable>
     </div>
 
-    <abrir :mostrar="mostrarAbrir" @cerrar="mostrarAbrir = false" />
+    <abrir :mostrar="mostrarAbrir" @cerrar="mostrarAbrir = false" @actualizado="actualizarDespuesDeEditar()"/>
     <borrar :mostrar="mostrarBorrar" @cerrar="mostrarBorrar = false" />
     <descuento :mostrar="mostrarDescuento" @cerrar="mostrarDescuento = false" />
     <captura :mostrar="mostrarCaptura" @cerrar="mostrarCaptura = false" />
-    <renombrar :mostrar="mostrarRenombrar" @cerrar="mostrarRenombrar = false" />
+    <renombrar :mostrar="mostrarRenombrar" @cerrar="mostrarRenombrar = false" @actualizado="actualizarDespuesDeEditar()" />
     <reabrir :mostrar="mostrarReabrir" @cerrar="mostrarReabrir = false" />
     <cancelar :mostrar="mostrarCancelar" @cerrar="mostrarCancelar = false" />
     <pagar :mostrar="mostrarPagar" @cerrar="mostrarPagar = false" />
@@ -180,6 +181,9 @@ import imprimir from "./Comedor/imprimir.vue";
 import reabrir from "./Comedor/reabrir.vue";
 import cancelar from "./Comedor/cancelar.vue";
 import pagar from "./Comedor/pagar.vue";
+import Descuento from "./Comedor/descuento.vue";
+import { supabase } from "../supabase/supabase";
+import { idPedido } from "../store/auth.js";
 
 const checkimpreso = ref(false);
 const props = defineProps(["mostrar"]);
@@ -195,13 +199,64 @@ const mostrarReabrir = ref(false);
 const mostrarCancelar = ref(false);
 const mostrarPagar = ref(false);
 
+const cuenta = ref(null);
+const folio = ref(null);
+const orden = ref(null);
+const horaApertura = ref(null);
+const horaImpresa = ref(null);
+const impreso = ref(null);
+const subtotal = ref(null);
+const descuent = ref(null);
+const impuestos = ref(null);
+const propinas = ref(null);
+const total = ref(null);
+
+const pedidosAbiertos = ref([]);
+
+const cargarPedidosAbiertos = async () => {
+    const { data, error } = await supabase 
+        .from('pedidos')
+        .select()
+        .eq('abierto', true);
+
+    if(error){
+        console.error("Error al obtener pedidos");
+        return;
+    }
+
+    pedidosAbiertos.value = data;
+};
+
+const obtenerPedido = (pedido) => {
+    cuenta.value = pedido.nombre;
+    folio.value = pedido.idpedido;
+    orden.value = pedido.numeropedido;
+    horaApertura.value = pedido.horaapertura;
+    horaImpresa.value = "---";
+    checkimpreso.value = pedido.impreso;
+    subtotal.value = `$${pedido.subtotal}`;
+    idPedido.value = pedido.idpedido;  
+};
+
+
+
+
+
 
 onMounted(() => {
-    checkimpreso.value = true;
+    cargarPedidosAbiertos();
 })
+
+
+
+
+const actualizarDespuesDeEditar = () => {
+  cargarPedidosAbiertos();
+};
 
 //Abrir cuenta
 const abrirAbrir = () => {
+    idPedido.value = idPedido.value; 
     mostrarAbrir.value = true;
 };
 
@@ -239,7 +294,6 @@ const abrirCancelar = () => {
 const abrirPagar = () => {
     mostrarPagar.value = true;
 };
-
 </script>
 
 <style scoped>

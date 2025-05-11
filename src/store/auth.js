@@ -10,10 +10,12 @@ export const resultadoLogin = ref(localStorage.getItem("resultadoLogin") || 0);
 export const claveProducto = ref(null);
 export const gruposModificadores = ref([]);
 
+export const idPedido = ref(null);
 
 export const idCliente = ref(null);
 export const idDireccion = ref(null);
 
+export const numPedidos = ref(null);
 
 export const cargarGruposModif = async () => {
   try {

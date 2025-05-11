@@ -12,10 +12,10 @@
                     <button class="close-btn" @click="$emit('cerrar')">X</button>
                 </div>
                     <div class="content">
-                        <p>Nombre del cliente:</p>
-                        <input v-model="montoInicial" type="text" class="border-2 w-[295px] mt-4" />
+                        <p>Cuenta:</p>
+                        <input v-model="nombre" type="text" class="border-2 w-[295px] mt-4" />
                         <div class="button-group">
-                    <button @click="" class="button">Confirmar</button>
+                    <button @click="abrirCuenta()" class="button">Confirmar</button>
                     <button @click="$emit('cerrar')" class="cancel-btn">Cancelar</button>
                         </div>
                     </div>
@@ -26,17 +26,74 @@
 
 <script setup>
     import { supabase } from "@/supabase/supabase";
-    import { defineEmits, defineProps, ref } from "vue";
+    import { defineEmits, defineProps, ref, onMounted } from "vue";
     import VueDraggableResizable from "vue-draggable-resizable";
     import "vue-draggable-resizable/style.css";
+    import { idPedido, numPedidos, idTurno } from "@/store/auth.js";
 
 
   // Props y eventos
     const props = defineProps(["mostrar"]);
-    const emit = defineEmits(["cerrar"]);
+    const emit = defineEmits(["cerrar","actualizado"]);
 
   // Variables
     const window = ref(globalThis.window);
+
+    const nombre = ref(null);
+
+    const now = new Date();
+    const fecha = ref(now.toISOString().split("T")[0]);
+    const hora = ref(now.toTimeString().split(" ")[0]);
+
+    const limpiarCampos = () => {
+        nombre.value = null;
+    };
+
+    const abrirCuenta = async () => {
+        const { data: dataPedidos, error: errorPedidos } = await supabase
+            .from('pedidos')
+            .select()
+            .eq('abierto', true);
+        
+        if(errorPedidos){
+            console.error("Error al obtener pedidos ", errorPedidos);
+            return;
+        }
+
+        const existe = dataPedidos.find(u => u.nombre === nombre.value);
+
+        if(existe){
+            console.log("Ya existe una cuenta con ese nombre");
+            return;
+        }
+        const { data, error } = await supabase
+            .from('pedidos')
+            .insert([{
+                nombre: nombre.value,
+                idturno: idTurno.value,
+                tipo: 'Normal',
+                horaapertura: hora.value,
+                impreso: false,
+                abierto: true,
+                eliminado: false,
+                numeropedido: numPedidos.value
+            }])
+            .select();
+        
+        if(error){
+            console.error("Error al crear pedido ",error);
+            return;
+        }else{
+            console.log("Cuenta creada");
+            idPedido.value = data[0].idpedido;
+            limpiarCampos();
+            numPedidos.value ++;
+            emit('actualizado');
+            emit('cerrar');
+        }
+    };
+
+
 
 
 </script>
