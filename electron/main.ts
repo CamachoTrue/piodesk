@@ -1,30 +1,51 @@
-import { app, BrowserWindow } from 'electron'
-import { createRequire } from 'node:module'
-import { fileURLToPath } from 'node:url'
-import path from 'node:path'
+import { app, BrowserWindow } from 'electron';
+import { fileURLToPath } from 'node:url';
+import path from 'node:path';
+import { ipcMain } from 'electron';
 
-const require = createRequire(import.meta.url)
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// The built directory structure
-//
-// ├─┬─┬ dist
-// │ │ └── index.html
-// │ │
-// │ ├─┬ dist-electron
-// │ │ ├── main.js
-// │ │ └── preload.mjs
-// │
-process.env.APP_ROOT = path.join(__dirname, '..')
+process.env.APP_ROOT = path.join(__dirname, '..');
 
-// 🚧 Use ['ENV_NAME'] avoid vite:define plugin - Vite@2.x
-export const VITE_DEV_SERVER_URL = process.env['VITE_DEV_SERVER_URL']
-export const MAIN_DIST = path.join(process.env.APP_ROOT, 'dist-electron')
-export const RENDERER_DIST = path.join(process.env.APP_ROOT, 'dist')
+export const VITE_DEV_SERVER_URL = process.env['VITE_DEV_SERVER_URL'];
+export const MAIN_DIST = path.join(process.env.APP_ROOT, 'dist-electron');
+export const RENDERER_DIST = path.join(process.env.APP_ROOT, 'dist');
 
-process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL ? path.join(process.env.APP_ROOT, 'public') : RENDERER_DIST
+process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL
+  ? path.join(process.env.APP_ROOT, 'public')
+  : RENDERER_DIST;
 
-let win: BrowserWindow | null
+let win: BrowserWindow | null;
+
+type TicketData = {
+  titulo: string;
+  pedido: string;
+  items: { nombre: string; cantidad: number; precio: number }[];
+  total: number;
+  mensaje: string;
+};
+
+function buildPlainText(data: TicketData): string {
+  const fecha = new Date().toLocaleString();
+  const separador = '----------------------------------------\n';
+  const espaciador = '                                        \n';
+
+  const encabezado = `${data.titulo.toUpperCase().padStart((40 + data.titulo.length) / 2)}\n${fecha}\n${separador}`;
+  const pedido = `Pedido #: ${data.pedido}\n\n`;
+
+  const items = data.items
+    .map(item => {
+      const nombre = `${item.cantidad}x ${item.nombre}`.padEnd(30);
+      const precio = `$${(item.precio * item.cantidad).toFixed(2)}`.padStart(9);
+      return `${nombre}${precio}`;
+    })
+    .join('\n') + '\n';
+
+  const total = `${separador}TOTAL:${' '.repeat(40)}$${data.total.toFixed(2)}\n`;
+  const mensaje = `\n${separador}${data.mensaje}\n\n`;
+
+  return encabezado + pedido + items + total + mensaje + espaciador + espaciador + espaciador + espaciador + espaciador + espaciador + espaciador + espaciador + espaciador + espaciador + espaciador + espaciador;
+}
 
 function createWindow() {
   win = new BrowserWindow({
@@ -32,37 +53,58 @@ function createWindow() {
     webPreferences: {
       preload: path.join(__dirname, 'preload.mjs'),
     },
-  })
+  });
 
-  // Test active push message to Renderer-process.
   win.webContents.on('did-finish-load', () => {
-    win?.webContents.send('main-process-message', (new Date).toLocaleString())
-  })
+    win?.webContents.send('main-process-message', new Date().toLocaleString());
+    win!.webContents.getPrintersAsync().then((printers) => {
+      console.log('🖨️ Impresoras detectadas:', printers);
+    });
+  });
+
+  ipcMain.handle('get-printers', async () => {
+    return win ? await win.webContents.getPrintersAsync() : [];
+  });
+
+  ipcMain.handle('print-ticket', async (_event, ticketData: TicketData, printerName: string) => {
+    const plainText = buildPlainText(ticketData);
+    const printWin = new BrowserWindow({ show: false });
+
+    await printWin.loadURL(`data:text/plain;charset=utf-8,${encodeURIComponent(plainText)}`);
+
+    return new Promise((resolve, reject) => {
+      printWin.webContents.print(
+        {
+          silent: true,
+          deviceName: printerName,
+        },
+        (success, failureReason) => {
+          printWin.close();
+          if (success) resolve(true);
+          else reject(new Error(failureReason));
+        }
+      );
+    });
+  });
 
   if (VITE_DEV_SERVER_URL) {
-    win.loadURL(VITE_DEV_SERVER_URL)
+    win.loadURL(VITE_DEV_SERVER_URL);
   } else {
-    // win.loadFile('dist/index.html')
-    win.loadFile(path.join(RENDERER_DIST, 'index.html'))
+    win.loadFile(path.join(RENDERER_DIST, 'index.html'));
   }
 }
 
-// Quit when all windows are closed, except on macOS. There, it's common
-// for applications and their menu bar to stay active until the user quits
-// explicitly with Cmd + Q.
+app.whenReady().then(createWindow);
+
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
-    app.quit()
-    win = null
+    app.quit();
+    win = null;
   }
-})
+});
 
 app.on('activate', () => {
-  // On OS X it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
   if (BrowserWindow.getAllWindows().length === 0) {
-    createWindow()
+    createWindow();
   }
-})
-
-app.whenReady().then(createWindow)
+});

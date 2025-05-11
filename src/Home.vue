@@ -15,7 +15,7 @@
         <div v-show="mostrarDropdown" class="dropdown-content">
           <a href="#" @click="abrirAggProductos(); mostrarDropdown = false">Administrar productos</a>
           <a href="#" @click="abrirAggUsuarios(); mostrarDropdown = false">Administrar usuarios</a>
-          <a href="#">Impresoras</a>
+          <a href="#" @click="abrirImpresoras(); mostrarDropdown = false">Impresoras</a>
         </div>
       </transition>
     </div>
@@ -67,9 +67,12 @@
   <aggProductos :mostrar="mostrarAggProductos" @cerrar="mostrarAggProductos = false" />
   <aggUsuarios :mostrar="mostrarAggUsuarios" @cerrar="mostrarAggUsuarios = false" />
   <comedor :mostrar="mostrarComedor" @cerrar="mostrarComedor = false" />
+  <impresoras :mostrar="mostrarImpresoras" @cerrar="mostrarImpresoras = false" />
+
   <retiros :mostrar="mostrarRetiros" @cerrar="mostrarRetiros = false" />
   <corte :mostrar="mostrarCorte" @cerrar="mostrarCorte = false" />
   <domicilio :mostrar="mostrarDomicilio" @cerrar="mostrarDomicilio = false" />
+
   <div class="background-container"></div>
 
 </template>
@@ -82,9 +85,13 @@ import cerrarTurno from "@/views/cerrarTurno.vue";
 import aggProductos from "./views/aggProductos.vue";
 import comedor from "./views/comedor.vue";
 import aggUsuarios from "./views/aggUsuarios.vue";
+
+import impresoras from "./views/impresoras.vue";
+
 import retiros from "./views/retiros.vue";
 import corte from "./views/corte.vue";
 import domicilio from "./views/domicilio.vue";
+
 import { turno } from "@/store/auth.js";
 
 const mostrarVentana = ref(false);
@@ -98,9 +105,13 @@ const router = useRouter();
 const mostrarAggProductos = ref(false);
 const mostrarAggUsuarios = ref(false);
 const mostrarComedor = ref(false);
+
+const mostrarImpresoras = ref(false);
+
 const mostrarRetiros = ref(false);
 const mostrarCorte = ref(false);
 const mostrarDomicilio = ref(false);
+
 
 // Funcion para abrir turno
 const abrirPestana = () => {
@@ -158,6 +169,9 @@ const abrirAggUsuarios = () => {
   mostrarAggUsuarios.value = true;
 };
 
+//Abrir Impresoras
+const abrirImpresoras = () => {
+  mostrarImpresoras.value = true;
 
 // Abrir retiros
 const abrirRetiros = () => {
@@ -173,7 +187,7 @@ const abrirCorte = () => {
 // abrir domicilio
 const abrirDomicilio = () => {
   mostrarDomicilio.value = true;
-  
+
 };
 
 // Manejo del dropdown fuera de foco
