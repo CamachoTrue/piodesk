@@ -309,6 +309,7 @@ onMounted(() => {
   .tabla-wrapper {
   width: 500px;
   max-height: 150px;
+  min-height: 150px;
   overflow-y: auto;
   border: 1px solid #ccc;
   padding-right: 4px;

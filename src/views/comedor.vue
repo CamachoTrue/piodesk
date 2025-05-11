@@ -113,6 +113,11 @@
                     </thead>
                     <tbody>
                         <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="descripcion-col"></td>
+                            <td></td>
+                            <td></td>
                         </tr>
                     </tbody>
                     </table>
@@ -391,6 +396,7 @@ input[type=number]::-webkit-inner-spin-button,
     display: flex;
     flex-direction: column;
     gap: 10px;
+    
 }
 .tabla-wrapper1 {
     max-height: 550px;
@@ -399,6 +405,7 @@ input[type=number]::-webkit-inner-spin-button,
 }
 .tabla-wrapper2 {
     max-height: 200px;
+    min-height: 200px; /* <--- AÑADE ESTA LÍNEA */
     overflow-y: auto;
     border: 1px solid #ccc;
 }
@@ -418,7 +425,7 @@ input[type=number]::-webkit-inner-spin-button,
     height: 135px;
 }
 .form-section {
-    width: 458px;
+    width: 465px;
     height: 123px;
 
 }
@@ -472,7 +479,7 @@ button {
     color: white;
     border-radius: 5px;
     cursor: pointer;
-    width: 126px;
+    width: 124px;
     height: 45px;
     font-size: 15px;
     transition: background-color 0.3s ease;
@@ -524,11 +531,12 @@ button {
 
 .apertura-input {
     width: 135px !important;
+    margin-left: 8px;
 }
 
 .cierre-input {
     width: 135px !important;
-    margin-left: 20px;
+
 }
 
 .impreso-input {
@@ -584,4 +592,9 @@ white-space: nowrap;
   font-weight: bold;
 }
 
+.descripcion-col {
+    border-top: none !important;
+    border-bottom: none !important;
+    background-color: #fff; /* opcional: para que no se vea raro */
+}
   </style>

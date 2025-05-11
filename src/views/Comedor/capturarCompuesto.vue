@@ -1,39 +1,45 @@
 <template>
   <div v-if="mostrar">
-    <div v-if="alertaVisible" role="alert" class="alert alert-success">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </svg>
-      <span>¡Turno registrado correctamente!</span>
-    </div>
-
     <vue-draggable-resizable 
-      :w="480" 
-      :h="395" 
-      :x="window.innerWidth / 2 - 150" 
-      :y="window.innerHeight / 2 - 170" 
+      :w="500" 
+      :h="500" 
+      :x="window.innerWidth / 2 - 270" 
+      :y="window.innerHeight / 2 - 330" 
       :resizable="false"
-      class="custom-draggable"
-    >
+      class="custom-draggable">
       <div class="internal-frame">
-        <button class="close-btn" @click="$emit('cerrar')">X</button>
-        <div class="content">
-          <p>modificadores</p>
-          
-          <div class="button-group">
-            <label>Grupos</label>
-            <button v-for="grupModificador in grupModifcadores" :key="grupModificador.idgrupomod" @click="cargarModificadores(grupModificador.idgrupomod)" >
-                    {{ grupModificador.nombre }}
-                </button>
-                <div class="group-buttons">
-                <button v-for="modificador in modificadores" :key="modificador.idmodificador" @click="agregarModificador()">
-                    {{ modificador.nombre }}
-                </button>
-                 
-                </div>
-                
-          </div>
+        <div class="header">
+          Captura productos compuestos
+          <button class="close-btn" @click="$emit('cerrar')">X</button>
         </div>
+
+        <div class="content">
+          <p class="mod">Modificadores</p>
+          <div class="grupo-modificador-wrapper">
+  <label>Grupos</label>
+  <div class="group-buttons">
+    <button 
+      v-for="(grupo, index) in grupModifcadores" 
+      :key="grupo.idgrupomod" 
+      @click="mostrarGrupo(index)">
+      {{ grupo.nombre }}
+    </button>
+  </div>
+
+  <div v-if="modificadores?.length">
+    <label class="modificadores-label">Modificadores de productos</label>
+    <div class="modificadores-buttons">
+      <button 
+        v-for="modificador in modificadores" 
+        :key="modificador.idmodificador" 
+        @click="agregarModificador()">
+        {{ modificador.nombre }}
+      </button>
+    </div>
+  </div>
+</div>
+        </div>
+
       </div>
     </vue-draggable-resizable>
   </div>
@@ -151,6 +157,35 @@ watch(idProducto, (newValue) => {
         }
     }, { immediate: true });
 
+
+//nuevo
+
+const grupoSeleccionadoId = ref(null);
+
+function mostrarGrupo(index) {
+  grupoSeleccionadoId.value = grupModifcadores.value[index].idgrupomod;
+  contadorgrup.value = index; // para mantener compatibilidad con tu lógica
+  cargarModificadores();
+}
+
+watch(() => props.mostrar, async (visible) => {
+  if (visible) {
+    // Se abrió: cargar datos
+    await cargarGruposModificadores();
+  } else {
+    // Se cerró: limpiar después de un pequeño delay
+    setTimeout(() => {
+      grupModifcadores.value = [];
+      modificadores.value = null;
+      cantidadgrupMod.value = 0;
+      contadorgrup.value = 0;
+      modMaximo.value = 0;
+      grupoSeleccionadoId.value = null;
+      montoInicial.value = null;
+      alertaVisible.value = false;
+    }, 200); // pequeño delay para evitar conflicto visual
+  }
+});
 </script>
 
 <style scoped>
@@ -243,10 +278,10 @@ input[type=number]::-webkit-inner-spin-button,
 
 .button-group {
   display: flex;
-  justify-content: space-between;
-  margin-top: 25px;
-  margin-left: 20px;
-  margin-right: 33px;
+
+  gap: 10px;
+  margin-top: 10px;
+  margin-bottom: 30px;
 }
 
 button {
@@ -274,7 +309,53 @@ button {
 input {
     padding-left: 10px;
     padding: 5px;
-    border: 1px solid #b4b4b4;
+    border: 1px solid #6b1616;
     border-radius: 4px;
     }
+
+.grupo-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+/* Modificadores en fila */
+.group-buttons-horizontal {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.grupo-modificador-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.group-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.modificadores-label {
+  margin-top: 15px;
+  font-size: 15px;
+  color: #333;
+}
+
+.modificadores-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.mod{
+  font-weight: bold;
+  margin-bottom: 10px;
+}
 </style>

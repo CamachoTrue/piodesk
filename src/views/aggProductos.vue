@@ -411,6 +411,7 @@
   /* Estilos de la tabla */
   .tabla-wrapper {
     max-height: 440px;
+    min-height: 440px;
     overflow-y: auto;
     overflow-x: hidden;
     border: 1px solid #ccc;

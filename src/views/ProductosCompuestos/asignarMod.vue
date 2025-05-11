@@ -1,6 +1,6 @@
 <template>
     <div v-if="mostrar">
-        <vue-draggable-resizable :w="460" :h="520" :x="window.innerWidth / 2 - 220" :y="window.innerHeight / 2 - 300" :resizable="false" class="custom-draggable">
+        <vue-draggable-resizable :w="460" :h="460" :x="window.innerWidth / 2 - 220" :y="window.innerHeight / 2 - 300" :resizable="false" class="custom-draggable">
             <div class="internal-frame">
                 <div class="header">
                 Asignar Modificador
@@ -341,6 +341,7 @@ input[type=number]::-webkit-outer-spin-button {
 
 .tabla-wrapper {
     max-height: 190px;
+    min-height: 190px;
     overflow: auto;
     border: 1px solid #ccc;
     margin-top: 20px;
@@ -370,15 +371,18 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 .tablaUsuarios th:nth-child(1) {
-    width: 30px;
+    width: 20px;
 }
 
 .tablaUsuarios th:nth-child(2) {
-    width: 100px;
+    width: 20px;
 }
 
 .tablaUsuarios th:nth-child(3) {
     width: 60px;
+}
+.tablaUsuarios th:nth-child(4) {
+    width: 30px;
 }
 
 button {

@@ -303,6 +303,8 @@
   
   .tabla-wrapper {
       max-height: 270px;
+      min-height: 270px;
+
       overflow: auto;
       border: 1px solid #ccc;
       display: inline-block;

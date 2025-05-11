@@ -3,8 +3,8 @@
       <vue-draggable-resizable
         :w="365"
         :h="270"
-        :x="window.innerWidth / 2 + 200"
-        :y="window.innerHeight / 2 - 170"
+        :x="window.innerWidth / 2 - 230"
+        :y="window.innerHeight / 2 - 200"
         :resizable="false"
         class="custom-draggable">
         <div class="internal-frame">

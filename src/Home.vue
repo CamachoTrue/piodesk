@@ -3,7 +3,7 @@
     <button @click="abrirComedor()" class="comedor-btn"><img src="/mesa.png" class="comedor-icon" />Comedor</button>
     <button @click="abrirDomicilio()" class="domicilio-btn"><img src="/moto.png" class="domicilio-icon" />Domicilio</button>
     <button @click="abrirRetiros()" class="deposito-btn"><img src="/retirar.png" class="deposito-icon" />Retiro y <br> depósito</button>
-    <button @click="" class="consultar-btn"><img src="/consulta.png" class="consultar-icon" />Consultar <br> citas</button>
+    <!--<button @click="" class="consultar-btn"><img src="/consulta.png" class="consultar-icon" />Consultar <br> citas</button>  -->
     <button @click="abrirPestana()" class="abrir-btn"><img src="/candado-abierto.png" class="abrir-icon" />Abrir turno</button>
     <button @click="PestanaCerrar()" class="cerrar-btn"><img src="/candado.png" class="cerrar-icon" />Cerrar turno</button>
     <button @click="abrirCorte()" class="corte-btn"><img src="/caja-registradora.png" class="corte-icon" />Corte caja</button>

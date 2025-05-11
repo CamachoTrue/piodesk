@@ -350,7 +350,8 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 .tabla-wrapper {
-    max-height: 310px;
+    max-height: 350px;
+    min-height: 350px;
     overflow: auto;
     border: 1px solid #ccc;
     display: inline-block; /* Esto hace que el div se ajuste al ancho del contenido interno */

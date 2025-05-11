@@ -1,7 +1,7 @@
 <template>
     <div v-if="mostrar" class="modal-overlay">
       <VueDraggableResizable
-        class="modal-draggable"
+        class="modal-draggable custom-draggable"
         :w="800"
         :h="600"
         :resizable="false"
@@ -102,7 +102,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.4);
+    background: rgba(0, 0, 0, 0);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -112,6 +112,28 @@
     width: 800px !important;
     height: 600px !important;
   }
+
+  /* Estilos para eliminar líneas punteadas de vue-draggable-resizable */
+.custom-draggable {
+  outline: none !important;
+  border: none !important;
+}
+
+.custom-draggable > div {
+  outline: none !important;
+  border: none !important;
+}
+
+.vue-draggable-resizable .handle {
+  display: none !important;
+}
+
+.vue-draggable-resizable .handle-tl,
+.vue-draggable-resizable .handle-tr,
+.vue-draggable-resizable .handle-bl,
+.vue-draggable-resizable .handle-br {
+  display: none !important;
+}
   .internal-frame {
     background: #fff;
     border-radius: 15px;
@@ -119,26 +141,36 @@
     display: flex;
     flex-direction: column;
     height: 100%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   }
   .header {
     background: rgb(247, 219, 75);
-    padding: 10px 20px;
+    padding: 5px 20px;
     font-weight: bold;
     color: #fff;
     position: relative;
   }
+  
   .close-btn {
+    padding: 0 !important;
+    width: 21px;
+    height: 21px;
     position: absolute;
-    top: 10px;
-    right: 10px;
-    background: #d32f2f;
+    right: 2px;
+    top: 2px;
+    bottom: 2px;
+    background: red;
+    color: white;
     border: none;
-    color: #fff;
-    width: 24px;
-    height: 24px;
-    border-radius: 4px;
     cursor: pointer;
-  }
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 4px;
+    margin-right: 4px;
+    font-size: 13px;
+}
   .content {
     position: relative;
     flex: 1;
@@ -153,6 +185,9 @@
   select {
     margin-bottom: 15px;
     padding: 5px;
+    border: #ccc;
+    border: 1px solid #b4b4b4;
+    border-radius: 4px;
   }
   .ticket-preview {
     width: 220px;
@@ -166,15 +201,17 @@
     font-size: 14px;
   }
   .print-btn {
+    width: 170px;
     position: absolute;
     bottom: 20px;
     left: 20px;
     padding: 8px 16px;
-    background: rgb(247, 219, 75);
+    background-color: #82a5f3;
+    color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    font-weight: bold;
+
   }
   .log {
     margin-top: 10px;

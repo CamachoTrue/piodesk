@@ -3,8 +3,8 @@
     <vue-draggable-resizable
       :w="1000"
       :h="500"
-      :x="windowWidth / 2 - 350"
-      :y="windowHeight / 2 - 250"
+      :x="windowWidth / 2 - 500"
+      :y="windowHeight / 2 - 300"
       :resizable="false"
       class="custom-draggable"
     >
@@ -16,7 +16,6 @@
         <div class="content layout">
           <!-- Carrito de compras -->
           <div class="carrito">
-            <div class="label-superior">Productos seleccionados</div>
             <div class="tabla-wrapper">
               <table class="tabla">
                 <thead>
@@ -125,6 +124,8 @@ const cargarGrupos = async () => {
 
 
 const cargarSubGrupos = async (idgrupo) => {
+    subgrupos.value = [];     // ← limpia los subgrupos anteriores
+  productos.value = [];     // ← limpia los productos anteriores
   const { data, error } = await supabase
     .from('subgrupos')
     .select()
@@ -147,6 +148,9 @@ const cargarSubGrupos = async (idgrupo) => {
   
 };
 
+const grupModifcadores = ref([]);
+const modificadores = ref([]);
+const grupoSeleccionadoId = ref(null); // también limpia selección previa
 const cargarGrupModificadores = async () => {
   const { data, error } = await supabase
     .from('grupomodificador')
@@ -344,7 +348,6 @@ button:hover {
 .tabla td {
     padding: 3px 8px;
     text-align: left;
-    border: 1px solid #ccc;
     font-weight: normal;
     color: #3e3e3e;
 }
@@ -367,9 +370,13 @@ button:hover {
 }
 .tabla-wrapper {
     max-height: 310px;
+    min-height: 310px;
     overflow: auto;
     border: 1px solid #ccc;
     display: inline-block; 
+}
+.tabla th {
+    border-bottom: 1px solid #ccc;
 }
 
 .bordered-box {

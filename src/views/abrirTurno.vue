@@ -188,7 +188,7 @@ button {
   width: 110px;
   padding: 5px 15px;
   border: none;
-  background-color: rgb(130, 165, 243);
+  background-color: #82a5f3;
   color: white;
   border-radius: 5px;
   cursor: pointer;

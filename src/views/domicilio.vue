@@ -31,16 +31,16 @@
                         <th>Imp.</th>
                         <th>Cliente</th>
                         <th>Telefono</th>
-                        <th>Contacto</th>
+                        <th>Id cliente</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr v-for="i in 20" :key="i">
-                        <td>{{ i }}</td>
+                    <tr>
+                        <td></td>
                         <td><input type="checkbox" disabled /></td>
-                        <td>nombre</td>
-                        <td>6421415249</td>
-                        <td>Nombre</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
                     </tr>
                     </tbody>
                 </table>
@@ -110,12 +110,12 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="i in 10" :key="i">
-                            <td>{{ i }}</td>
-                            <td>CLV{{ i }}</td>
-                            <td>Descripción {{ i }}</td>
-                            <td>$10.00</td>
-                            <td>$10.00</td>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
                         </tr>
                     </tbody>
                     </table>
@@ -130,7 +130,6 @@
                         <button @click="abrirCancelar()" class="button">Cancelar cuenta</button>
                         <button @click="abrirPagar()" class="button">Pagar cuenta</button>
                         <button @click="abrirCaptura()" class="button">Captura</button>
-                        <button @click="abrirRenombrar()" class="button">Renombrar</button>
                         <button @click="abrirImprimir()" class="button">Imprimir</button>
                     </div>
 
@@ -171,7 +170,6 @@
     <borrar :mostrar="mostrarBorrar" @cerrar="mostrarBorrar = false" />
     <descuento :mostrar="mostrarDescuento" @cerrar="mostrarDescuento = false" />
     <captura :mostrar="mostrarCaptura" @cerrar="mostrarCaptura = false" />
-    <renombrar :mostrar="mostrarRenombrar" @cerrar="mostrarRenombrar = false" />
     <imprimir :mostrar="mostrarImprimir" @cerrar="mostrarImprimir = false" />
     <reabrir :mostrar="mostrarReabrir" @cerrar="mostrarReabrir = false" />
     <cancelar :mostrar="mostrarCancelar" @cerrar="mostrarCancelar = false" />
@@ -191,7 +189,6 @@ import descuento from "./Comedor/descuento.vue";
 import imprimir from "./Comedor/imprimir.vue";
 import pagar from "./Comedor/pagar.vue";
 import reabrir from "./Comedor/reabrir.vue";
-import renombrar from "./Comedor/renombrar.vue";
 import aggClientes from "./Domicilio/aggClientes.vue";
 
 
@@ -371,6 +368,7 @@ input[type=number]::-webkit-inner-spin-button,
 }
 .tabla-wrapper2 {
     max-height: 200px;
+    min-height: 200px;
     overflow-y: auto;
     border: 1px solid #ccc;
 }
