@@ -169,6 +169,21 @@ const abrirAggUsuarios = () => {
   mostrarAggUsuarios.value = true;
 };
 
+// Abrir retiros
+const abrirRetiros = () => {
+  mostrarRetiros.value = true;
+};
+
+// abrir Corte CAja
+const abrirCorte = () => {
+  mostrarCorte.value = true;
+  
+};
+// abrir domicilio
+const abrirDomicilio = () => {
+  mostrarDomicilio.value = true;
+};
+
 //Abrir Impresoras
 const abrirImpresoras = () => {
   mostrarImpresoras.value = true;
