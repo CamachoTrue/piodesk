@@ -1,33 +1,52 @@
 <template>
     <div v-if="mostrar">
-        <vue-draggable-resizable
-        :w="280"
-        :h="185"
-        :x="window.innerWidth / 2 - 150"
+      <vue-draggable-resizable
+        :w="365"
+        :h="270"
+        :x="window.innerWidth / 2 + 200"
         :y="window.innerHeight / 2 - 170"
         :resizable="false"
         class="custom-draggable">
-            <div class="internal-frame">
-                <div class="header"> Eliminar Producto
-                    <button class="close-btn" @click="$emit('cerrar')">X</button>
-                </div>
-                    <div class="content">
-                        <p>¿Estas seguro de eliminar el producto?</p>
-                        <div class="button-group">
-                    <button @click="confirmar" class="button">Confirmar</button>
-                    <button @click="$emit('cerrar')" class="cancel-btn">Cancelar</button>
-                        </div>
-                    </div>
+        <div class="internal-frame">
+          <div class="header"> Retiro y depósito
+            <button class="close-btn" @click="$emit('cerrar'); limpiarCampos()">X</button>
+          </div>
+          <div class="content">
+            <div class="bordered-box">
+              <div class="input-row">
+              <label>Movimiento:</label>
+              <select v-model="movimiento" class="input-control">
+                <option value="" disabled>Selecciona una opción</option>
+                <option value="Retiro">Retiro</option>
+                <option value="Deposito">Deposito</option>
+              </select>
             </div>
-        </vue-draggable-resizable>
+            <div class="input-row">
+              <label>Concepto:</label>
+              <input v-model="concepto" type="text" class="input-control" />
+            </div>
+            <div class="input-row">
+              <label>Importe:</label>
+              <input v-model="importe" type="number" class="input-chico" />
+            </div>
+            </div>
+              <div class="button-group">
+              <button class="button" @click="aggMovimiento()">Aceptar</button>
+              <button class="cancel-btn">Cancelar</button>
+            </div>
+
+          </div>
+        </div>
+      </vue-draggable-resizable>
     </div>
-</template>
+  </template>
 
 <script setup>
     import { supabase } from "@/supabase/supabase";
     import { defineEmits, defineProps, ref } from "vue";
     import VueDraggableResizable from "vue-draggable-resizable";
     import "vue-draggable-resizable/style.css";
+    import { idTurno, userLogin } from "../store/auth.js";
 
 
   // Props y eventos
@@ -37,6 +56,44 @@
   // Variables
     const window = ref(globalThis.window);
 
+  // Fecha y Hora en formato correcto
+    const now = new Date();
+    const fecha = ref(now.toISOString().split("T")[0]);
+    const hora = ref(now.toTimeString().split(" ")[0]);
+
+    const movimiento = ref(null);
+    const concepto = ref(null);
+    const importe = ref(null);
+
+    const limpiarCampos = () => {
+      movimiento.value = null;
+      concepto.value = null;
+      importe.value = null;
+    };
+
+    const aggMovimiento = async () =>{
+      console.log(hora.value);
+      
+      const { data: dataAgg, error: errorAgg } = await supabase
+        .from('retirosdepositos')
+        .insert([{
+          idturno: idTurno.value,
+          idusuario: userLogin.value,
+          tipomovimiento: movimiento.value,
+          concepto: concepto.value,
+          cantidad: importe.value,
+          fecha: fecha.value,
+          hora: hora.value
+        }]);
+
+      if(errorAgg){
+        console.error("Error al realizar ",movimiento.value, errorAgg);
+        return;
+      }else{
+        console.log(movimiento.value, " realizado correctamente");
+        limpiarCampos();
+      }
+    };
 
 </script>
 
@@ -126,16 +183,14 @@
         display: flex;
         flex-direction: column;
         padding: 20px;
-        padding-top: 40px;
-        text-align: center;
     }
 
     .button-group {
         display: flex;
         justify-content: space-between;
         margin-top: 25px;
-        margin-left: 28px;
-        margin-right: 28px;
+        margin-left: 70px;
+        margin-right: 70px;
     }
 
     button {
@@ -159,4 +214,45 @@
     .cancel-btn:hover {
         background-color: rgb(92, 92, 92);
     }
+
+    input {
+    padding-left: 10px;
+    width: 250px;
+    padding: 5px;
+    border: 1px solid #b4b4b4;
+    border-radius: 4px;
+    }
+
+    .input-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.input-control {
+  padding: 5px;
+  border-radius: 4px;
+  border: 1px solid #b4b4b4;
+}
+
+.input-row label {
+  width: 120px; 
+  
+}
+
+.input-chico{
+    width: 120px;
+}
+
+select{
+    width: 250px;
+}
+
+.bordered-box {
+    border: 1px solid #b4b4b4;
+    padding: 10px;
+    border-radius: 10px;
+    width: 400px;
+}
 </style>

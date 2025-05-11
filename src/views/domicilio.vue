@@ -1,16 +1,16 @@
 <template>
     <div v-if="mostrar">
         <vue-draggable-resizable
-        :w="1220"
+        :w="1420"
         :h="635"
-        :x="window.innerWidth / 2 - 620"
+        :x="window.innerWidth / 2 - 710"
         :y="window.innerHeight / 2 - 370"
         :resizable="false"
         class="custom-draggable"
         >
         <div class="internal-frame">
             <div class="header">
-            Comedor
+            Domicilio
             <button class="close-btn" @click="$emit('cerrar')">X</button>
             </div>
 
@@ -19,22 +19,28 @@
                 <div class="left-table tabla-wrapper1">
                 <table class="tablaComedor">
                     <colgroup>
-                    <col style="width: 150px" />
-                    <col style="width: 80px" />
+                    <col style="width: 60px" />
+                    <col style="width: 40px" />
+                    <col style="width: 170px" />
+                    <col style="width: 100px" />
                     <col style="width: 100px" />
                     </colgroup>
                     <thead>
                     <tr>
-                        <th>Cuenta</th>
-                        <th>Imp.</th>
                         <th>Orden</th>
+                        <th>Imp.</th>
+                        <th>Cliente</th>
+                        <th>Telefono</th>
+                        <th>Contacto</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr v-for="i in 20" :key="i">
-                        <td>Cuenta {{ i }}</td>
+                        <td>{{ i }}</td>
                         <td><input type="checkbox" disabled /></td>
-                        <td> {{ i }}</td>
+                        <td>nombre</td>
+                        <td>6421415249</td>
+                        <td>Nombre</td>
                     </tr>
                     </tbody>
                 </table>
@@ -46,7 +52,7 @@
                     <div class="form-columns">
                     <div class="column">
                         <div class="input-row">
-                        <label>Cuenta:</label>
+                        <label>Cliente:</label>
                         <input class="input-control cuenta-input" type="text" readonly/>
                         </div>
                         <div class="input-row">
@@ -72,19 +78,17 @@
                         <input v-model="checkimpreso" class="impreso-input" type="checkbox" disabled/>
                         </div>
                     </div>
+                    <div class="column">
+                            <div class="textarea-column">
+                        <label>Dirección:</label>
+                        <textarea class="direccion-textarea"></textarea>
+                        </div>
+                    </div>
                     </div>
                     </div>
 
-                    <div class="button-section">
-                        <div class="button-grid">
-                            <button @click="abrirAbrir()" class="button">Abrir cuenta</button>
-                            <button @click="abrirBorrar()" class="button">Eliminar Prod.</button>
-                            <button @click="abrirDescuento()" class="button">Descuento</button>
-                            <button @click="abrirCaptura()" class="button">Captura</button>
-                            <button @click="abrirRenombrar()" class="button">Renombrar</button>
-                            <button @click="" class="button">Imprimir</button>
-                        </div>
-                    </div>
+
+
                 </div>
 
                 <div class="tabla-wrapper2">
@@ -117,37 +121,44 @@
                     </table>
                 </div>
 
-                <div class="bottom-controls">
-                    <div class="left-buttons">
-                    <button @click="abrirReabrir()"class="button">Reabrir cuenta</button>
-                    <button @click="abrirCancelar()"class="button">Cancelar cuenta</button>
-                    <button @click="abrirPagar()"class="button">Pagar cuenta</button>
+                <div class="bottom-content">
+                    <div class="all-buttons">
+                        <button @click="abrirAggClientes()" class="button">Abrir cuenta</button>
+                        <button @click="abrirBorrar()" class="button">Eliminar Prod.</button>
+                        <button @click="abrirDescuento()" class="button">Descuento</button>
+                        <button @click="abrirReabrir()" class="button">Reabrir cuenta</button>
+                        <button @click="abrirCancelar()" class="button">Cancelar cuenta</button>
+                        <button @click="abrirPagar()" class="button">Pagar cuenta</button>
+                        <button @click="abrirCaptura()" class="button">Captura</button>
+                        <button @click="abrirRenombrar()" class="button">Renombrar</button>
+                        <button @click="abrirImprimir()" class="button">Imprimir</button>
                     </div>
-                <div class="right-totals-wrapper">
-                    <div class="bordered-box" style="min-width: 395px;">
-                    <div class="input-row">
-                        <label>Subtotal:</label>
-                        <input class="input-control" type="text" />
+
+                    <div class="right-totals-wrapper">
+                        <div class="bordered-box totals-box" style="min-width: 300px;">
+                        <div class="input-row">
+                            <label>Subtotal:</label>
+                            <input class="input-control" type="text" />
+                        </div>
+                        <div class="input-row">
+                            <label>Descuento:</label>
+                            <input class="input-control" type="text" />
+                        </div>
+                        <div class="input-row">
+                            <label>Impuestos:</label>
+                            <input class="input-control" type="text" />
+                        </div>
+                        <div class="input-row">
+                            <label>Propina:</label>
+                            <input class="input-control" type="text" />
+                        </div>
+                        <div class="input-row">
+                            <label>Total:</label>
+                            <input class="input-control" type="text" />
+                        </div>
+                        </div>
                     </div>
-                    <div class="input-row">
-                        <label>Descuento:</label>
-                        <input class="input-control" type="text" />
                     </div>
-                    <div class="input-row">
-                        <label>Impuestos:</label>
-                        <input class="input-control" type="text" />
-                    </div>
-                    <div class="input-row">
-                        <label>Propina:</label>
-                        <input class="input-control" type="text" />
-                    </div>
-                    <div class="input-row">
-                        <label>Total:</label>
-                        <input class="input-control" type="text" />
-                    </div>
-                    </div>
-                </div>
-                </div>
 
             </div>
             </div>
@@ -161,25 +172,28 @@
     <descuento :mostrar="mostrarDescuento" @cerrar="mostrarDescuento = false" />
     <captura :mostrar="mostrarCaptura" @cerrar="mostrarCaptura = false" />
     <renombrar :mostrar="mostrarRenombrar" @cerrar="mostrarRenombrar = false" />
+    <imprimir :mostrar="mostrarImprimir" @cerrar="mostrarImprimir = false" />
     <reabrir :mostrar="mostrarReabrir" @cerrar="mostrarReabrir = false" />
     <cancelar :mostrar="mostrarCancelar" @cerrar="mostrarCancelar = false" />
     <pagar :mostrar="mostrarPagar" @cerrar="mostrarPagar = false" />
+    <aggClientes :mostrar="mostrarAggClientes" @cerrar="mostrarAggClientes = false" />
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { defineEmits, defineProps, onMounted } from "vue";
+import { defineEmits, defineProps, onMounted, ref } from "vue";
 import VueDraggableResizable from "vue-draggable-resizable";
 import "vue-draggable-resizable/style.css";
 import abrir from "./Comedor/abrir.vue";
 import borrar from "./Comedor/borrar.vue";
-import descuento from "./Comedor/descuento.vue";
-import captura from "./Comedor/captura.vue";
-import renombrar from "./Comedor/renombrar.vue";
-import imprimir from "./Comedor/imprimir.vue";
-import reabrir from "./Comedor/reabrir.vue";
 import cancelar from "./Comedor/cancelar.vue";
+import captura from "./Comedor/captura.vue";
+import descuento from "./Comedor/descuento.vue";
+import imprimir from "./Comedor/imprimir.vue";
 import pagar from "./Comedor/pagar.vue";
+import reabrir from "./Comedor/reabrir.vue";
+import renombrar from "./Comedor/renombrar.vue";
+import aggClientes from "./Domicilio/aggClientes.vue";
+
 
 const checkimpreso = ref(false);
 const props = defineProps(["mostrar"]);
@@ -194,6 +208,7 @@ const mostrarImprimir = ref(false);
 const mostrarReabrir = ref(false);
 const mostrarCancelar = ref(false);
 const mostrarPagar = ref(false);
+const mostrarAggClientes = ref(false);
 
 
 onMounted(() => {
@@ -225,6 +240,11 @@ const abrirRenombrar = () => {
     mostrarRenombrar.value = true;
 };
 
+//imprimir
+const abrirImprimir = () => {
+    mostrarImprimir.value = true;
+};
+
 //reabrir
 const abrirReabrir = () => {
     mostrarReabrir.value = true;
@@ -239,6 +259,12 @@ const abrirCancelar = () => {
 const abrirPagar = () => {
     mostrarPagar.value = true;
 };
+
+//agg clientes
+const abrirAggClientes = () => {
+    mostrarAggClientes.value = true;
+};
+
 
 </script>
 
@@ -328,7 +354,7 @@ input[type=number]::-webkit-inner-spin-button,
     height: 100%;
 }
 .left-table {
-    width: 300px;
+    width: 500px;
     flex-shrink: 0;
     flex-grow: 0;
 }
@@ -368,25 +394,24 @@ input[type=number]::-webkit-inner-spin-button,
     height: 123px;
 
 }
+
 .button-section {
-    flex: 1;
+    width: 100%;
     display: flex;
-    justify-content: flex-end;
-
-
+    justify-content: center;
 }
+
 .button-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 5px;
-    padding-top: 15px;
-    padding-bottom: 25px;
-
+    gap: 10px;
 }
+
 .bordered-box {
     border: 1px solid #b4b4b4;
     padding: 10px;
     border-radius: 10px;
+    width: 865px;
 }
 .input-row {
     display: flex;
@@ -398,9 +423,8 @@ input[type=number]::-webkit-inner-spin-button,
 
 .bottom-controls {
     display: flex;
-    justify-content: flex-end;
-    align-items: flex-start;
-    gap: 15px;
+    flex-direction: column;
+    gap: 10px;
     margin-top: 10px;
 }
 .left-buttons {
@@ -455,7 +479,7 @@ button {
 
 /* Ancho específico solo para los inputs con clases personalizadas */
 .cuenta-input {
-    width: 150px !important;
+    width: 250px !important;
 }
 
 .folio-input {
@@ -469,11 +493,11 @@ button {
 }
 
 .apertura-input {
-    width: 135px !important;
+    width: 190px !important;
 }
 
 .cierre-input {
-    width: 135px !important;
+    width: 190px !important;
     margin-left: 20px;
 }
 
@@ -530,4 +554,42 @@ white-space: nowrap;
   font-weight: bold;
 }
 
+.textarea-column {
+  display: flex;
+  flex-direction: column;
+margin-left: 5px;
+  justify-content: flex-start;
+}
+
+.direccion-textarea {
+  width: 240px;
+  height: 75px;
+  resize: none;
+  border: 1px solid #b3b3b3;
+  border-radius: 5px;
+
+}
+
+.all-buttons {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+
+.bottom-controls {
+  margin-top: 10px;
+}
+
+.bottom-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  margin-top: 10px;
+}
+
+.totals-box {
+  width: 450px;
+}
   </style>

@@ -52,7 +52,7 @@ const window = ref(globalThis.window);
 // Fecha y Hora en formato correcto
 const now = new Date();
 const fecha = ref(now.toISOString().split("T")[0]);
-const hora = ref(now.toISOString().split("T")[1].split(".")[0]);
+const hora = ref(now.toTimeString().split(" ")[0]);
 
 const confirmar = async () => {
   await obtenerTurno();

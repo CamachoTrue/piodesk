@@ -3,7 +3,7 @@
         <vue-draggable-resizable :w="750" :h="347" :x="window.innerWidth / 2 - 450" :y="window.innerHeight / 2 - 280" :resizable="false" class="custom-draggable">
         <div class="internal-frame">
             <div class="header">Editar modificadores de productos
-                <button class="close-btn" @click="$emit('cerrar')">X</button>
+                <button class="close-btn" @click="$emit('cerrar'); limpiarCampos()">X</button>
             </div>
             <div class="content">
                 <div class="main-grid">
@@ -20,16 +20,13 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr><td>001</td><td>Producto A</td><td>$100.00</td><td>1</td></tr>
-                                <tr><td>002</td><td>Producto B</td><td>$150.00</td><td>2</td></tr>
-                                <tr><td>003</td><td>Producto C</td><td>$200.00</td><td>1</td></tr>
-                                <tr><td>004</td><td>Producto D</td><td>$120.00</td><td>3</td></tr>
-                                <tr><td>005</td><td>Producto E</td><td>$80.00</td><td>2</td></tr>
-                                <tr><td>006</td><td>Producto F</td><td>$95.00</td><td>1</td></tr>
-                                <tr><td>007</td><td>Producto G</td><td>$110.00</td><td>3</td></tr>
-                                <tr><td>008</td><td>Producto H</td><td>$130.00</td><td>2</td></tr>
-                                <tr><td>009</td><td>Producto I</td><td>$140.00</td><td>2</td></tr>
-                                <tr><td>010</td><td>Producto J</td><td>$160.00</td><td>3</td></tr>
+                                <tr v-for="modificador in modificadores" :key="modificador.idmodificador" @dblclick="editarModificadores(modificador)">
+                                    <td>{{ modificador.idmodificador }}</td>
+                                    <td>{{ modificador.nombre }}</td>
+                                    <td>${{ modificador.precio }}</td>
+                                    <td>{{ obtenerNombreGrupoMod(modificador.idgrupomod) }}</td>
+                                </tr>
+                                
                             </tbody>
                         </table>
                     </div>
@@ -41,19 +38,19 @@
             </div>
   
             <div class="button-group">
-                <button @click="" class="button" >Guardar</button>
-                <button @click="" class="button">Eliminar</button>
-                <button @click="" class="button">Limpiar</button>
+                <button @click="aggModificador()" class="button" >Guardar</button>
+                <button @click="delModificador()" class="button">Eliminar</button>
+                <button @click="limpiarCampos()" class="button">Limpiar</button>
             </div>
 
             <div class="input-frame">
                 <div class="input-row">
                     <label>Clave</label>
-                    <input v-model="clave" type="number" class="input-tabla input-chico" />
+                    <input v-model="clave" type="number" class="input-tabla input-chico" readonly/>
                 </div>
                 <div class="input-row">
                     <label>Descripción</label>
-                    <input v-model="desc" type="text" class="input-tabla" />
+                    <input v-model="descripcion" type="text" class="input-tabla" />
                 </div>
                 <div class="input-row">
                     <label>Precio</label>
@@ -62,6 +59,9 @@
                 <div class="input-row">
                     <label>Grupo Modificador</label>
                     <select v-model="tipo" class="input-tabla input-mediano">
+                        <option v-for="grupoMod in gruposMod" :key="grupoMod.idgrupomod">
+                            {{ grupoMod.nombre }}
+                        </option>
                     </select>
                 </div>
                 </div>
@@ -75,7 +75,7 @@
   
   <script setup>
   import { supabase } from "@/supabase/supabase";
-  import { defineEmits, defineProps, ref } from "vue";
+  import { defineEmits, defineProps, ref, onMounted } from "vue";
   import VueDraggableResizable from "vue-draggable-resizable";
   import "vue-draggable-resizable/style.css";
 
@@ -84,8 +84,134 @@
   const props = defineProps(["mostrar"]);
   const emit = defineEmits(["cerrar"]);
   
+  const clave = ref(null);
+  const descripcion = ref(null);
+  const precio = ref(null);
+  const tipo = ref(null);
+
+  const gruposMod = ref([]);
+  const modificadores = ref([]);
 
   const window = ref(globalThis.window);
+
+  const limpiarCampos = () => {
+    clave.value = null;
+    descripcion.value = null;
+    precio.value = null;
+    tipo.value = null;
+  };
+
+  const editarModificadores = (modificador) => {
+    clave.value = modificador.idmodificador;
+    descripcion.value = modificador.nombre;
+    precio.value = modificador.precio;
+    tipo.value = obtenerNombreGrupoMod(modificador.idgrupomod);
+  };
+
+  const obtenergruposMod = async () => {
+    const { data: dataCon, errro: errroCon } = await supabase
+        .from('grupomodificador')
+        .select();
+
+    if(errroCon){
+        console.error("Error al obtener grupos modificadores");
+        return;
+    }else{
+        gruposMod.value = dataCon;
+    }
+  };
+  
+  const obtenerNombreGrupoMod = (idgrupomod) =>{
+    const mod = gruposMod.value.find(g => g.idgrupomod === idgrupomod)
+    return mod ? mod.nombre : 'Sin grupo modificador'
+  };
+
+  const obtenerModificadores = async () => {
+    const { data: dataMod, error: errorMod } = await supabase 
+        .from('modificadores')
+        .select();
+
+    if(errorMod){
+        console.error("Error al obtener modificadores ",errorMod);
+    }else{
+        modificadores.value = dataMod;
+    }
+  };
+
+  //Metodo para agregar y editar modificadores
+  const aggModificador = async () => {
+    await obtenerModificadores();
+    await obtenergruposMod();
+
+    const existe = modificadores.value.find(u => u.idmodificador === clave.value);
+    const grupoModi = gruposMod.value.find(u => u.nombre === tipo.value);
+    console.log(grupoModi);
+    
+
+    if(existe){
+        const { error: errorUp } = await supabase
+            .from('modificadores')
+            .update({
+                nombre: descripcion.value,
+                precio: precio.value,
+                idgrupomod: grupoModi.idgrupomod
+            })
+            .eq('idmodificador', clave.value);
+
+        if(errorUp){
+            console.error("Erro al actualizar modificador ",errorUp);
+            return;
+        }else{
+            console.log("Modificador actualizado correctamente");
+            await obtenerModificadores();
+            await obtenergruposMod();
+            emit('actualizado');
+        }
+    }else{
+        const { data: dataAgg, error: errorAgg } = await supabase
+        .from('modificadores')
+        .insert([{
+            nombre: descripcion.value,
+            precio: precio.value,
+            idgrupomod: grupoModi.idgrupomod
+        }])
+        .select();
+
+        if(errorAgg){
+            console.error("Erro al agregar modificador ",errorAgg);
+            return;
+        }else{
+            console.log("Modificador agregado correctamente");
+            clave.value = dataAgg[0].idmodificador;
+            await obtenerModificadores();
+            emit('actualizado');
+            return;
+        }
+    }
+  };
+
+  //Metodo para eliminar modificadores
+  const delModificador = async () => {
+    const { error } = await supabase
+        .from('modificadores')
+        .delete()
+        .eq('idmodificador', clave.value);
+
+    if(error){
+        console.error("Error al eliminar modificador ", error);
+        return;
+    }else{
+        console.log("Modificador eliminado correctamente");
+        await obtenerModificadores();
+        limpiarCampos();
+        return;
+    }
+  };
+
+  onMounted(() => {
+    obtenergruposMod();
+    obtenerModificadores();
+  });
 
   </script>
   

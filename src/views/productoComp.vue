@@ -33,11 +33,10 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr v-for="i in 4" :key="i">
-                        <td>201</td>
-                        <td>{{ 100 + i }}</td>
-                        <td>Grupo {{ i }}</td>
-
+                      <tr v-for="grupoAnadido in gruposAnadidos" :key="grupoAnadido.idgrupomod">
+                        <td>{{ grupoAnadido.idgrupomod }}</td>
+                        <td>{{ grupoAnadido.nombre }}</td>
+                        <td>{{ grupoAnadido.modificadoresmax }}</td>
                     </tr>
                     </tbody>
                 </table>
@@ -61,11 +60,11 @@
             </tr>
             </thead>
             <tbody>
-            <tr v-for="i in 4" :key="'mod-' + i">
-                <td>{{ 200 + i }}</td>
-                <td>Modificador {{ i }}</td>
-                <td>{{ (i * 10).toFixed(2) }}</td>
-                <td>Grupo {{ i }}</td>
+            <tr v-for="modifi in modificadores" :key="modifi.idmodificador">
+                <td>{{ modifi.idmodificador }}</td>
+                <td>{{ modifi.nombre }}</td>
+                <td>{{ modifi.precio }}</td>
+                <td>{{ obtenerNombreGrupoMod(modifi.idgrupomod) }}</td>
             </tr>
             </tbody>
         </table>
@@ -76,21 +75,22 @@
       </vue-draggable-resizable>
     </div>
     
-    <editarGrupo :mostrar="mostrarEditarGrupo" @cerrar="mostrarEditarGrupo = false" />
+    <editarGrupo :mostrar="mostrarEditarGrupo" @cerrar="mostrarEditarGrupo = false" @actualizado="actualizarDespuesDeEditar()" />
     
-    <editarModProd :mostrar="mostrarEditarModProd" @cerrar="mostrarEditarModProd = false" />
+    <editarModProd :mostrar="mostrarEditarModProd" @cerrar="mostrarEditarModProd = false" @actualizado="actualizarDespuesDeEditar()" />
 
-    <asignarMod :mostrar="mostrarAsignarMod" @cerrar="mostrarAsignarMod = false" />
+    <asignarMod :mostrar="mostrarAsignarMod" @cerrar="mostrarAsignarMod = false" @actualizado="actualizarDespuesDeEditar()"/>
   </template>
   
   <script setup>
-  import { defineEmits, defineProps, ref } from "vue";
+  import { defineEmits, defineProps, ref, onMounted, watch } from "vue";
+  import { supabase } from "../supabase/supabase.js";
   import VueDraggableResizable from "vue-draggable-resizable";
   import "vue-draggable-resizable/style.css";
   import editarGrupo from "./ProductosCompuestos/editarGrupoModificador.vue";
   import editarModProd from "./ProductosCompuestos/editarModProd.vue";
   import asignarMod from "./ProductosCompuestos/asignarMod.vue";
-
+  import { cargarGruposModif, claveProducto } from "../store/auth.js";
 
   const props = defineProps(["mostrar"]);
   const emit = defineEmits(["cerrar"]);
@@ -100,6 +100,8 @@
   const mostrarAggModProd = ref(false);
   const mostrarEditarModProd = ref(false);
   const mostrarAsignarMod = ref(false);
+
+  const gruposAnadidos = ref([]);
 
   // Abrir Agg grupos
 const abrirAggGrupo = () => {
@@ -123,10 +125,73 @@ const abrirAggGrupo = () => {
 
 
   // Abrir asignar
-  const abrirAsignarMod = () => {
+  const abrirAsignarMod = async () => {
   mostrarAsignarMod.value = true;
+  await cargarGruposModif();
 };
 
+const actualizarDespuesDeEditar = () => {
+  console.log("Actualizando datos después de edición...");
+  cargarGruposAsignados();
+  obtenerModificadores();
+};
+
+const cargarGruposAsignados = async () => {
+  try {
+    const productoId = claveProducto.value;
+    
+    // Consulta que une la tabla intermedia con la tabla de grupos modificadores
+    const { data, error } = await supabase
+      .from('prodgrupmodificador')
+      .select(`
+        grupomodificador!inner(*)
+      `)
+      .eq('idproducto', productoId);
+    
+    if (error) {
+      throw new Error(`Error al obtener grupos asignados: ${error.message}`);
+    }
+    
+    gruposAnadidos.value = data.map(item => item.grupomodificador);
+   
+  
+    
+  } catch (error) {
+    console.error("Error al cargar grupos asignados:", error);
+    gruposAnadidos.value = [];
+  }
+};
+
+  const obtenerNombreGrupoMod = (idgrupomod) =>{
+    const mod = gruposAnadidos.value.find(g => g.idgrupomod === idgrupomod);
+    return mod ? mod.nombre : 'Sin grupo modificador';
+  };
+
+const modificadores = ref([]);
+const obtenerModificadores = async () => {
+  const { data: dataMod, error: errorMod } = await supabase 
+      .from('modificadores')
+      .select();
+
+  if(errorMod){
+      console.error("Error al obtener modificadores ",errorMod);
+  }else{
+      modificadores.value = dataMod;
+  }
+};
+
+
+watch(claveProducto, (newValue) => {
+  if (newValue !== null && newValue !== undefined) {
+    console.log('ID del producto disponible:', newValue);
+    cargarGruposAsignados();
+  }
+}, { immediate: true });
+
+onMounted(() => {
+  cargarGruposAsignados();
+  obtenerModificadores();
+});
 
   </script>
   

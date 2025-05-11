@@ -124,6 +124,8 @@
   import { comma } from "postcss/lib/list";
   import aggGrupo from "./ProductosCompuestos/aggGrupo.vue";
   import aggSubgrupo from "./ProductosCompuestos/aggSubgrupo.vue";
+  import { claveProducto } from "../store/auth.js";
+
   
   const grupoOSub = ref(false);
   const props = defineProps(["mostrar"]);
@@ -183,8 +185,7 @@
     preciosinimp.value = producto.preciosinimporte;
     isChecked.value = producto.compuesto;
     
-    // Opcional: desplazarse al formulario
-    
+    claveProducto.value = clave.value;
   };
 
   const consultarProductos = async () =>{
