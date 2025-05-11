@@ -209,7 +209,7 @@ onBeforeUnmount(() => {
 // Salir
 const salir = () => {
   router.push("/");
-};
+};}
 </script>
 
 <style scoped>
