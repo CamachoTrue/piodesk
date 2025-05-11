@@ -17,6 +17,8 @@ export const idDireccion = ref(null);
 
 export const numPedidos = ref(null);
 
+export const idProducto = ref(null);
+
 export const cargarGruposModif = async () => {
   try {
     const productoId = claveProducto.value;

@@ -46,7 +46,7 @@
 
     <label>Grupos</label>
     <div class="group-buttons">
-      <button v-for="grupo in grupos" :key="grupo.nombre" @click="seleccionarGrupo(grupo)">
+      <button v-for="grupo in grupos" :key="grupo.idgrupo" @click="seleccionarGrupo(grupo.idgrupo);">
         {{ grupo.nombre }}
       </button>
     </div>
@@ -54,7 +54,7 @@
     <div v-if="subgrupos.length">
       <label>Subgrupos</label>
       <div class="group-buttons">
-        <button v-for="subgrupo in subgrupos" :key="subgrupo.nombre" @click="seleccionarSubgrupo(subgrupo)">
+        <button v-for="subgrupo in subgrupos" :key="subgrupo.idsubgrupo" @click="productos.value = [];seleccionarSubgrupo(subgrupo.idsubgrupo)">
           {{ subgrupo.nombre }}
         </button>
       </div>
@@ -80,12 +80,18 @@
       </div>
     </vue-draggable-resizable>
   </div>
+  <capturarCompuesto :mostrar="mostrarCompuesto" @cerrar="mostrarCompuesto = false" />
+
 </template>
 
 <script setup>
 import { ref, defineProps, defineEmits, onMounted } from 'vue';
 import VueDraggableResizable from 'vue-draggable-resizable';
 import 'vue-draggable-resizable/style.css';
+import { supabase } from '../../supabase/supabase';
+import capturarCompuesto from "./capturarCompuesto.vue";
+import { idProducto } from "@/store/auth.js";
+
 
 const props = defineProps({
   mostrar: Boolean,
@@ -95,127 +101,100 @@ const emit = defineEmits(['cerrar']);
 const windowWidth = ref(window.innerWidth);
 const windowHeight = ref(window.innerHeight);
 
+const mostrarCompuesto = ref(null);
 // Simulación de datos
-const grupos = ref([
-  {
-    nombre: 'Boneless',
-    subgrupos: [
-      {
-        nombre: 'Clásicos',
-        productos: [
-          { id: 1, nombre: 'Boneless BBQ' },
-          { id: 2, nombre: 'Boneless Buffalo' },
-        ]
-      },
-      {
-        nombre: 'Picantes',
-        productos: [
-          { id: 3, nombre: 'Boneless Habanero' },
-          { id: 4, nombre: 'Boneless Chipotle' },
-        ]
-      }
-    ]
-  },
-  {
-    nombre: 'Bebidas',
-    subgrupos: [
-      {
-        nombre: 'Aguas',
-        productos: [
-          { id: 5, nombre: 'Agua Natural' },
-          { id: 6, nombre: 'Agua Mineral' },
-        ]
-      },
-      {
-        nombre: 'Refrescos',
-        productos: [
-          { id: 7, nombre: 'Coca-Cola' },
-          { id: 8, nombre: 'Sprite' },
-          { id: 9, nombre: 'Fanta Naranja' },
-        ]
-      }
-    ]
-  },
-  {
-    nombre: 'PapaBoneless',
-    subgrupos: [
-      {
-        nombre: 'Individual',
-        productos: [
-          { id: 10, nombre: 'Papa Boneless BBQ' },
-          { id: 11, nombre: 'Papa Boneless Búfalo' },
-        ]
-      },
-      {
-        nombre: 'Familiar',
-        productos: [
-          { id: 12, nombre: 'Papa Boneless Familiar Chipotle' },
-          { id: 13, nombre: 'Papa Boneless Familiar Mango Habanero' },
-        ]
-      }
-    ]
-  },
-  {
-    nombre: 'Alitas',
-    subgrupos: [
-      {
-        nombre: '6 Piezas',
-        productos: [
-          { id: 14, nombre: 'Alitas BBQ 6p' },
-          { id: 15, nombre: 'Alitas Mango Habanero 6p' },
-        ]
-      },
-      {
-        nombre: '12 Piezas',
-        productos: [
-          { id: 16, nombre: 'Alitas Buffalo 12p' },
-          { id: 17, nombre: 'Alitas Chipotle 12p' },
-        ]
-      }
-    ]
-  },
-  {
-    nombre: 'Samplers',
-    subgrupos: [
-      {
-        nombre: 'Mixtos',
-        productos: [
-          { id: 18, nombre: 'Sampler Boneless + Alitas' },
-          { id: 19, nombre: 'Sampler Alitas + Papas' },
-        ]
-      },
-      {
-        nombre: 'Especiales',
-        productos: [
-          { id: 20, nombre: 'Sampler Fiesta' },
-          { id: 21, nombre: 'Sampler Premium' },
-        ]
-      }
-    ]
-  }
-]);
 
+const grupos = ref([]);
 const subgrupos = ref([]);
 const productos = ref([]);
+const gruposModificadores = ref([]);
 const carrito = ref([]);
 
-function seleccionarGrupo(grupo) {
-  subgrupos.value = grupo.subgrupos || [];
-  productos.value = [];
+const cargarGrupos = async () => {
+  const { data, error } = await supabase
+    .from('grupos')
+    .select();
+
+  if(error){
+    console.error("Error al obtener grupos ",error);
+    return;
+  }
+
+  grupos.value = data;
+};
+
+
+const cargarSubGrupos = async (idgrupo) => {
+  const { data, error } = await supabase
+    .from('subgrupos')
+    .select()
+    .eq('idgrupo',idgrupo);
+    
+  if(error){
+    console.error("Error al obtener SubGrupos ",error);
+    return;
+  }
+
+  subgrupos.value = data;
+  console.log("tamano",subgrupos.value.length);
+  
+  if(subgrupos.value.length === 0){
+    await productosGrupos(idgrupo);
+    console.log(productos.value);
+    
+  }
+  
+  
+};
+
+const cargarGrupModificadores = async () => {
+  const { data, error } = await supabase
+    .from('grupomodificador')
+    .select();
+
+  if(error){
+    console.error("Error al obtener grupos modificadores ",error);
+    return;
+  }
+
+  gruposModificadores.value = data;
+};
+
+
+
+function seleccionarGrupo(idgrupo) {
+  cargarSubGrupos(idgrupo);
 }
 
-function seleccionarSubgrupo(subgrupo) {
-  productos.value = subgrupo.productos || [];
+const productosGrupos = async (idgrupo) =>{
+  const { data, error } = await supabase
+    .from('productos')
+    .select()
+    .eq('idgrupo', idgrupo);
+
+  productos.value = data;
+};
+
+async function seleccionarSubgrupo(idsubgrupo) {
+  const { data, error } = await supabase
+    .from('productos')
+    .select()
+    .eq('idsubgrupo', idsubgrupo);
+
+  productos.value = data;
+  
 }
 
 function agregarAlCarrito(producto) {
-  const itemExistente = carrito.value.find(item => item.descripcion === producto.nombre);
-  if (itemExistente) {
-    itemExistente.cantidad += 1;
-  } else {
+  if(producto.compuesto){
+    mostrarCompuesto.value = true;
+    idProducto.value = producto.idproducto;
+  }else{
     carrito.value.push({ cantidad: 1, descripcion: producto.nombre });
   }
-}
+    
+  
+};  
 
 function eliminarDelCarrito(index) {
   if (carrito.value[index].cantidad > 1) {
@@ -224,6 +203,11 @@ function eliminarDelCarrito(index) {
     carrito.value.splice(index, 1);
   }
 }
+onMounted(()=>{
+  cargarGrupos();
+  cargarGrupModificadores();
+  
+})
 
 function aceptar() {
   alert('Compra aceptada');
@@ -233,6 +217,8 @@ function aceptar() {
 function cancelar() {
   carrito.value = [];
 }
+
+
 </script>
 
 <style scoped>
