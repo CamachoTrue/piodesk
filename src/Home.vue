@@ -3,7 +3,7 @@
     <button @click="abrirComedor()" class="comedor-btn"><img src="/mesa.png" class="comedor-icon" />Comedor</button>
     <button @click="abrirDomicilio()" class="domicilio-btn"><img src="/moto.png" class="domicilio-icon" />Domicilio</button>
     <button @click="abrirRetiros()" class="deposito-btn"><img src="/retirar.png" class="deposito-icon" />Retiro y <br> depósito</button>
-    <!--<button @click="" class="consultar-btn"><img src="/consulta.png" class="consultar-icon" />Consultar <br> citas</button>  -->
+    <button @click="" class="consultar-btn"><img src="/consulta.png" class="consultar-icon" />Consultar <br> citas</button>
     <button @click="abrirPestana()" class="abrir-btn"><img src="/candado-abierto.png" class="abrir-icon" />Abrir turno</button>
     <button @click="PestanaCerrar()" class="cerrar-btn"><img src="/candado.png" class="cerrar-icon" />Cerrar turno</button>
     <button @click="abrirCorte()" class="corte-btn"><img src="/caja-registradora.png" class="corte-icon" />Corte caja</button>
@@ -169,24 +169,10 @@ const abrirAggUsuarios = () => {
   mostrarAggUsuarios.value = true;
 };
 
-// Abrir retiros
-const abrirRetiros = () => {
-  mostrarRetiros.value = true;
-};
-
-// abrir Corte CAja
-const abrirCorte = () => {
-  mostrarCorte.value = true;
-  
-};
-// abrir domicilio
-const abrirDomicilio = () => {
-  mostrarDomicilio.value = true;
-};
-
 //Abrir Impresoras
 const abrirImpresoras = () => {
   mostrarImpresoras.value = true;
+};
 
 // Abrir retiros
 const abrirRetiros = () => {
@@ -211,7 +197,7 @@ function handleClickOutside(event) {
   if (dropdown && !dropdown.contains(event.target)) {
     mostrarDropdown.value = false;
   }
-}
+};
 
 onMounted(() => {
   window.addEventListener('click', handleClickOutside);
@@ -224,7 +210,7 @@ onBeforeUnmount(() => {
 // Salir
 const salir = () => {
   router.push("/");
-};}
+};
 </script>
 
 <style scoped>
