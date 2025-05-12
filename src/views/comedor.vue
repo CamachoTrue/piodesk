@@ -112,12 +112,26 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td class="descripcion-col"></td>
-                            <td></td>
-                            <td></td>
+                        <tr v-for="(item, index) in productosPedido" :key="index">
+                            <td>{{ item.cantidad }}</td>
+                            <td>{{ item.id }}</td>
+                            <td class="descripcion-col">
+                            {{ item.descripcion }}
+                            <ul v-if="item.modificadores && item.modificadores.length">
+                                <li v-for="(mod, i) in item.modificadores" :key="i">
+                                → {{ mod.nombre }} <span v-if="mod.precio">(+{{ mod.precio }})</span>
+                                </li>
+                            </ul>
+                            </td>
+                            <td>{{ item.precio ? item.precio.toFixed(2) : '0.00' }}</td>
+                            <td>
+                            {{
+                                (
+                                (Number(item.precio ?? 0) + (item.modificadores?.reduce((a, m) => a + Number(m.precio || 0), 0) || 0))
+                                * Number(item.cantidad || 1)
+                                ).toFixed(2)
+                            }}
+                            </td>
                         </tr>
                     </tbody>
                     </table>
@@ -144,8 +158,8 @@
                         <input v-model="impuestos" class="input-control" type="text" />
                     </div>
                     <div class="input-row">
-                        <label>Propina:</label>
-                        <input v-model="propinas" class="input-control" type="text" />
+                        <label>Total sin desc.:</label>
+                        <input v-model="totalsindesc" class="input-control" type="text" />
                     </div>
                     <div class="input-row">
                         <label>Total:</label>
@@ -164,8 +178,8 @@
 
     <abrir :mostrar="mostrarAbrir" @cerrar="mostrarAbrir = false" @actualizado="actualizarDespuesDeEditar()"/>
     <borrar :mostrar="mostrarBorrar" @cerrar="mostrarBorrar = false" />
-    <descuento :mostrar="mostrarDescuento" @cerrar="mostrarDescuento = false" />
-    <captura :mostrar="mostrarCaptura" @cerrar="mostrarCaptura = false" />
+    <descuento :mostrar="mostrarDescuento" @cerrar="mostrarDescuento = false" @actualizar="cargarProductosPedido()"/>
+    <captura :mostrar="mostrarCaptura" @cerrar="mostrarCaptura = false" @actualizar="cargarProductosPedido()" />
     <renombrar :mostrar="mostrarRenombrar" @cerrar="mostrarRenombrar = false" @actualizado="actualizarDespuesDeEditar()" />
     <reabrir :mostrar="mostrarReabrir" @cerrar="mostrarReabrir = false" />
     <cancelar :mostrar="mostrarCancelar" @cerrar="mostrarCancelar = false" />
@@ -213,7 +227,7 @@ const impreso = ref(null);
 const subtotal = ref(null);
 const descuent = ref(null);
 const impuestos = ref(null);
-const propinas = ref(null);
+const totalsindesc = ref(null);
 const total = ref(null);
 
 const pedidosAbiertos = ref([]);
@@ -238,14 +252,140 @@ const obtenerPedido = (pedido) => {
     folio.value = pedido.idpedido;
     orden.value = pedido.numeropedido;
     horaApertura.value = pedido.horaapertura;
-    horaImpresa.value = "---";
+    horaImpresa.value = pedido.horaimpresion || "---";
     checkimpreso.value = pedido.impreso;
     subtotal.value = `$${pedido.subtotal}`;
     idPedido.value = pedido.idpedido;  
+    cargarProductosPedido();
 };
 
+const productosPedido = ref([]);
+async function cargarProductosPedido() {
+  const { data: productos, error: errorProductos } = await supabase
+    .from('productos_pedidos')
+    .select(`
+      idprodpedi,
+      idproducto,
+      cantidad,
+      productos (
+        nombre,
+        precio,
+        preciosinimporte
+      )
+    `)
+    .eq('idpedido', idPedido.value);
 
+  if (errorProductos) {
+    console.error("Error al obtener productos", errorProductos);
+    return;
+  }
 
+  // Cargar modificadores de todos los productos_pedidos
+  const idsProds = productos.map(p => p.idprodpedi);
+
+  const { data: mods, error: errorMods } = await supabase
+    .from('productos_pedidos_modificadores')
+    .select(`
+      idprodpedi,
+      modificadores (
+        idmodificador,
+        nombre,
+        precio
+      )
+    `)
+    .in('idprodpedi', idsProds);
+
+  if (errorMods) {
+    console.error("Error al obtener modificadores", errorMods);
+    return;
+  }
+
+  // Agrupar modificadores por idprodpedi
+  const modificadoresPorProducto = {};
+  mods.forEach(m => {
+  if (!m.modificadores) return; // protección defensiva
+
+  if (!modificadoresPorProducto[m.idprodpedi]) {
+    modificadoresPorProducto[m.idprodpedi] = [];
+  }
+
+  modificadoresPorProducto[m.idprodpedi].push({
+    idmodificador: m.modificadores.idmodificador,
+    nombre: m.modificadores.nombre,
+    precio: m.modificadores.precio
+  });
+});
+
+  // Reconstruir los productos con sus modificadores
+  const productosConModificadores = productos.map(p => ({
+  id: p.idproducto,
+  cantidad: p.cantidad ?? 1,
+  descripcion: p.productos?.nombre || 'Sin nombre',
+  precio: p.productos?.precio ?? 0,
+  modificadores: modificadoresPorProducto[p.idprodpedi] || []
+}));
+
+  // Si quieres ponerlos en el carrito:
+  productosPedido.value = productosConModificadores;
+
+productosExterno.value = productosConModificadores;
+await cargarpedido();
+ calcularTotales(productosConModificadores, pedidoExterno.value.descuento);
+ 
+};
+const productosExterno = ref([]);
+const pedidoExterno = ref([]);
+
+async function cargarpedido() {
+    const {data, error} = await supabase
+        .from('pedidos')
+        .select()
+        .eq('idpedido', idPedido.value)
+    if(error){
+        console.error("Error obtener pedido ",error);
+        return;
+    }
+    pedidoExterno.value = data[0];
+};
+
+async function actualizarTotalEnBD(montoFinal) {
+  const { error } = await supabase
+    .from('pedidos')
+    .update({ totalPedido: montoFinal })
+    .eq('idpedido', idPedido.value);
+
+  if (error) {
+    console.error("Error al actualizar total en la base de datos", error);
+  } else {
+    console.log("Total actualizado correctamente");
+  }
+}
+
+function calcularTotales(productos = [], descuentoPorcentaje = 0) {
+  const totalBruto = productos.reduce((acc, item) => {
+    const modTotal = item.modificadores?.reduce((sum, mod) => sum + Number(mod.precio || 0), 0) || 0;
+    return acc + ((Number(item.precio || 0) + modTotal) * Number(item.cantidad || 1));
+  }, 0);
+
+  // Separar impuestos (IVA incluido en precios)
+  const subtotalSinIVA = totalBruto / 1.16;
+  const impuestosCalculados = totalBruto - subtotalSinIVA;
+
+  // Calcular descuento sobre totalBruto
+  const descuentoCalculado = totalBruto * (descuentoPorcentaje / 100);
+
+  // Calcular total final ya con descuento
+  const totalFinal = totalBruto - descuentoCalculado;
+
+  // Asignar a campos
+  subtotal.value = `$${subtotalSinIVA.toFixed(2)}`;
+  descuent.value = `${descuentoPorcentaje}%`;
+  impuestos.value = `$${impuestosCalculados.toFixed(2)}`;
+  totalsindesc.value = `$${totalBruto.toFixed(2)}`;
+  total.value = `$${totalFinal.toFixed(2)}`;
+
+  actualizarTotalEnBD(totalFinal.toFixed(2));
+};
 
 
 

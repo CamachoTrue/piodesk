@@ -13,9 +13,9 @@
                 </div>
                 <div class="content">
                     <p>Porcentaje de descuento:</p>
-                    <input v-model="montoInicial" type="number" placeholder="%" class="border-2 w-[295px] mt-4" />
+                    <input v-model="descuento" type="number" placeholder="%" class="border-2 w-[295px] mt-4" />
                     <div class="button-group">
-                        <button @click="confirmar" class="button">Confirmar</button>
+                        <button @click="calcualarDescuento()" class="button">Confirmar</button>
                         <button @click="$emit('cerrar')" class="cancel-btn">Cancelar</button>
                     </div>
                 </div>
@@ -29,15 +29,37 @@
     import { defineEmits, defineProps, ref } from "vue";
     import VueDraggableResizable from "vue-draggable-resizable";
     import "vue-draggable-resizable/style.css";
+    import { idPedido } from  "@/store/auth.js";
 
 
   // Props y eventos
     const props = defineProps(["mostrar"]);
-    const emit = defineEmits(["cerrar"]);
+    const emit = defineEmits(["cerrar", "actualizar"]);
 
   // Variables
     const window = ref(globalThis.window);
 
+    const descuento = ref(null);
+
+    async function calcualarDescuento() {
+        
+        const desc = Number(descuento.value || 0);
+        const { data, error} = await supabase 
+            .from('pedidos')
+            .update({
+                descuento: desc
+            })
+            .eq('idpedido', idPedido.value);
+
+        if(error){
+            console.error("Error al actualizar descuento ",error);
+            return;
+        }
+
+        emit('actualizar',desc);
+        descuento.value = null;
+        emit('cerrar');
+    }
 
 </script>
 
