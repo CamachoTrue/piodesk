@@ -91,7 +91,7 @@ async function cargarGruposModificadores() {
   cantidadgrupMod.value = grupModifcadores.value.length;
   modMaximo.value = grupModifcadores.value[0].modificadoresmax;
   await nextTick()
-  cargarModificadores();
+
   
 
 
