@@ -32,7 +32,7 @@
       <button 
         v-for="modificador in modificadores" 
         :key="modificador.idmodificador" 
-        @click="agregarModificador()">
+        @click="agregarModificador(modificador.idmodificador)">
         {{ modificador.nombre }}
       </button>
     </div>
@@ -50,11 +50,11 @@ import { supabase } from "@/supabase/supabase";
 import { defineEmits, defineProps, nextTick, ref, watch } from "vue";
 import VueDraggableResizable from "vue-draggable-resizable";
 import "vue-draggable-resizable/style.css";
-import { idProducto} from "@/store/auth.js";
+import { idProducto, idModificador} from "@/store/auth.js";
 
 // Props y eventos
 const props = defineProps(["mostrar"]);
-const emit = defineEmits(["cerrar"]);
+const emit = defineEmits(["cerrar","actualizar"]);
 
 // Variables
 const montoInicial = ref(null);
@@ -91,7 +91,7 @@ async function cargarGruposModificadores() {
   cantidadgrupMod.value = grupModifcadores.value.length;
   modMaximo.value = grupModifcadores.value[0].modificadoresmax;
   await nextTick()
-
+  cargarModificadores();
   
 
 
@@ -134,20 +134,17 @@ async function cargarModificadores() {
     
 }
 
-
-
-async function agregarModificador(){
+async function agregarModificador(idmodificador){
     console.log("Modificador antes ",modMaximo.value);
     modMaximo.value --;
     console.log("Modificador despues ",modMaximo.value);
-    
+    idModificador.value = idmodificador;
+    emit("actualizar");
     if(modMaximo.value === 0){
         contadorgrup.value ++;
         cargarModificadores();
     }
 };
-
-
 
 
 watch(idProducto, (newValue) => {

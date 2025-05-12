@@ -222,7 +222,8 @@ const cargarPedidosAbiertos = async () => {
     const { data, error } = await supabase 
         .from('pedidos')
         .select()
-        .eq('abierto', true);
+        .eq('abierto', true)
+        .eq('tipo', 'Normal');
 
     if(error){
         console.error("Error al obtener pedidos");

@@ -12,6 +12,8 @@ export const gruposModificadores = ref([]);
 
 export const idPedido = ref(null);
 
+export const idModificador = ref(null);
+
 export const idCliente = ref(null);
 export const idDireccion = ref(null);
 

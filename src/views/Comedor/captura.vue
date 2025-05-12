@@ -28,7 +28,14 @@
                 <tbody>
                   <tr v-for="(item, index) in carrito" :key="index">
                     <td>{{ item.cantidad }}</td>
-                    <td>{{ item.descripcion }}</td>
+                    <td>
+                      {{ item.descripcion }}
+                      <ul v-if="item.modificadores && item.modificadores.length">
+                        <li v-for="(mod, i) in item.modificadores" :key="i">
+                          → {{ mod.nombre }} <span v-if="mod.precio">(+{{ mod.precio }})</span>
+                        </li>
+                      </ul>
+                    </td>
                     <td class="accion-cell">
                       <button class="remove-btn" @click="eliminarDelCarrito(index)">🗑</button>
                     </td>
@@ -79,7 +86,7 @@
       </div>
     </vue-draggable-resizable>
   </div>
-  <capturarCompuesto :mostrar="mostrarCompuesto" @cerrar="mostrarCompuesto = false" />
+  <capturarCompuesto :mostrar="mostrarCompuesto" @cerrar="mostrarCompuesto = false" @actualizar="agregarModificadorAlCarrito()" />
 
 </template>
 
@@ -89,7 +96,7 @@ import VueDraggableResizable from 'vue-draggable-resizable';
 import 'vue-draggable-resizable/style.css';
 import { supabase } from '../../supabase/supabase';
 import capturarCompuesto from "./capturarCompuesto.vue";
-import { idProducto } from "@/store/auth.js";
+import { idProducto, idModificador } from "@/store/auth.js";
 
 
 const props = defineProps({
@@ -189,16 +196,54 @@ async function seleccionarSubgrupo(idsubgrupo) {
   
 }
 
-function agregarAlCarrito(producto) {
-  if(producto.compuesto){
-    mostrarCompuesto.value = true;
-    idProducto.value = producto.idproducto;
-  }else{
-    carrito.value.push({ cantidad: 1, descripcion: producto.nombre });
+async function agregarModificadorAlCarrito() {
+  const { data, error } = await supabase
+    .from('modificadores')
+    .select()
+    .eq('idmodificador', idModificador.value)
+    .single();
+
+  if (error) {
+    console.error("Error al obtener modificador", error);
+    return;
   }
-    
-  
-};  
+
+  const mod = {
+    idmodificador: data.idmodificador,
+    nombre: data.nombre,
+    precio: data.precio
+  };
+
+  // Obtener el último producto del carrito
+  const ultimoProducto = carrito.value[carrito.value.length - 1];
+
+  // Inicializar si no existe
+  if (!ultimoProducto.modificadores) {
+    ultimoProducto.modificadores = [];
+  }
+
+  ultimoProducto.modificadores.push(mod);
+  console.log(carrito.value);
+};
+
+function agregarAlCarrito(producto) {
+  // Crear base del producto
+  const productoCarrito = {
+    id: producto.idproducto,
+    cantidad: 1,
+    descripcion: producto.nombre,
+    precio: producto.precio,
+    modificadores: [] // lista vacía lista para llenarse luego
+  };
+
+  carrito.value.push(productoCarrito);
+
+  // Si es compuesto, abrir capturador de modificadores
+  if (producto.compuesto) {
+    mostrarCompuesto.value = true;
+    idProducto.value = producto.idproducto; // si lo usas para cargar modificadores disponibles
+  }
+} 
 
 function eliminarDelCarrito(index) {
   if (carrito.value[index].cantidad > 1) {
