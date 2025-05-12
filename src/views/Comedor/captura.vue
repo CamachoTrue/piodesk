@@ -96,13 +96,13 @@ import VueDraggableResizable from 'vue-draggable-resizable';
 import 'vue-draggable-resizable/style.css';
 import { supabase } from '../../supabase/supabase';
 import capturarCompuesto from "./capturarCompuesto.vue";
-import { idProducto, idModificador } from "@/store/auth.js";
+import { idPedido, idProducto, idModificador } from "@/store/auth.js";
 
 
 const props = defineProps({
   mostrar: Boolean,
 });
-const emit = defineEmits(['cerrar']);
+const emit = defineEmits(['cerrar','actualizar']);
 
 const windowWidth = ref(window.innerWidth);
 const windowHeight = ref(window.innerHeight);
@@ -258,10 +258,72 @@ onMounted(()=>{
   
 })
 
-function aceptar() {
-  alert('Compra aceptada');
-  carrito.value = [];
-}
+async function aceptar() {
+  try{
+
+    const total = carrito.value.reduce((acc, item) => {
+      const modTotal = item.modificadores?.reduce((sum, mod) => sum + (mod.precio || 0), 0) || 0;
+      return acc + ((item.precio + modTotal) * item.cantidad);
+    }, 0);
+    
+    const { data: pedido, error:errorPedido } = await supabase
+      .from('pedidos')
+      .update({
+        totalPedido: total
+      })
+      .eq('idpedido', idPedido.value);
+
+    if(errorPedido){
+      console.error("Error al actualizar pedido ", errorPedido);
+      return;
+    }
+
+    for(const item of carrito.value){
+      const { data: productoPedido, error: errorProdPed } = await supabase
+        .from('productos_pedidos')
+        .insert([{
+          idproducto: item.id,
+          idpedido: idPedido.value,
+          cantidad: item.cantidad
+        }])
+        .select()
+        .single();
+
+      if(errorProdPed){
+        console.error(`Erro al agregar producto ${item.nombre}`,errorProdPed);
+        return;
+      }
+
+      const idProductoPedido = productoPedido.idprodpedi;
+
+      // 3. Insertar los modificadores si existen
+      if (item.modificadores && item.modificadores.length > 0) {
+        const modificadoresData = item.modificadores.map(mod => ({
+          idprodpedi: idProductoPedido,
+          idmodificador: mod.idmodificador,
+        }));
+
+        const { error: errorMods } = await supabase
+          .from('productos_pedidos_modificadores')
+          .insert(modificadoresData);
+
+        if (errorMods) {
+          console.error("Error al insertar modificadores", errorMods);
+          return;
+        }
+      }
+    }
+
+     carrito.value = [];
+    subgrupos.value = [];
+    productos.value = [];
+    emit('actualizar');
+    emit('cerrar');
+   
+  }catch(err){
+    console.error("Error en aceptar() ",err);
+  }
+};
 
 function cancelar() {
   carrito.value = [];
