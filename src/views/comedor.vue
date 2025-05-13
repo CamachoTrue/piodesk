@@ -2,9 +2,9 @@
     <div v-if="mostrar">
         <vue-draggable-resizable
         :w="1220"
-        :h="635"
+        :h="667"
         :x="window.innerWidth / 2 - 620"
-        :y="window.innerHeight / 2 - 370"
+        :y="window.innerHeight / 2 - 380"
         :resizable="false"
         class="custom-draggable"
         >
@@ -540,13 +540,13 @@ input[type=number]::-webkit-inner-spin-button,
     
 }
 .tabla-wrapper1 {
-    max-height: 550px;
+    max-height: 588px;
     overflow-y: auto;
     border: 1px solid #ccc;
 }
 .tabla-wrapper2 {
-    max-height: 200px;
-    min-height: 200px; /* <--- AÑADE ESTA LÍNEA */
+    max-height: 230px;
+    min-height: 230px; /* <--- AÑADE ESTA LÍNEA */
     overflow-y: auto;
     border: 1px solid #ccc;
 }
@@ -733,9 +733,4 @@ white-space: nowrap;
   font-weight: bold;
 }
 
-.descripcion-col {
-    border-top: none !important;
-    border-bottom: none !important;
-    background-color: #fff; /* opcional: para que no se vea raro */
-}
   </style>

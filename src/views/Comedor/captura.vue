@@ -22,6 +22,7 @@
                   <tr>
                     <th>Cantidad</th>
                     <th>Descripción</th>
+                    <th>Precio</th>
                     <th>Acción</th>
                   </tr>
                 </thead>
@@ -35,6 +36,9 @@
                           → {{ mod.nombre }} <span v-if="mod.precio">(+{{ mod.precio }})</span>
                         </li>
                       </ul>
+                    </td>
+                    <td>
+                      
                     </td>
                     <td class="accion-cell">
                       <button class="remove-btn" @click="eliminarDelCarrito(index)">🗑</button>

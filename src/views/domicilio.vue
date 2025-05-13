@@ -2,9 +2,9 @@
     <div v-if="mostrar">
         <vue-draggable-resizable
         :w="1420"
-        :h="635"
+        :h="667"
         :x="window.innerWidth / 2 - 710"
-        :y="window.innerHeight / 2 - 370"
+        :y="window.innerHeight / 2 - 380"
         :resizable="false"
         class="custom-draggable"
         >
@@ -362,13 +362,13 @@ input[type=number]::-webkit-inner-spin-button,
     gap: 10px;
 }
 .tabla-wrapper1 {
-    max-height: 550px;
+    max-height: 580px;
     overflow-y: auto;
     border: 1px solid #ccc;
 }
 .tabla-wrapper2 {
-    max-height: 200px;
-    min-height: 200px;
+    max-height: 230px;
+    min-height: 230px;
     overflow-y: auto;
     border: 1px solid #ccc;
 }
