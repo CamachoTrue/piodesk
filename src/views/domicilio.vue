@@ -137,23 +137,23 @@
                         <div class="bordered-box totals-box" style="min-width: 300px;">
                         <div class="input-row">
                             <label>Subtotal:</label>
-                            <input class="input-control" type="text" />
+                            <input class="input-control" type="text" readonly/>
                         </div>
                         <div class="input-row">
                             <label>Descuento:</label>
-                            <input class="input-control" type="text" />
+                            <input class="input-control" type="text" readonly/>
                         </div>
                         <div class="input-row">
                             <label>Impuestos:</label>
-                            <input class="input-control" type="text" />
+                            <input class="input-control" type="text" readonly/>
                         </div>
                         <div class="input-row">
                             <label>Propina:</label>
-                            <input class="input-control" type="text" />
+                            <input class="input-control" type="text" readonly/>
                         </div>
                         <div class="input-row">
                             <label>Total:</label>
-                            <input class="input-control" type="text" />
+                            <input class="input-control" type="text" readonly/>
                         </div>
                         </div>
                     </div>
@@ -192,9 +192,11 @@ import reabrir from "./Comedor/reabrir.vue";
 import aggClientes from "./Domicilio/aggClientes.vue";
 
 
-const checkimpreso = ref(false);
+
 const props = defineProps(["mostrar"]);
 const emit = defineEmits(["cerrar"]);
+
+const checkimpreso = ref(false);
 const window = ref(globalThis.window);
 const mostrarAbrir = ref(false);
 const mostrarBorrar = ref(false);

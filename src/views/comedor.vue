@@ -88,7 +88,7 @@
                             <button @click="abrirDescuento()" class="button">Descuento</button>
                             <button @click="abrirCaptura()" class="button">Captura</button>
                             <button @click="abrirRenombrar()" class="button">Renombrar</button>
-                            <button @click="" class="button">Imprimir</button>
+                            <button @click="imprimirPedido()" class="button">Imprimir</button>
                         </div>
                     </div>
                 </div>
@@ -183,12 +183,12 @@
     <renombrar :mostrar="mostrarRenombrar" @cerrar="mostrarRenombrar = false" @actualizado="actualizarDespuesDeEditar()" />
     <reabrir :mostrar="mostrarReabrir" @cerrar="mostrarReabrir = false" />
     <cancelar :mostrar="mostrarCancelar" @cerrar="mostrarCancelar = false" />
-    <pagar :mostrar="mostrarPagar" @cerrar="mostrarPagar = false" />
+    <pagar :mostrar="mostrarPagar" @cerrar="mostrarPagar = false" @actualizado="cargarPedidosAbiertos();limpiarCampos()" />
 </template>
 
 <script setup>
 import { ref } from "vue";
-import { defineEmits, defineProps, onMounted } from "vue";
+import { defineEmits, defineProps, onMounted, nextTick } from "vue";
 import VueDraggableResizable from "vue-draggable-resizable";
 import "vue-draggable-resizable/style.css";
 import abrir from "./Comedor/abrir.vue";
@@ -257,6 +257,21 @@ const obtenerPedido = (pedido) => {
     subtotal.value = `$${pedido.subtotal}`;
     idPedido.value = pedido.idpedido;  
     cargarProductosPedido();
+};
+
+const pedidoActualizado = ref(null);
+async function jalarPedidoEspecificp() {
+  const { data, error } = await supabase
+    .from('pedidos')  
+    .select()
+    .eq('idpedido', idPedido.value);
+
+   if(error){
+        console.error("Error al obtener pedido ",error);
+        return;
+   } 
+    obtenerPedido(data[0]);
+
 };
 
 const productosPedido = ref([]);
@@ -361,6 +376,41 @@ async function actualizarTotalEnBD(montoFinal) {
   }
 }
 
+function limpiarCampos(){
+    cuenta.value = null;
+    folio.value = null;
+    orden.value = null;
+    horaApertura.value = null;
+    horaImpresa.value = null;
+    checkimpreso.value = false;
+    productosPedido.value = [];
+    subtotal.value = "0.00";
+    descuent.value = "0%";
+    totalsindesc.value = "0.00";
+    total.value = "0.00";
+};
+
+
+
+async function imprimirPedido(){
+    const { data, error } = await supabase
+        .from('pedidos')
+        .update({
+            impreso: true
+        })
+        .eq('idpedido', idPedido.value);
+    
+    if(error){
+        console.error("Error al actualizar pedido impreso ",error);
+        return;
+    }
+    console.log("BD Actualziada con pedido impreso");
+    cargarPedidosAbiertos();
+    jalarPedidoEspecificp();
+    
+};
+
+
 function calcularTotales(productos = [], descuentoPorcentaje = 0) {
   const totalBruto = productos.reduce((acc, item) => {
     const modTotal = item.modificadores?.reduce((sum, mod) => sum + Number(mod.precio || 0), 0) || 0;
@@ -388,6 +438,29 @@ function calcularTotales(productos = [], descuentoPorcentaje = 0) {
 };
 
 
+async function actualizarTotalPedido() {
+  const productos = productosPedido.value;
+  const descuentoPorcentaje = parseFloat((pedidoExterno.value?.descuento || 0));
+
+  const totalBruto = productos.reduce((acc, item) => {
+    const modTotal = item.modificadores?.reduce((sum, mod) => sum + Number(mod.precio || 0), 0) || 0;
+    return acc + ((Number(item.precio || 0) + modTotal) * Number(item.cantidad || 1));
+  }, 0);
+
+  const descuentoCalculado = totalBruto * (descuentoPorcentaje / 100);
+  const totalFinal = totalBruto - descuentoCalculado;
+
+  const { error } = await supabase
+    .from('pedidos')
+    .update({ totalPedido: totalFinal.toFixed(2) })
+    .eq('idpedido', idPedido.value);
+
+  if (error) {
+    console.error("❌ Error al actualizar total antes de pagar:", error);
+  } else {
+    console.log("✅ Total actualizado antes de abrir pago");
+  }
+}
 
 onMounted(() => {
     cargarPedidosAbiertos();
@@ -398,6 +471,7 @@ onMounted(() => {
 
 const actualizarDespuesDeEditar = () => {
   cargarPedidosAbiertos();
+  jalarPedidoEspecificp();
 };
 
 //Abrir cuenta
@@ -437,8 +511,17 @@ const abrirCancelar = () => {
 };
 
 //pagar
-const abrirPagar = () => {
+const abrirPagar = async () => {
+  if (checkimpreso.value) {
+    await actualizarTotalPedido(); // 🔁 ahora existe
+    mostrarPagar.value = false;
+    await nextTick();
+    idPedido.value = idPedido.value + 1;
+    idPedido.value = idPedido.value - 1;
     mostrarPagar.value = true;
+  } else {
+    console.log("Imprimir pedido");
+  }
 };
 </script>
 

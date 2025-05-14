@@ -29,6 +29,7 @@
     import { defineEmits, defineProps, ref } from "vue";
     import VueDraggableResizable from "vue-draggable-resizable";
     import "vue-draggable-resizable/style.css";
+    import { idPedido } from "@/store/auth.js"
 
 
   // Props y eventos

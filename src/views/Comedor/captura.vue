@@ -11,7 +11,7 @@
       <div class="internal-frame">
         <div class="header">
           Captura
-          <button class="close-btn" @click="$emit('cerrar')">X</button>
+          <button class="close-btn" @click="$emit('cerrar');limpiar()">X</button>
         </div>
         <div class="content layout">
           <!-- Carrito de compras -->
@@ -38,7 +38,7 @@
                       </ul>
                     </td>
                     <td>
-                      
+                      {{ item.precio }}
                     </td>
                     <td class="accion-cell">
                       <button class="remove-btn" @click="eliminarDelCarrito(index)">🗑</button>
@@ -84,7 +84,7 @@
 <!-- Botones fuera del recuadro -->
   <div class="button-group">
     <button class="acep" @click="aceptar">Aceptar</button>
-    <button class="cancel" @click="cancelar">Cancelar</button>
+    <button class="cancel" @click="cancelar;limpiar">Cancelar</button>
   </div>
 
       </div>
@@ -176,6 +176,11 @@ const cargarGrupModificadores = async () => {
 };
 
 
+function limpiar(){
+  carrito.value = [];
+    subgrupos.value = [];
+    productos.value = [];
+};
 
 function seleccionarGrupo(idgrupo) {
   cargarSubGrupos(idgrupo);

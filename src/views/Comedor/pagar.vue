@@ -18,15 +18,15 @@
           <div class="row-3-inputs">
         <div class="input-group">
             <label>Total:</label>
-            <input type="number" />
+            <input v-model="totalCuenta" type="number" readonly />
         </div>
         <div class="input-group">
             <label>Cambio:</label>
-            <input type="number" />
+            <input v-model="cambio" type="number" readonly/>
         </div>
         <div class="input-group">
             <label>Saldo:</label>
-            <input type="number" />
+            <input v-model="saldo" type="number" readonly/>
         </div>
         </div>
           <!-- Tabla -->
@@ -43,17 +43,17 @@
                 <tr>
                 <td>EF</td>
                 <td>Efectivo</td>
-                <td><input type="number" class="input-control" /></td>
+                <td><input v-model="efectivo" type="number" class="input-control" /></td>
                 </tr>
                 <tr>
                 <td>MC</td>
                 <td>Tarjeta</td>
-                <td><input type="number" class="input-control" /></td>
+                <td><input v-model="tarjeta" type="number" class="input-control" /></td>
                 </tr>
                 <tr>
                 <td>05</td>
                 <td>Transferencia</td>
-                <td><input type="number" class="input-control" /></td>
+                <td><input v-model="transferencia" type="number" class="input-control" /></td>
                 </tr>
             </tbody>
             </table>
@@ -61,8 +61,8 @@
 
           <!-- Botones -->
           <div class="button-group">
-            <button class="button">Aceptar</button>
-            <button class="button cancel-btn" @click="$emit('cerrar')">Cancelar</button>
+            <button class="button" @click="confirmarPago()">Aceptar</button>
+            <button class="button cancel-btn" @click="$emit('cerrar');limpiarCampos()">Cancelar</button>
           </div>
         </div>
       </div>
@@ -71,13 +71,111 @@
 </template>
 
 <script setup>
-import { defineEmits, defineProps, ref } from "vue";
+import { defineEmits, defineProps, ref, watch, onMounted, watchEffect } from "vue";
 import VueDraggableResizable from "vue-draggable-resizable";
 import "vue-draggable-resizable/style.css";
+import { idPedido } from "@/store/auth.js";
+import { supabase } from "@/supabase/supabase";
 
 const props = defineProps(["mostrar"]);
-const emit = defineEmits(["cerrar"]);
+const emit = defineEmits(["cerrar", "actualizado"]);
 const window = ref(globalThis.window);
+
+const totalCuenta= ref(0); // este viene de tu sistema (por ejemplo, del total del pedido)
+const efectivo = ref(0);
+const tarjeta = ref(0);
+const transferencia = ref(0);
+
+const totalPago = ref(0);
+const cambio = ref(0);
+const saldo = ref(0);
+
+async function obtenerTotalCuenta() {
+  const { data, error} = await supabase
+    .from('pedidos')
+    .select()
+    .eq('idpedido', idPedido.value);
+
+  if(error){
+    console.error("Error al obtener total del pedidiop ",error);
+    return;
+  }
+
+  totalCuenta.value = data[0].totalPedido;
+  console.log(data[0].totalPedido);
+  
+};
+
+watch([efectivo, tarjeta, transferencia], () => {
+  totalPago.value = Number(efectivo.value || 0) + Number(tarjeta.value || 0) + Number(transferencia.value || 0);
+
+  const diferencia = totalPago.value - totalCuenta.value;
+
+  if (diferencia >= 0) {
+    cambio.value = diferencia;
+    saldo.value = 0;
+  } else {
+    saldo.value = Math.abs(diferencia);
+    cambio.value = 0;
+  }
+});
+
+function limpiarCampos() {
+  totalCuenta.value = 0;
+  cambio.value = 0;
+  saldo.value = 0;
+  efectivo.value = 0;
+  tarjeta.value = 0;
+  transferencia.value = 0;
+}
+async function confirmarPago() {
+  if (!idPedido.value) {
+    console.log("Debes seleccionar un pedido.");
+    return;
+  }
+
+  // 🚫 Validación para evitar cambio si no hay efectivo
+  if (cambio.value > 0 && Number(efectivo.value) === 0) {
+    console.log("⚠️ No se puede dar cambio si no hay pago en efectivo.");
+    return;
+  }
+
+  // ✅ Continuar con el registro si pasa la validación
+  const { error } = await supabase
+    .from('pedidos')
+    .update(
+      {
+        pagoEfectivo: efectivo.value,
+        pagoTarjeta: tarjeta.value,
+        pagoTransfer: transferencia.value,
+        abierto: false        
+      }
+    )
+    .eq('idpedido', idPedido.value);
+
+  if (error) {
+    console.error("Error al registrar el pago", error);
+    console.log("Hubo un error al registrar el pago.");
+  } else {
+    console.log("Pago registrado correctamente.");
+    limpiarCampos();
+    emit('actualizado');
+    emit("cerrar");
+  }
+};
+
+watch(() => props.mostrar, async (visible) => {
+  if (visible) {
+    limpiarCampos();              // primero limpia
+    await obtenerTotalCuenta();   // luego trae el total actualizado
+  }
+});
+
+onMounted(() => {
+  limpiarCampos();
+  obtenerTotalCuenta(); // ya se actualizará correctamente
+});
+
 </script>
 
 <style scoped>
