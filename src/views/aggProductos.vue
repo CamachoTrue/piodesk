@@ -35,7 +35,7 @@
                   <tbody>
                     <tr v-for="producto in productos" :key="productos.idproducto" @dblclick="seleccionarProducto(producto)">
                       <td>{{ producto.idproducto }}</td>
-                      <td>{{ producto.idgrupo === null ? producto.idsubgrupo : producto.idgrupo+','+producto.idsubgrupo }}</td>
+                      <td>{{ producto.idgrupo === null ? producto.idsubgrupo : producto.idgrupo }}</td>
                       <td>{{ producto.nombre }}</td>
                       <td>{{ producto.precio }}</td>
                     </tr>
@@ -55,7 +55,7 @@
                   Guardar
                 </button>
                 <button
-                  @click="" class="button">
+                  @click="delProducto()" class="button">
                   Eliminar
                 </button>
                 <div class="composite-wrapper">
@@ -248,6 +248,19 @@
     }
   };
 
+  const delProducto = async () => {
+    const { data, error } = await supabase
+      .from('productos')
+      .delete()
+      .eq('idproducto', clave.value);
+
+    if(error){
+      console.error("Error al eliminar producto ",error);
+      return;
+    }
+    console.log("Producto eliminado correctamente");
+    consultarProductos();
+  };
 
   // Función para calcular el precio sin IVA
   const calcularPrecioSinIVA = () => {
