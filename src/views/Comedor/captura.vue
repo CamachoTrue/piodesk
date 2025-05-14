@@ -1,10 +1,10 @@
 <template>
   <div v-if="mostrar">
     <vue-draggable-resizable
-      :w="1000"
-      :h="500"
-      :x="windowWidth / 2 - 500"
-      :y="windowHeight / 2 - 300"
+      :w="1060"
+      :h="520"
+      :x="windowWidth / 2 - 150"
+      :y="windowHeight / 2 - 200"
       :resizable="false"
       class="custom-draggable"
     >
@@ -417,7 +417,7 @@ function cancelar() {
 
 }
 .right-panel {
-  width: 55%;
+  width: 50%;
   padding-left: 30px;
   display: flex;
   flex-direction: column;
@@ -476,17 +476,21 @@ button:hover {
 }
 
 .tabla th:nth-child(1) {
-    width: 80px;
+    width: 100px;
 }
 .tabla th:nth-child(2) {
-    width: 220px;
+    width: 230px;
 }
 .tabla th:nth-child(3) {
-    width: 80px;
+    width: 100px;
+}
+
+.tabla th:nth-child(3) {
+    width: 100px;
 }
 .tabla-wrapper {
-    max-height: 310px;
-    min-height: 310px;
+    max-height: 363px;
+    min-height: 363px;
     overflow: auto;
     border: 1px solid #ccc;
     display: inline-block; 

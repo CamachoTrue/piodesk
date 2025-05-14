@@ -16,9 +16,9 @@
               Login
           </button>
           <!-- Botón "Usuario rápido" mantiene el subrayado y se le añade también font-bold -->
-          <button v-show="isVisible" @click="userRapido" class="mt-3 underline font-bold">
+    <!--<button v-show="isVisible" @click="userRapido" class="mt-3 underline font-bold">
               Usuario rápido
-          </button>
+          </button> Este es un comentario en HTML -->      
       </div>
   </div>
 </template>

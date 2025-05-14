@@ -130,10 +130,10 @@
                 <div class="bottom-content">
                     <div class="all-buttons">
                         <button @click="abrirAggClientes()" class="button">Abrir cuenta</button>
-                        <button @click="abrirBorrar()" class="button">Eliminar Prod.</button>
+                     <!-- <button @click="abrirBorrar()" class="button">Eliminar Prod.</button> -->   
                         <button @click="abrirDescuento()" class="button">Descuento</button>
-                        <button @click="abrirReabrir()" class="button">Reabrir cuenta</button>
-                        <button @click="abrirCancelar()" class="button">Cancelar cuenta</button>
+                     <!--<button @click="abrirReabrir()" class="button">Reabrir cuenta</button> -->   
+                       <!--<button @click="abrirCancelar()" class="button">Cancelar cuenta</button>--> 
                         <button @click="abrirPagar()" class="button">Pagar cuenta</button>
                         <button @click="abrirCaptura()" class="button">Captura</button>
                         <button @click="imprimirPedido()" class="button">Imprimir</button>
@@ -771,17 +771,17 @@ button {
 
 .apertura-input {
     width: 190px !important;
+    margin-left: 8px;
 }
 
 .cierre-input {
     width: 190px !important;
-    margin-left: 20px;
 }
 
 .impreso-input {
     width: auto !important;
     height: auto !important;
-    margin-left: 4px;
+    margin-left: 12px;
     margin-top: 4px;
     transform: scale(1.5); /* Escala el checkbox */
     transform-origin: left center;
@@ -839,7 +839,7 @@ margin-left: 5px;
 }
 
 .direccion-textarea {
-  width: 240px;
+  width: 232px;
   height: 75px;
   resize: none;
   border: 1px solid #b3b3b3;

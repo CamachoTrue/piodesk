@@ -84,11 +84,12 @@
                     <div class="button-section">
                         <div class="button-grid">
                             <button @click="abrirAbrir()" class="button">Abrir cuenta</button>
-                            <button @click="abrirBorrar()" class="button">Eliminar Prod.</button>
+                         <!-- <button @click="abrirBorrar()" class="button">Eliminar Prod.</button>-->  
                             <button @click="abrirDescuento()" class="button">Descuento</button>
                             <button @click="abrirCaptura()" class="button">Captura</button>
                             <button @click="abrirRenombrar()" class="button">Renombrar</button>
                             <button @click="imprimirPedido()" class="button">Imprimir</button>
+                            <button @click="abrirPagar()"class="button">Pagar cuenta</button>
                         </div>
                     </div>
                 </div>
@@ -139,9 +140,9 @@
 
                 <div class="bottom-controls">
                     <div class="left-buttons">
-                    <button @click="abrirReabrir()"class="button">Reabrir cuenta</button>
-                    <button @click="abrirCancelar()"class="button">Cancelar cuenta</button>
-                    <button @click="abrirPagar()"class="button">Pagar cuenta</button>
+                  <!-- <button @click="abrirReabrir()"class="button">Reabrir cuenta</button> -->  
+                  <!-- <button @click="abrirCancelar()"class="button">Cancelar cuenta</button> -->  
+                    
                     </div>
                 <div class="right-totals-wrapper">
                     <div class="bordered-box" style="min-width: 395px;">
