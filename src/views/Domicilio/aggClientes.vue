@@ -303,6 +303,8 @@ const now = new Date();
     const fecha = ref(now.toISOString().split("T")[0]);
     const hora = ref(now.toTimeString().split(" ")[0]);
 
+
+
 const abrirCuenta = async () => {
   const { data: dataPedidos, error: errorPedidos } = await supabase
     .from('pedidos')
@@ -342,7 +344,7 @@ console.log("🧪 Valores actuales:", {
       impreso: false,
       abierto: true,
       eliminado: false,
-      numeropedido: 1, // ✅ .value extraído
+      numeropedido: (numPedidos.value + 1), // ✅ .value extraído
       idcliente: idCliente.value       // ✅ .value extraído
     }])
     .select();
@@ -355,7 +357,16 @@ console.log("🧪 Valores actuales:", {
   console.log("✅ Cuenta creada");
   idPedido.value = data[0].idpedido;
   limpiarCampos();
-  numPedidos.value++;
+   const { data: result, error: error2 } = await supabase.rpc('incrementar_total_notas', {
+  turno_id: idTurno.value
+  });
+
+  if (error2) {
+    console.error("❌ Error al aumentar pedidos", error2);
+    return;
+  }
+  numPedidos.value = result;
+
   emit('actualizado');
   emit('cerrar');
 };

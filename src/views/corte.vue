@@ -15,37 +15,37 @@
                     <div class="grid">
                         <div class="column">
                             <label>Comandas:</label>
-                            <input type="number" />
+                            <input v-model="comandas" type="number" />
                         </div>
                         <div class="column">
                             <label>Efectivo inicial:</label>
-                            <input type="number" />
+                            <input v-model="efectivoInical" type="number" readonly/>
                             <label>Efectivo:</label>
-                            <input type="number" />
-                            <label>Tarjeta:</label>
-                            <input type="number" />
+                            <input v-model="efectivo" type="number" readonly/>
+                            <label> Tarjeta:</label>
+                            <input v-model="tarjeta" type="number" readonly/>
                             <label>Transferencia:</label>
-                            <input type="number" />
+                            <input v-model="transferencia" type="number" readonly/>
                             <label>Retiros:</label>
-                            <input type="number" />
+                            <input v-model="retiros" type="number" readonly/>
                             <label>Depósito:</label>
-                            <input type="number" />
+                            <input v-model="depositos" type="number" readonly/>
                             <label>Saldo final:</label>
-                            <input type="number" />
+                            <input v-model="saldoFinal" type="number" readonly/>
                             <label>Efectivo final:</label>
-                            <input type="number" />
+                            <input v-model="efectivoFinal" type="number" readonly/>
                         </div>
                         <div class="column">
                             <label>Efectivo:</label>
-                            <input type="number" />
+                            <input v-model="efectivo2" type="number" readonly/>
                             <label>Tarjeta:</label>
-                            <input type="number" />
+                            <input v-model="tarjeta2" type="number" readonly/>
                             <label>Transferencia:</label>
-                            <input type="number" />
+                            <input v-model="transferencia2" type="number" readonly/>
                         </div>
                         <div class="column">
                             <label>Venta bruta:</label>
-                            <input type="number" />
+                            <input v-model="ventaBruta" type="number" readonly/>
                         </div>
                     </div>
                 </div>
@@ -56,13 +56,128 @@
 
 <script setup>
 import { supabase } from "@/supabase/supabase";
-import { defineEmits, defineProps, ref } from "vue";
+import { defineEmits, defineProps, ref, onMounted} from "vue";
 import VueDraggableResizable from "vue-draggable-resizable";
 import "vue-draggable-resizable/style.css";
+import { idTurno } from "../store/auth.js";
+import { transform } from "typescript";
+
 
 const props = defineProps(["mostrar"]);
 const emit = defineEmits(["cerrar"]);
 const window = ref(globalThis.window);
+
+const comandas = ref(null);
+const efectivoInical = ref(null);
+const efectivo = ref(null);
+const tarjeta = ref(null);
+const transferencia = ref(null);
+const retiros = ref(null);
+const depositos = ref(null);
+const saldoFinal = ref(null);
+const efectivoFinal = ref(null);
+const efectivo2 = ref(null);
+const tarjeta2 = ref(null);
+const transferencia2 = ref(null);
+const ventaBruta = ref(null);
+
+
+const resumenCaja = ref({
+  efectivo: 0,
+  tarjeta: 0,
+  transferencia: 0,
+  ventaBruta: 0
+});
+
+const cargarResumenCaja = async () => {
+  const { data, error } = await supabase
+    .from('corte_caja_resumen')
+    .select('*')
+    .eq('idturno', idTurno.value);
+
+  if (error) {
+    console.error("❌ Error al cargar resumen de caja:", error);
+    return;
+  }
+
+  if (data.length > 0) {
+    resumenCaja.value = {
+      efectivo: data[0].total_efectivo,
+      tarjeta: data[0].total_tarjeta,
+      transferencia: data[0].total_transferencia,
+      ventaBruta: data[0].venta_bruta
+    };
+  }
+};
+
+const resumenMovimientos = ref({
+  retiro: 0,
+  deposito: 0
+});
+
+const cargarResumenMovimientos = async () => {
+  const { data, error } = await supabase
+    .from('movimientos_resumen')
+    .select('*')
+    .eq('idturno', idTurno.value);
+
+  if (error) {
+    console.error("❌ Error al cargar movimientos:", error);
+    return;
+  }
+
+  // recorrer el arreglo para asignar los valores
+  data.forEach(item => {
+    if (item.tipomovimiento === 'retiro') {
+      resumenMovimientos.value.retiro = item.total;
+    } else if (item.tipomovimiento === 'deposito') {
+      resumenMovimientos.value.deposito = item.total;
+    }
+  });
+};
+
+const turno = ref([]);
+
+async function obtenerTurno() {
+  const { data, error } = await supabase
+    .from('turnos')
+    .select()
+    .eq('idturno', idTurno.value);
+
+ if(error){
+    console.error("Error al obtener turno ",error);
+    return;
+ }
+
+ turno.value = data[0];
+};
+
+
+function cargarDatos() {
+    comandas.value = turno.value.totalNotas;
+    efectivoInical.value = turno.value.montoinicial;
+    efectivo.value = resumenCaja.value.efectivo;
+    tarjeta.value = resumenCaja.value.tarjeta;
+    transferencia.value = resumenCaja.value.transferencia;
+    retiros.value = resumenMovimientos.value.retiro;
+    depositos.value = resumenMovimientos.value.deposito;
+    saldoFinal.value = efectivoInical.value + efectivo.value + tarjeta.value + transferencia.value - retiros.value + depositos.value;
+    efectivoFinal.value = efectivoInical.value + efectivo.value - retiros.value + depositos.value;
+    efectivo2.value = efectivo.value;
+    tarjeta2.value = tarjeta.value;
+    transferencia2.value = transferencia.value;
+    ventaBruta.value = resumenCaja.value.ventaBruta;
+};
+
+onMounted(async () => {
+    
+    
+    await obtenerTurno();
+    await cargarResumenCaja();
+    await cargarResumenMovimientos();
+    cargarDatos()
+    
+});
 </script>
 
 <style scoped>

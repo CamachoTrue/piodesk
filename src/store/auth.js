@@ -71,7 +71,7 @@ export const cargarGruposModif = async () => {
 export const obtenerTurno = async () => {
     const { data: turnoAbierto, error } = await supabase
       .from("turnos")
-      .select("idturno")
+      .select()
       .is("horacierre", null);
   
     if (error) {
@@ -82,5 +82,8 @@ export const obtenerTurno = async () => {
     if (turnoAbierto?.length > 0) {
       idTurno.value = turnoAbierto[0].idturno; // Asegúrate de usar el nombre correcto
       turno.value = true;
+      numPedidos.value = turnoAbierto[0].totalNotas;
+      console.log(numPedidos.value);
+      
     } 
   };

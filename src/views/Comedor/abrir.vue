@@ -76,7 +76,7 @@
                 impreso: false,
                 abierto: true,
                 eliminado: false,
-                numeropedido: numPedidos.value
+                numeropedido: (numPedidos.value + 1)
             }])
             .select();
         
@@ -87,7 +87,19 @@
             console.log("Cuenta creada");
             idPedido.value = data[0].idpedido;
             limpiarCampos();
-            numPedidos.value ++;
+
+            const { data: result, error: error2 } = await supabase.rpc('incrementar_total_notas', {
+            turno_id: idTurno.value
+            });
+
+            if (error2) {
+            console.error("❌ Error al aumentar pedidos", error2);
+            return;
+            }
+            numPedidos.value = result;
+
+
+
             emit('actualizado');
             emit('cerrar');
         }
