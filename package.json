@@ -15,6 +15,24 @@
     "vue-draggable-resizable": "^3.0.0",
     "vue-router": "^4.5.0"
   },
+  "build": {
+    "appId": "com.tuempresa.piodesk",
+    "productName": "PioDesk",
+    "files": [
+      "dist",
+      "dist-electron",
+      "node_modules",
+      "package.json"
+    ],
+    "directories": {
+      "output": "dist-build"
+    },
+    "extraMetadata": {
+      "main": "dist-electron/main.js"
+    },
+    "win": {
+    "icon": "public/Piologo.ico"
+  },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.2.1",
     "@vue/compiler-sfc": "^3.5.13",
@@ -34,4 +52,5 @@
     "vue-tsc": "^2.0.26"
   },
   "main": "dist-electron/main.js"
+}
 }
