@@ -9,7 +9,7 @@
         class="custom-draggable">
             <div class="internal-frame">
                 <div class="header"> Corte de caja
-                    <button class="close-btn" @click="$emit('cerrar')">X</button>
+                    <button class="close-btn" @click="$emit('cerrar');limpiarCampos()">X</button>
                 </div>
                 <div class="content">
                     <div class="grid">
@@ -56,7 +56,7 @@
 
 <script setup>
 import { supabase } from "@/supabase/supabase";
-import { defineEmits, defineProps, ref, onMounted} from "vue";
+import { defineEmits, defineProps, ref, onMounted, watch} from "vue";
 import VueDraggableResizable from "vue-draggable-resizable";
 import "vue-draggable-resizable/style.css";
 import { idTurno } from "../store/auth.js";
@@ -81,6 +81,22 @@ const tarjeta2 = ref(null);
 const transferencia2 = ref(null);
 const ventaBruta = ref(null);
 
+
+function limpiarCampos(){
+  const comandas = null;
+  const efectivoInical = null;
+  const efectivo = null;
+  const tarjeta = null;
+  const transferencia = null;
+  const retiros = null;
+  const depositos = null;
+  const saldoFinal = null;
+  const efectivoFinal = null;
+  const efectivo2 = null;
+  const tarjeta2 = null;
+  const transferencia2 = null;
+  const ventaBruta = null;
+};
 
 const resumenCaja = ref({
   efectivo: 0,
@@ -171,11 +187,14 @@ function cargarDatos() {
 
 onMounted(async () => {
     
-    
+  watch(() => props.mostrar, async (nuevoValor) => {
+  if (nuevoValor) {
     await obtenerTurno();
     await cargarResumenCaja();
     await cargarResumenMovimientos();
-    cargarDatos()
+    cargarDatos();
+  }
+});
     
 });
 </script>
