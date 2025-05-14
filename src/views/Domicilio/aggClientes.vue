@@ -22,7 +22,7 @@
             </div>
             <div class="top-buttons">
               <button class="button" @click="searchCliente()">Buscar</button>
-              <button class="button" @click="aggCliente()">temporal</button>
+              <button class="button" @click="aggCliente();">Agregar</button>
             </div>
           </div>
 
@@ -64,7 +64,7 @@
 
           <!-- Botones finales -->
           <div class="button-group">
-            <button @click="limpiarCampos(); emit('cerrar')" class="button">Aceptar</button>
+            <button @click=" abrirCuenta();limpiarCampos(); emit('cerrar')" class="button">Aceptar</button>
             <button class="cancel-btn">Cancelar</button>
           </div>
         </div>
@@ -80,11 +80,11 @@ import { defineProps, defineEmits, ref, onMounted } from "vue";
 import VueDraggableResizable from "vue-draggable-resizable";
 import "vue-draggable-resizable/style.css";
 import { supabase } from "@/supabase/supabase";
-import { idCliente, idDireccion } from "@/store/auth.js";
+import { idCliente, idDireccion, idPedido, numPedidos, idTurno } from "@/store/auth.js";
 
 
 const props = defineProps(["mostrar"]);
-const emit = defineEmits(["cerrar"]);
+const emit = defineEmits(["cerrar", "actualizado"]);
 const window = ref(globalThis.window);
 
 
@@ -299,6 +299,66 @@ const aggCliente = async () =>{
 
 };
 
+const now = new Date();
+    const fecha = ref(now.toISOString().split("T")[0]);
+    const hora = ref(now.toTimeString().split(" ")[0]);
+
+const abrirCuenta = async () => {
+  const { data: dataPedidos, error: errorPedidos } = await supabase
+    .from('pedidos')
+    .select()
+    .eq('abierto', true)
+    .eq('tipo', 'Domicilio');
+
+  if (errorPedidos) {
+    console.error("Error al obtener pedidos ", errorPedidos);
+    return;
+  }
+
+  const existe = dataPedidos.find(u => u.idcliente === idCliente.value);
+  if (existe) {
+    console.log("Ya existe una cuenta con ese cliente");
+    return;
+  }
+console.log("🧪 Valores actuales:", {
+  idTurno: idTurno.value,
+  hora: hora.value,
+  numPedidos: numPedidos.value,
+  idCliente: idCliente.value
+});
+  // Verificar campos obligatorios antes de insertar
+  if (!idTurno.value || !hora.value || !idCliente.value) {
+    console.error("Campos obligatorios faltantes");
+    return;
+  }
+
+  const { data, error } = await supabase
+    .from('pedidos')
+    .insert([{
+      nombre: '', // si no aplica, está bien en blanco
+      idturno: idTurno.value,         // ✅ .value extraído
+      tipo: 'Domicilio',
+      horaapertura: hora.value,      // ✅ .value extraído
+      impreso: false,
+      abierto: true,
+      eliminado: false,
+      numeropedido: 1, // ✅ .value extraído
+      idcliente: idCliente.value       // ✅ .value extraído
+    }])
+    .select();
+
+  if (error) {
+    console.error("❌ Error al crear pedido ", error);
+    return;
+  }
+
+  console.log("✅ Cuenta creada");
+  idPedido.value = data[0].idpedido;
+  limpiarCampos();
+  numPedidos.value++;
+  emit('actualizado');
+  emit('cerrar');
+};
 
 
 

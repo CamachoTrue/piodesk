@@ -462,10 +462,6 @@ async function actualizarTotalPedido() {
   }
 }
 
-onMounted(() => {
-    cargarPedidosAbiertos();
-})
-
 
 
 
@@ -473,6 +469,10 @@ const actualizarDespuesDeEditar = () => {
   cargarPedidosAbiertos();
   jalarPedidoEspecificp();
 };
+
+onMounted(() => {
+    cargarPedidosAbiertos();
+})
 
 //Abrir cuenta
 const abrirAbrir = () => {

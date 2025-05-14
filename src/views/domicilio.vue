@@ -35,12 +35,12 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td></td>
-                        <td><input type="checkbox" disabled /></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                    <tr v-for="pedido in pedidosAbiertos" :key="pedido.idpedido" @dblclick="obtenerPedido(pedido)">
+                        <td>{{ pedido.numeropedido }}</td>
+                        <td><input type="checkbox" :checked="Boolean(pedido.impreso)" disabled /></td>
+                        <td>{{ pedido.nombrecliente }}</td>
+                        <td>{{ pedido.telefono }}</td>
+                        <td>{{ pedido.idcliente }}</td>
                     </tr>
                     </tbody>
                 </table>
@@ -53,25 +53,25 @@
                     <div class="column">
                         <div class="input-row">
                         <label>Cliente:</label>
-                        <input class="input-control cuenta-input" type="text" readonly/>
+                        <input v-model="cliente" class="input-control cuenta-input" type="text" readonly/>
                         </div>
                         <div class="input-row">
                         <label>Folio:</label>
-                        <input class="input-control folio-input" type="number"readonly/>
+                        <input v-model="folio" class="input-control folio-input" type="number"readonly/>
                         </div>
                         <div class="input-row">
                         <label>Orden:</label>
-                        <input class="input-control orden-input" type="number" readonly/>
+                        <input v-model="orden" class="input-control orden-input" type="number" readonly/>
                         </div>
                     </div>
                     <div class="column">
                         <div class="input-row">
                         <label>Apertura:</label>
-                        <input class="input-control apertura-input" type="text" readonly/>
+                        <input v-model="horaApertura" class="input-control apertura-input" type="text" readonly/>
                         </div>
                         <div class="input-row">
-                        <label>Cierre:</label>
-                        <input class="input-control cierre-input" type="text" readonly/>
+                        <label>Impresion:</label>
+                        <input v-model="horaImpresa" class="input-control cierre-input" type="text" readonly/>
                         </div>
                         <div class="input-row">
                         <label>Impreso:</label>
@@ -81,14 +81,11 @@
                     <div class="column">
                             <div class="textarea-column">
                         <label>Dirección:</label>
-                        <textarea class="direccion-textarea"></textarea>
+                        <textarea v-model="direccionCompleta" class="direccion-textarea"></textarea>
                         </div>
                     </div>
                     </div>
                     </div>
-
-
-
                 </div>
 
                 <div class="tabla-wrapper2">
@@ -110,13 +107,22 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
+                    <tr v-for="(producto, index) in productosPedido" :key="index">
+                        <td>{{ producto.cantidad }}</td>
+                        <td>{{ producto.id }}</td>
+                        <td>
+                        {{ producto.descripcion }}
+                        <ul v-if="producto.modificadores && producto.modificadores.length">
+                            <li v-for="(mod, i) in producto.modificadores" :key="i">
+                            + {{ mod.nombre }} (${{ mod.precio }})
+                            </li>
+                        </ul>
+                        </td>
+                        <td>${{ (producto.precio).toFixed(2) }}</td>
+                        <td>
+                        ${{ ((producto.precio + (producto.modificadores?.reduce((sum, m) => sum + Number(m.precio || 0), 0) || 0)) * producto.cantidad).toFixed(2) }}
+                        </td>
+                    </tr>
                     </tbody>
                     </table>
                 </div>
@@ -130,30 +136,30 @@
                         <button @click="abrirCancelar()" class="button">Cancelar cuenta</button>
                         <button @click="abrirPagar()" class="button">Pagar cuenta</button>
                         <button @click="abrirCaptura()" class="button">Captura</button>
-                        <button @click="abrirImprimir()" class="button">Imprimir</button>
+                        <button @click="imprimirPedido()" class="button">Imprimir</button>
                     </div>
 
                     <div class="right-totals-wrapper">
                         <div class="bordered-box totals-box" style="min-width: 300px;">
                         <div class="input-row">
                             <label>Subtotal:</label>
-                            <input class="input-control" type="text" readonly/>
+                            <input v-model="subtotal" class="input-control" type="text" readonly/>
                         </div>
                         <div class="input-row">
                             <label>Descuento:</label>
-                            <input class="input-control" type="text" readonly/>
+                            <input v-model="descuent" class="input-control" type="text" readonly/>
                         </div>
                         <div class="input-row">
                             <label>Impuestos:</label>
-                            <input class="input-control" type="text" readonly/>
+                            <input v-model="impuestos" class="input-control" type="text" readonly/>
                         </div>
                         <div class="input-row">
-                            <label>Propina:</label>
-                            <input class="input-control" type="text" readonly/>
+                            <label>Total sin desc.:</label>
+                            <input v-model="totalsindesc" class="input-control" type="text" readonly/>
                         </div>
                         <div class="input-row">
                             <label>Total:</label>
-                            <input class="input-control" type="text" readonly/>
+                            <input v-model="total" class="input-control" type="text" readonly/>
                         </div>
                         </div>
                     </div>
@@ -166,19 +172,18 @@
         </vue-draggable-resizable>
     </div>
 
-    <abrir :mostrar="mostrarAbrir" @cerrar="mostrarAbrir = false" />
+    <aggClientes :mostrar="mostrarAggClientes" @cerrar="mostrarAggClientes = false" @actualizado="actualizarDespuesDeEditar()"/>
     <borrar :mostrar="mostrarBorrar" @cerrar="mostrarBorrar = false" />
-    <descuento :mostrar="mostrarDescuento" @cerrar="mostrarDescuento = false" />
-    <captura :mostrar="mostrarCaptura" @cerrar="mostrarCaptura = false" />
+    <descuento :mostrar="mostrarDescuento" @cerrar="mostrarDescuento = false" @actualizar="cargarProductosPedido()"/>
+    <captura :mostrar="mostrarCaptura" @cerrar="mostrarCaptura = false" @actualizar="cargarProductosPedido()"/>
     <imprimir :mostrar="mostrarImprimir" @cerrar="mostrarImprimir = false" />
     <reabrir :mostrar="mostrarReabrir" @cerrar="mostrarReabrir = false" />
     <cancelar :mostrar="mostrarCancelar" @cerrar="mostrarCancelar = false" />
-    <pagar :mostrar="mostrarPagar" @cerrar="mostrarPagar = false" />
-    <aggClientes :mostrar="mostrarAggClientes" @cerrar="mostrarAggClientes = false" />
+    <pagar :mostrar="mostrarPagar" @cerrar="mostrarPagar = false" @actualizado="cargarPedidosAbiertos();limpiarCampos()"/>
 </template>
 
 <script setup>
-import { defineEmits, defineProps, onMounted, ref } from "vue";
+import { defineEmits, defineProps, onMounted, ref, nextTick } from "vue";
 import VueDraggableResizable from "vue-draggable-resizable";
 import "vue-draggable-resizable/style.css";
 import abrir from "./Comedor/abrir.vue";
@@ -190,6 +195,8 @@ import imprimir from "./Comedor/imprimir.vue";
 import pagar from "./Comedor/pagar.vue";
 import reabrir from "./Comedor/reabrir.vue";
 import aggClientes from "./Domicilio/aggClientes.vue";
+import { supabase } from "../supabase/supabase";
+import { idPedido, idCliente } from "../store/auth.js";
 
 
 
@@ -210,12 +217,272 @@ const mostrarPagar = ref(false);
 const mostrarAggClientes = ref(false);
 
 
+const cliente = ref(null);
+const folio = ref(null);
+const orden = ref(null);
+const horaApertura = ref(null);
+const horaImpresa = ref(null);
+const impreso = ref(null);
+const subtotal = ref(null);
+const descuent = ref(null);
+const impuestos = ref(null);
+const totalsindesc = ref(null);
+const total = ref(null);
+const direccionCompleta = ref(null);
+
+const pedidosAbiertos = ref([]);
+
+const cargarPedidosAbiertos = async () => {
+  const { data, error } = await supabase
+    .from('pedidos_domicilio_con_direccion')
+    .select('*')
+    .eq('abierto', true);
+
+  if (error) {
+    console.error("❌ Error al obtener pedidos de domicilio:", error);
+    return;
+  }
+
+  pedidosAbiertos.value = data;
+  console.log("📦 Pedidos cargados:", data);
+};
+
+const obtenerPedido = (pedido) => {
+  cliente.value = pedido.nombrecliente;  
+  folio.value = pedido.idpedido;
+  orden.value = pedido.numeropedido;
+  horaApertura.value = pedido.horaapertura;
+  horaImpresa.value = pedido.horaimpresion || "---";
+  checkimpreso.value = pedido.impreso;
+  direccionCompleta.value = [
+  pedido.calle ? pedido.calle : '',
+  pedido.numcasa ? `#${pedido.numcasa}` : '',
+  pedido.colonia ? pedido.colonia : '',
+  (pedido.interseccion1 || pedido.interseccion2) ? `Entre ${pedido.interseccion1 || ''} y ${pedido.interseccion2 || ''}` : '',
+  pedido.referencias ? `Ref: ${pedido.referencias}` : ''
+].filter(Boolean).join(', ');
+  console.log(direccionCompleta.value);
+  
+  idCliente.value = pedido.idcliente; 
+    cargarProductosPedido();
+};
+
+const pedidoActualizado = ref(null);
+async function jalarPedidoEspecificp() {
+  const { data, error } = await supabase
+    .from('pedidos_domicilio_con_direccion')
+    .select('*')
+    .eq('idpedido', idPedido.value);
+
+   if(error){
+        console.error("Error al obtener pedido ",error);
+        return;
+   } 
+    obtenerPedido(data[0]);
+
+};
+
+const productosPedido = ref([]);
+async function cargarProductosPedido() {
+  const { data: productos, error: errorProductos } = await supabase
+    .from('productos_pedidos')
+    .select(`
+      idprodpedi,
+      idproducto,
+      cantidad,
+      productos (
+        nombre,
+        precio,
+        preciosinimporte
+      )
+    `)
+    .eq('idpedido', idPedido.value);
+
+  if (errorProductos) {
+    console.error("Error al obtener productos", errorProductos);
+    return;
+  }
+
+  // Cargar modificadores de todos los productos_pedidos
+  const idsProds = productos.map(p => p.idprodpedi);
+
+  const { data: mods, error: errorMods } = await supabase
+    .from('productos_pedidos_modificadores')
+    .select(`
+      idprodpedi,
+      modificadores (
+        idmodificador,
+        nombre,
+        precio
+      )
+    `)
+    .in('idprodpedi', idsProds);
+
+  if (errorMods) {
+    console.error("Error al obtener modificadores", errorMods);
+    return;
+  }
+
+  // Agrupar modificadores por idprodpedi
+  const modificadoresPorProducto = {};
+  mods.forEach(m => {
+  if (!m.modificadores) return; // protección defensiva
+
+  if (!modificadoresPorProducto[m.idprodpedi]) {
+    modificadoresPorProducto[m.idprodpedi] = [];
+  }
+
+  modificadoresPorProducto[m.idprodpedi].push({
+    idmodificador: m.modificadores.idmodificador,
+    nombre: m.modificadores.nombre,
+    precio: m.modificadores.precio
+  });
+});
+
+  // Reconstruir los productos con sus modificadores
+  const productosConModificadores = productos.map(p => ({
+  id: p.idproducto,
+  cantidad: p.cantidad ?? 1,
+  descripcion: p.productos?.nombre || 'Sin nombre',
+  precio: p.productos?.precio ?? 0,
+  modificadores: modificadoresPorProducto[p.idprodpedi] || []
+}));
+
+  // Si quieres ponerlos en el carrito:
+  productosPedido.value = productosConModificadores;
+
+productosExterno.value = productosConModificadores;
+await cargarpedido();
+ calcularTotales(productosConModificadores, pedidoExterno.value.descuento);
+ 
+};
+
+const productosExterno = ref([]);
+const pedidoExterno = ref([]);
+
+async function cargarpedido() {
+    const {data, error} = await supabase
+        .from('pedidos')
+        .select()
+        .eq('idpedido', idPedido.value)
+    if(error){
+        console.error("Error obtener pedido ",error);
+        return;
+    }
+    pedidoExterno.value = data[0];
+};
+
+async function actualizarTotalEnBD(montoFinal) {
+  const { error } = await supabase
+    .from('pedidos')
+    .update({ totalPedido: montoFinal })
+    .eq('idpedido', idPedido.value);
+
+  if (error) {
+    console.error("Error al actualizar total en la base de datos", error);
+  } else {
+    console.log("Total actualizado correctamente");
+  }
+}
+
+function limpiarCampos(){
+    cliente.value = null;
+    folio.value = null;
+    orden.value = null;
+    horaApertura.value = null;
+    horaImpresa.value = null;
+    checkimpreso.value = false;
+    productosPedido.value = [];
+    subtotal.value = "0.00";
+    descuent.value = "0%";
+    totalsindesc.value = "0.00";
+    total.value = "0.00";
+    direccionCompleta.value = null;
+};
+
+async function imprimirPedido(){
+    const { data, error } = await supabase
+        .from('pedidos')
+        .update({
+            impreso: true
+        })
+        .eq('idpedido', idPedido.value);
+    
+    if(error){
+        console.error("Error al actualizar pedido impreso ",error);
+        return;
+    }
+    console.log("BD Actualziada con pedido impreso");
+    cargarPedidosAbiertos();
+    jalarPedidoEspecificp();
+    
+};
+
+
+function calcularTotales(productos = [], descuentoPorcentaje = 0) {
+  const totalBruto = productos.reduce((acc, item) => {
+    const modTotal = item.modificadores?.reduce((sum, mod) => sum + Number(mod.precio || 0), 0) || 0;
+    return acc + ((Number(item.precio || 0) + modTotal) * Number(item.cantidad || 1));
+  }, 0);
+
+  // Separar impuestos (IVA incluido en precios)
+  const subtotalSinIVA = totalBruto / 1.16;
+  const impuestosCalculados = totalBruto - subtotalSinIVA;
+
+  // Calcular descuento sobre totalBruto
+  const descuentoCalculado = totalBruto * (descuentoPorcentaje / 100);
+
+  // Calcular total final ya con descuento
+  const totalFinal = totalBruto - descuentoCalculado;
+
+  // Asignar a campos
+  subtotal.value = `$${subtotalSinIVA.toFixed(2)}`;
+  descuent.value = `${descuentoPorcentaje}%`;
+  impuestos.value = `$${impuestosCalculados.toFixed(2)}`;
+  totalsindesc.value = `$${totalBruto.toFixed(2)}`;
+  total.value = `$${totalFinal.toFixed(2)}`;
+
+  actualizarTotalEnBD(totalFinal.toFixed(2));
+};
+
+
+async function actualizarTotalPedido() {
+  const productos = productosPedido.value;
+  const descuentoPorcentaje = parseFloat((pedidoExterno.value?.descuento || 0));
+
+  const totalBruto = productos.reduce((acc, item) => {
+    const modTotal = item.modificadores?.reduce((sum, mod) => sum + Number(mod.precio || 0), 0) || 0;
+    return acc + ((Number(item.precio || 0) + modTotal) * Number(item.cantidad || 1));
+  }, 0);
+
+  const descuentoCalculado = totalBruto * (descuentoPorcentaje / 100);
+  const totalFinal = totalBruto - descuentoCalculado;
+
+  const { error } = await supabase
+    .from('pedidos')
+    .update({ totalPedido: totalFinal.toFixed(2) })
+    .eq('idpedido', idPedido.value);
+
+  if (error) {
+    console.error("❌ Error al actualizar total antes de pagar:", error);
+  } else {
+    console.log("✅ Total actualizado antes de abrir pago");
+  }
+}
+
+
+const actualizarDespuesDeEditar = () => {
+  cargarPedidosAbiertos();
+  jalarPedidoEspecificp();
+};
+
 onMounted(() => {
-    checkimpreso.value = true;
+   cargarPedidosAbiertos(); 
 })
 
 //Abrir cuenta
 const abrirAbrir = () => {
+    idPedido.value = idPedido.value; 
     mostrarAbrir.value = true;
 };
 
@@ -255,12 +522,22 @@ const abrirCancelar = () => {
 };
 
 //pagar
-const abrirPagar = () => {
+const abrirPagar = async () => {
+  if (checkimpreso.value) {
+    await actualizarTotalPedido(); // 🔁 ahora existe
+    mostrarPagar.value = false;
+    await nextTick();
+    idPedido.value = idPedido.value + 1;
+    idPedido.value = idPedido.value - 1;
     mostrarPagar.value = true;
+  } else {
+    console.log("Imprimir pedido");
+  }
 };
 
 //agg clientes
 const abrirAggClientes = () => {
+    idCliente.value = null;
     mostrarAggClientes.value = true;
 };
 
