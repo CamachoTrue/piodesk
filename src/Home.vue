@@ -181,8 +181,11 @@ const abrirRetiros = () => {
 
 // abrir Corte CAja
 const abrirCorte = () => {
+  if(!turno.value){
+    console.log("No hay turno abierto");
+    return;
+  }
   mostrarCorte.value = true;
-  
 };
 
 // abrir domicilio
