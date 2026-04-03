@@ -33,7 +33,8 @@
                     type="number"
                     v-model.number="item.importe"
                     class="input-importe"
-                    placeholder="$0.00"/>
+                    placeholder="$0.00"
+                    @keydown="soloNumeros()"/>
                     </td>
                     </tr>
                 </tbody>
@@ -74,7 +75,7 @@ const window = ref(globalThis.window);
 // Fecha y Hora en formato correcto
 const now = new Date();
 const fecha = ref(now.toISOString().split("T")[0]);
-const hora = ref(now.toISOString().split("T")[1].split(".")[0]);
+const hora = ref(now.toTimeString().split(" ")[0]);
 
 //tabla
 const caja = ref([
@@ -82,6 +83,13 @@ const caja = ref([
 { clave: "TJ", descripcion: "Tarjeta", importe: null },
 { clave: "TR", descripcion: "Transferencia", importe: null },
 ]);
+
+const soloNumeros = (e) => {
+  const permitidas = ['0','1','2','3','4','5','6','7','8','9','.','Backspace','Delete','ArrowLeft','ArrowRight','Tab'];
+  if (!permitidas.includes(e.key)) {
+    e.preventDefault();
+  }
+};
 
 const confirmar = async () => {
     if(caja.value[0].importe === null || caja.value[1].importe === null || caja.value[2].importe === null){

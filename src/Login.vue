@@ -16,9 +16,9 @@
               Login
           </button>
           <!-- Botón "Usuario rápido" mantiene el subrayado y se le añade también font-bold -->
-    <!--<button v-show="isVisible" @click="userRapido" class="mt-3 underline font-bold">
+        <button v-show="isVisible" @click="userRapido" class="mt-3 underline font-bold">
               Usuario rápido
-          </button> Este es un comentario en HTML -->      
+          </button>      
       </div>
   </div>
 </template>
@@ -29,6 +29,7 @@ import { useRouter } from 'vue-router';
 import { supabase } from "@/supabase/supabase";
 import { userLogin, obtenerTurno, resultadoLogin } from "@/store/auth.js";
 
+window.supabase = supabase; // Hacer supabase accesible globalmente para depuración
 const router = useRouter();
 const usuario = ref('');
 const password = ref('');

@@ -27,7 +27,7 @@
             </div>
             <div class="input-row">
               <label>Importe:</label>
-              <input v-model="importe" type="number" class="input-chico" />
+              <input v-model="importe" type="number" class="input-chico" @keydown="soloNumeros" />
             </div>
             </div>
               <div class="button-group">
@@ -71,6 +71,12 @@
       importe.value = null;
     };
 
+    const soloNumeros = (e) => {
+      const permitidas = ['0','1','2','3','4','5','6','7','8','9','.','Backspace','Delete','ArrowLeft','ArrowRight','Tab'];
+      if (!permitidas.includes(e.key)) {
+        e.preventDefault();
+      }
+    };
     const aggMovimiento = async () =>{
       console.log(hora.value);
       

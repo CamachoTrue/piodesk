@@ -22,7 +22,7 @@
         </div>
         <div class="content">
           <p>Efectivo en caja:</p>
-          <input v-model="montoInicial" type="number" placeholder="$0.00" class="border-2 w-[295px] mt-4" />
+          <input v-model="montoInicial" type="number" placeholder="$0.00" class="border-2 w-[295px] mt-4" @keydown="soloNumeros()" />
           <div class="button-group">
             <button @click="confirmar" class="button">Confirmar</button>
             <button @click="$emit('cerrar')" class="cancel-btn">Cancelar</button>
@@ -53,6 +53,20 @@ const window = ref(globalThis.window);
 const now = new Date();
 const fecha = ref(now.toISOString().split("T")[0]);
 const hora = ref(now.toTimeString().split(" ")[0]);
+
+const soloNumeros = (e, index) => {
+  // Elimina todo lo que no sea número o punto decimal
+  let valor = e.target.value.replace(/[^0-9.]/g, '');
+  
+  // Evita más de un punto decimal
+  const partes = valor.split('.');
+  if (partes.length > 2) {
+    valor = partes[0] + '.' + partes.slice(1).join('');
+  }
+
+  caja.value[index].importe = valor === '' ? null : Number(valor);
+  e.target.value = valor;
+};
 
 const confirmar = async () => {
   await obtenerTurno();
