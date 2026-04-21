@@ -80,7 +80,6 @@ describe('Retiros Component - PioDesk', () => {
       },
     });
 
-    // Llenar campos con los datos del excel
     await wrapper.find('select').setValue('Deposito');
     await wrapper.find('input[type="text"]').setValue('Feria');
     await wrapper.find('input[type="number"]').setValue(200);
@@ -88,7 +87,7 @@ describe('Retiros Component - PioDesk', () => {
     // Click en Aceptar
     await wrapper.find('button.button').trigger('click');
     await flushPromises();
-
+    
     // Supabase debe haberse llamado con los datos correctos
     expect(mockInsert).toHaveBeenCalledWith(
       expect.arrayContaining([

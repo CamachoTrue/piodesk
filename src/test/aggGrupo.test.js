@@ -2,17 +2,16 @@ import { mount, flushPromises } from '@vue/test-utils';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import AggGrupos from '@/views/ProductosCompuestos/aggGrupo.vue'; 
 
-// ─── Mock: vue-draggable-resizable ────────────────────────────────────────────
+//  Mock: vue-draggable-resizable 
 vi.mock('vue-draggable-resizable', () => ({
   default: { template: '<div><slot /></div>' },
 }));
 
-// ─── Mock: typescript (el componente importa getJSDocReadonlyTag innecesariamente)
 vi.mock('typescript', () => ({
   getJSDocReadonlyTag: vi.fn(),
 }));
 
-// ─── Mock: supabase ───────────────────────────────────────────────────────────
+// Mock: supabase 
 const mockSelect = vi.fn();
 const mockInsert = vi.fn();
 const mockUpdate = vi.fn();
@@ -29,7 +28,6 @@ vi.mock('@/supabase/supabase', () => ({
   },
 }));
 
-// ─── Helper ───────────────────────────────────────────────────────────────────
 const mountComponent = () =>
   mount(AggGrupos, {
     props: { mostrar: true },
@@ -40,7 +38,6 @@ const mountComponent = () =>
     },
   });
 
-// ─── Suite ────────────────────────────────────────────────────────────────────
 describe('AggGrupos Component - PioDesk', () => {
 
   beforeEach(() => {
@@ -77,7 +74,7 @@ describe('AggGrupos Component - PioDesk', () => {
     );
   });
 
-  // TC_GRUP_002 ─────────────────────────────────────────────────────────────────
+  // TC_GRUP_002 
   it('TC_GRUP_002 - Doble click en grupo existente y editar descripcion: grupo actualizado exitosamente', async () => {
     const grupoExistente = { idgrupo: 1, nombre: 'Bebidas' };
 
@@ -108,8 +105,7 @@ describe('AggGrupos Component - PioDesk', () => {
     );
   });
 
-  // TC_GRUP_003 ─────────────────────────────────────────────────────────────────
-  // FALLA INTENCIONALMENTE: el componente no valida campo descripcion vacio.
+  // TC_GRUP_003 
   it('TC_GRUP_003 - Campo descripcion vacio: muestra error "Llenar campo de descripcion"', async () => {
     mockSelect.mockResolvedValueOnce({ data: [], error: null }); // onMounted
 
@@ -129,7 +125,7 @@ describe('AggGrupos Component - PioDesk', () => {
     expect(mockUpdate).not.toHaveBeenCalled();
   });
 
-  // TC_GRUP_004 ─────────────────────────────────────────────────────────────────
+  // TC_GRUP_004 
   it('TC_GRUP_004 - Doble click en grupo existente y eliminar: grupo eliminado exitosamente', async () => {
     const grupoExistente = { idgrupo: 1, nombre: 'Bebidas' };
 
@@ -148,7 +144,7 @@ describe('AggGrupos Component - PioDesk', () => {
     await wrapper.find('tbody tr').trigger('dblclick');
     await flushPromises();
 
-    // Click en Eliminar (segundo boton)
+    // Click en Eliminar 
     await wrapper.findAll('button.button')[1].trigger('click');
     await flushPromises();
 
