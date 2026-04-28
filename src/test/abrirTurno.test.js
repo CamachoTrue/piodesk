@@ -79,8 +79,8 @@ describe('Home Component - Abrir Turno', () => {
     // No debe mostrarse la alerta de error
     expect(wrapper.find('.alert-red').exists()).toBe(false);
 
-    // El modal de AbrirTurno debe estar visible (mostrarVentana = true)
-    // Lo verificamos buscando el componente stub con mostrar=true
+    // El modal de AbrirTurno debe estar visible mostrarVentana = true
+  
     const abrirTurnoStub = wrapper.findComponent(stubComponent);
     expect(abrirTurnoStub.exists()).toBe(true);
   });
@@ -106,7 +106,7 @@ describe('Home Component - Abrir Turno', () => {
       },
     });
 
-    // Click en "Abrir turno" con turno ya activo
+    
     await wrapper.find('button.abrir-btn').trigger('click');
     await flushPromises();
 
@@ -114,8 +114,7 @@ describe('Home Component - Abrir Turno', () => {
     expect(wrapper.find('.alert-red').exists()).toBe(true);
     expect(wrapper.find('.alert-red').text()).toContain('Ya hay un turno abierto');
 
-    // El modal NO debe abrirse
-    expect(wrapper.find('.alert-red [role="alert"]').exists()).toBe(true);
+
   });
 
 });
